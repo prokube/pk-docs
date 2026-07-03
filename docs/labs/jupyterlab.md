@@ -1,11 +1,11 @@
 # JupyterLab
 
-[JupyterLab](https://jupyterlab.readthedocs.io/) Labs provide a browser-based Python workspace inside prokube.ai. They are intended for notebooks, data exploration, model development, and quick experiments that should run close to the same storage, compute, and platform services used by production workloads.
+JupyterLab Labs provide a browser-based Python workspace inside prokube.ai. They are intended for notebooks, data exploration, model development, and quick experiments that should run close to the same storage, compute, and platform services used by production workloads.
 
-prokube.ai maintains its own JupyterLab images based on the upstream [Kubeflow example notebook server images](https://github.com/kubeflow/notebooks/tree/notebooks-v1/components/example-notebook-servers). The goal is not to replace JupyterLab, but to make it even more useful out of the box on the platform: common CLI tools, Python packages, S3-compatible object storage integration, image building support, and the public [`prokube/examples`](https://github.com/prokube/examples) repository are preconfigured where applicable.
+prokube.ai maintains its own JupyterLab images with platform-oriented defaults: common CLI tools, Python packages, S3-compatible object storage integration, image building support, and the public [`prokube/examples`](https://github.com/prokube/examples) repository are preconfigured where applicable.
 
-::: info Upstream projects
-JupyterLab Labs build on [JupyterLab](https://jupyterlab.readthedocs.io/), [Kubeflow Notebooks](https://www.kubeflow.org/docs/components/notebooks/), and the upstream [Kubeflow notebook server images](https://github.com/kubeflow/notebooks/tree/notebooks-v1/components/example-notebook-servers). prokube.ai adds platform integration and curated defaults on top of these open-source components.
+::: info JupyterLab documentation
+For JupyterLab features that are not specific to prokube.ai, use the upstream [JupyterLab documentation](https://jupyterlab.readthedocs.io/). Administrators who customize notebook images may also want the [Kubeflow Notebooks documentation](https://www.kubeflow.org/docs/components/notebooks/).
 :::
 
 ## Getting Started
@@ -32,7 +32,7 @@ Use [Custom Notebooks](custom_notebooks.md) if you need a controlled package sta
 
 ## What the prokube.ai Images Add
 
-The default JupyterLab images start from the upstream [Kubeflow notebook server images](https://github.com/kubeflow/notebooks/tree/notebooks-v1/components/example-notebook-servers) and add platform-oriented tooling requested in real user environments.
+The default JupyterLab images include platform-oriented tooling requested in real user environments.
 
 Included capabilities depend on the selected image, but the prokube-maintained images commonly include:
 
@@ -42,6 +42,8 @@ Included capabilities depend on the selected image, but the prokube-maintained i
 - optional S3 browsing in the JupyterLab sidebar for object storage workflows;
 - container image build support through Docker CLI and Buildx backed by a remote BuildKit service;
 - automatic cloning of the public [`prokube/examples`](https://github.com/prokube/examples) repository into the Lab home directory on first start.
+
+You can also use the JupyterLab terminal for CLI-based coding-agent tools when that fits your workflow, for example the OpenCode CLI, Claude Code, or similar tools. Install additional tools into the persistent home directory rather than the container filesystem; see [Installing Tools Without Root](index.md#installing-tools-without-root).
 
 ## Platform Access from Notebooks
 
