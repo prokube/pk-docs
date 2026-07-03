@@ -1,14 +1,14 @@
 # VS Code
 
-[VS Code](https://code.visualstudio.com/) can be used with Labs in two ways.
+VS Code can be used with Labs in two ways.
 
 - Start a browser-based VS Code Lab. The VS Code server runs inside the workspace and is opened through the browser.
 - Attach your local VS Code editor to a running Lab pod through Dev Containers. This can be a VS Code Lab or a JupyterLab Lab.
 
 Both workflows keep code execution inside the prokube.ai workspace, close to workspace storage, cluster services, GPUs, and platform credentials. The difference is mainly where the editor UI runs: in the browser, or in your local VS Code installation.
 
-::: info Upstream projects
-VS Code Labs build on [Kubeflow Notebooks](https://www.kubeflow.org/docs/components/notebooks/) and browser-based VS Code server images such as [code-server](https://github.com/coder/code-server). They run as [Kubernetes Pods](https://kubernetes.io/docs/concepts/workloads/pods/) inside a prokube.ai workspace. Local attachment uses the upstream [VS Code Dev Containers](https://code.visualstudio.com/docs/devcontainers/attach-container#_attach-to-a-container-in-a-kubernetes-cluster) workflow.
+::: info VS Code documentation
+For VS Code features that are not specific to prokube.ai, use the upstream [VS Code documentation](https://code.visualstudio.com/docs). For local attachment workflows, see the [Dev Containers documentation](https://code.visualstudio.com/docs/devcontainers/attach-container#_attach-to-a-container-in-a-kubernetes-cluster).
 :::
 
 ## When to Use VS Code Labs
@@ -17,6 +17,7 @@ Use browser-based VS Code Labs when you want to:
 
 - work on Python packages, pipeline components, model servers, MCP servers, or agent code in a full editor;
 - use a terminal with workspace credentials, `kubectl`, SDKs, CLIs, and Git already close to the platform;
+- use the [GitHub Copilot extension](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot) in the browser-based editor when it is available in your selected image;
 - build and push container images from inside the cluster when the selected image includes Docker CLI, Buildx, and remote BuildKit support;
 - keep a development environment running in the workspace instead of depending on your laptop setup;
 - use VS Code in the browser without setting up local cluster access first.
@@ -36,6 +37,14 @@ For VS Code, the image choice mainly decides the IDE server, language stack, sys
 After the Lab starts, open it from the Labs table. The browser session connects to the VS Code server running inside the Lab pod.
 
 ![VS Code Lab](../_static/screenshots/labs/vscode/vs-code-welcome.png)
+
+### Browser Notes
+
+Browser-based VS Code needs the browser to forward editor shortcuts and terminal input to the web app. If shortcuts such as `Command+Shift+P` for the command palette do not reach VS Code, or if pasting into the integrated terminal behaves inconsistently, try Chrome. We have had the most reliable results with Chrome for browser-based VS Code Labs.
+
+In Firefox, disabling **Enhanced Tracking Protection** for the Lab page can help with terminal paste behavior and keyboard handling.
+
+<img class="pk-docs-small-screenshot" src="../_static/screenshots/labs/vscode/firefox-enhanced-tracing-prection.png" alt="Disable Firefox Enhanced Tracking Protection" />
 
 Typical first steps:
 
