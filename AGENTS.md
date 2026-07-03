@@ -28,6 +28,16 @@ This repository contains the new public documentation site for prokube.ai.
 - Do not document planned behavior as existing behavior.
 - Avoid exposing credentials, tokens, internal-only URLs, or customer-specific details.
 
+## Tool Documentation Pattern
+
+For pages about upstream tools used in prokube.ai, especially MLOps tools such as Kubeflow Pipelines, Katib, MLflow, KServe, and related components, use a consistent pattern:
+
+- Start by linking to the upstream documentation for the tool itself. Do not rewrite full upstream concepts or reference material.
+- Then explain how the tool is exposed, configured, secured, and operated in prokube.ai.
+- Focus on prokube.ai-specific behavior: workspace scope, authentication, storage, examples, UI entry points, operational limits, and integration with other platform components.
+- Use the `prokube/examples` repository where possible for concrete examples and task flows.
+- Avoid framing each page as "prokube.ai is based on X". Treat the upstream project as the tool reference and the page as the guide to using it productively on prokube.ai.
+
 ## Source Repositories
 
 Use sibling repositories as references when checking facts. Do not assume they are already cloned or located at a fixed absolute path.

@@ -1,5 +1,259 @@
 # Pipelines
 
-prokube.ai uses Kubeflow Pipelines for reproducible workflow execution on Kubernetes.
+prokube.ai exposes Kubeflow Pipelines for reproducible workflow execution in your workspace.
 
-We are currently moving the prokube.ai documentation to this site. In the meantime, please use [docs.prokube.ai](https://docs.prokube.ai/latest/) for MLOps-related documentation. This page will be migrated here soon.
+::: info Kubeflow Pipelines documentation
+For Kubeflow Pipelines features that are not specific to prokube.ai, use the upstream documentation:
+
+- [Kubeflow Pipelines documentation](https://www.kubeflow.org/docs/components/pipelines/)
+- [Kubeflow Pipelines SDK documentation](https://kubeflow-pipelines.readthedocs.io/)
+- [Kubeflow Pipelines Kubernetes documentation](https://kfp-kubernetes.readthedocs.io/)
+:::
+
+Use this page for the prokube.ai-specific parts: where Pipelines appear in the UI, how workspace scope affects runs, how to submit from Labs, and where to find working examples.
+
+## When to Use Pipelines
+
+Use Pipelines when interactive work should become repeatable, inspectable, or scheduled:
+
+- train or evaluate models with the same steps and parameters;
+- split notebooks or scripts into reusable pipeline components;
+- run preprocessing, training, evaluation, and registration as one workflow;
+- run recurring workflows without manually restarting the same job;
+- parallelize independent steps, parameter combinations, or data-processing tasks;
+- scale individual components with the CPU, memory, and GPU resources they need;
+- compare runs inside an experiment;
+- move work from a Lab into a cluster-executed workflow.
+
+Use [Labs](../labs/index.md) for exploration and pipeline authoring. You can write, compile, and start Pipelines directly from a Lab. Move to Pipelines when the workflow should become a shared, cluster-executed process rather than an interactive session.
+
+## UI Entry Points
+
+The prokube.ai UI exposes Pipelines through workspace-scoped pages. Select the workspace first; the selected workspace determines which namespace, runs, experiments, and pipeline definitions you can see.
+
+Common pages:
+
+| Page | Purpose |
+| --- | --- |
+| **Pipelines** | View uploaded pipeline definitions, open pipeline details, and upload pipeline packages. |
+| **Pipeline Runs** | Track run history, inspect status, archive or restore runs, and compare selected runs. |
+| **Experiments** | Organize runs for comparison and create experiments in the selected workspace. |
+| **Recurring Runs** | Manage scheduled or recurring executions when enabled for the installation. |
+
+Pipeline uploads accept compiled pipeline packages such as `.yaml`, `.yml`, `.zip`, or `.tar.gz` files. Pipeline and version names are display names; choose names that make run history easy to understand.
+
+![View pipeline details, versions, and DAG](../_static/screenshots/labs/kfp/pipelin-details-incl-versions-and-dag.png)
+
+## Write and Start a Pipeline from a Lab
+
+The simplest way to get started is to write and submit a small pipeline from a Lab running inside the same workspace. In that case, the Kubeflow Pipelines SDK can usually use the in-cluster configuration.
+
+This minimal pipeline defines two Python components, compiles the pipeline to YAML, and starts a run. You can also skip the explicit compile step and submit the pipeline function directly with the KFP SDK [`Client.create_run_from_pipeline_func`](https://kubeflow-pipelines.readthedocs.io/en/stable/source/client.html#kfp.client.Client.create_run_from_pipeline_func) method.
+
+```python
+import datetime
+
+from kfp import compiler, dsl
+from kfp.client import Client
+
+
+@dsl.component
+def make_message(name: str) -> str:
+    return f"Hello, {name}!"
+
+
+@dsl.component
+def print_message(message: str) -> None:
+    print(message)
+
+
+@dsl.pipeline(name="hello-world-pipeline")
+def hello_world_pipeline(name: str = "prokube.ai"):
+    message_task = make_message(name=name)
+    print_message(message=message_task.output)
+
+
+compiler.Compiler().compile(hello_world_pipeline, "pipeline.yaml")
+
+client = Client()
+client.create_run_from_pipeline_package(
+    "pipeline.yaml",
+    arguments={"name": "prokube.ai"},
+    experiment_name="hello-world",
+    run_name=f"Hello world {datetime.datetime.now():%Y-%m-%d %H:%M:%S}",
+)
+```
+
+Use this pattern for first tests and for checking that your Lab can reach the Pipelines API in the selected workspace.
+
+## Run the Examples
+
+Use the public [`prokube/examples`](https://github.com/prokube/examples) repository for more realistic examples. prokube.ai managed Labs clone this repository into the Lab home directory by default.
+
+Start with the lightweight-components notebook if you want to inspect the pipeline interactively. Open `~/examples/pipelines/lightweight-components/mobile-price-classifications.ipynb` in JupyterLab and execute the cells step by step.
+
+Or run the minimal container-components example from its own directory to start the container-based pipeline:
+
+```bash
+cd ~/examples/pipelines/minimal-container-components
+python submit-cluster.py
+```
+
+The submission script compiles `pipeline.py` from that directory and creates a run. Run it from the example directory so the `from pipeline import ...` import resolves correctly. If your examples repository is in a different location, adjust the `cd` path accordingly.
+
+Relevant examples:
+
+| Example | Use when |
+| --- | --- |
+| [`pipelines/lightweight-components`](https://github.com/prokube/examples/tree/main/pipelines/lightweight-components) | You want the simplest Python-first approach. Components are inline Python functions, KFP handles artifact I/O, and no custom image build is required. This works well when each pipeline step can be described clearly inside one function. |
+| [`pipelines/lightweight-python-package`](https://github.com/prokube/examples/tree/main/pipelines/lightweight-python-package) | You want lightweight components backed by a real Python package. Component functions stay small, while reusable code lives in normal Python modules with imports, tests, and package structure. This requires building and pushing a custom base image that contains the package and dependencies. |
+| [`pipelines/minimal-container-components`](https://github.com/prokube/examples/tree/main/pipelines/minimal-container-components) | You want full container-level control. Each step runs an explicit container command, so the pattern is language-independent and can run anything that can be containerized. KFP artifact handling is more manual than with lightweight components. |
+
+## Schedule Recurring Runs
+
+Use recurring runs when the same pipeline should run automatically, for example for daily preprocessing, scheduled model evaluation, or regular batch scoring. A recurring run references a pipeline and version, then adds a schedule and concurrency settings.
+
+![Create a recurring pipeline run](../_static/screenshots/labs/kfp/create-recurring-run-ui.png)
+
+## Storage and Artifacts
+
+Pipeline components commonly exchange artifacts through object storage. prokube.ai workspaces are configured with S3-compatible object storage, and Labs can use the same storage for datasets, intermediate files, and model artifacts.
+
+Practical rules:
+
+- use object storage for datasets, model files, and pipeline artifacts;
+- avoid relying on a Lab's persistent volume for pipeline runtime data;
+- pass explicit S3 object paths into pipelines when an example expects them;
+- use the **Object Storage** page in the prokube.ai UI to see which buckets are available to your workspace.
+
+For object-storage access from Labs, see [Object Storage from Labs](../labs/index.md#object-storage-from-labs).
+
+## Component Images
+
+For small experiments, lightweight Python components can be convenient. For team workflows or dependencies that are slow to install at runtime, build a component image and reference it from your pipeline.
+
+The [`lightweight-python-package`](https://github.com/prokube/examples/tree/main/pipelines/lightweight-python-package) example shows this pattern with a `Dockerfile`, Python package, pipeline definition, and cluster submission script.
+
+You can build and push images from supported Labs using the remote BuildKit setup. You also need a container registry that accepts pushes from your Lab, and the workspace must be able to pull the resulting images. Ask your administrator which registry to use. For private registries, add pull credentials from the prokube.ai user menu under **Registry Credentials**; they are attached to the workspace namespace so pipeline pods can pull private images. See [Building Container Images](../labs/index.md#building-container-images).
+
+## Common Patterns
+
+### Use Secrets in Components
+
+Create workspace secrets from the prokube.ai user menu under **K8s Secrets**. Secrets are namespace-scoped key-value pairs and can be referenced by workloads without putting the secret values into pipeline code or compiled pipeline YAML.
+
+Use [`kfp-kubernetes`](https://kfp-kubernetes.readthedocs.io/) to expose selected secret keys to a component as environment variables:
+
+```python
+from kfp import dsl, kubernetes
+
+
+@dsl.component
+def read_private_data():
+    import os
+
+    access_key = os.environ["AWS_ACCESS_KEY_ID"]
+    secret_key = os.environ["AWS_SECRET_ACCESS_KEY"]
+    # Use the credentials without printing them.
+
+
+@dsl.pipeline
+def private_data_pipeline():
+    task = read_private_data()
+    kubernetes.use_secret_as_env(
+        task,
+        secret_name="s3creds",
+        secret_key_to_env={
+            "AWS_ACCESS_KEY_ID": "AWS_ACCESS_KEY_ID",
+            "AWS_SECRET_ACCESS_KEY": "AWS_SECRET_ACCESS_KEY",
+        },
+    )
+```
+
+Keep secret names and key names stable. Changing them requires updating every pipeline that references them.
+
+### Control Caching for Scheduled Workflows
+
+KFP caching is useful when expensive steps should not rerun unnecessarily. For scheduled workflows, make the cache boundary explicit by passing a cache-key input such as the current day, month, data version, or source snapshot ID into the component that should be reused.
+
+For example, a daily pipeline can pass `YYYY-MM` to an expensive data-loading component so it reruns monthly, while downstream daily steps still rerun with daily inputs. Disable caching only on the small component that generates the changing key; avoid disabling caching globally unless every step must rerun.
+
+### Send Completion Notifications
+
+Use [`dsl.ExitHandler`](https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/control-flow/#exit-handling) for cleanup or notifications that should run when a pipeline exits. Keep webhook URLs and tokens in workspace secrets, not in pipeline source code.
+
+### Access Multiple Outputs
+
+When a component has more than one output, do not rely on `task.output`. Access the output by name:
+
+```python
+from typing import Dict
+
+from kfp import dsl
+from kfp.dsl import Dataset, Output
+
+
+@dsl.component
+def write_dataset(name: str, dataset: Output[Dataset]) -> Dict:
+    return {"column": name}
+
+
+@dsl.component
+def print_metadata(metadata: Dict):
+    print(metadata)
+
+
+@dsl.pipeline
+def multiple_outputs_pipeline(column_name: str):
+    write_task = write_dataset(name=column_name)
+    print_metadata(metadata=write_task.outputs["Output"])
+```
+
+Named artifact outputs use their parameter name, for example `write_task.outputs["dataset"]`.
+
+### Access Run Metadata
+
+If a component needs run metadata, prefer Kubernetes field-path environment variables through `kfp-kubernetes` over parsing KFP internals. For example, expose the KFP run ID from the pod label:
+
+```python
+from kfp import dsl, kubernetes
+
+
+@dsl.component
+def print_run_id():
+    import os
+
+    print(os.environ["KFP_RUN_ID"])
+
+
+@dsl.pipeline
+def run_metadata_pipeline():
+    task = print_run_id()
+    kubernetes.use_field_path_as_env(
+        task,
+        env_name="KFP_RUN_ID",
+        field_path="metadata.labels['pipeline/runid']",
+    )
+```
+
+## Troubleshooting
+
+Start with the Pipeline Runs page. Open the run details and inspect failed steps, UI warnings, pod events, and component logs. The UI surfaces common operational problems, for example missing secrets or workspace pod-count limits. Logs are available from the running pod where possible and from Loki after the pod has already terminated.
+
+![Inspect a pipeline run graph and component logs](../_static/screenshots/labs/kfp/pipeline-run-dag-including-logs-viewer.png)
+
+Common causes:
+
+- **Image pull errors**: verify the component image reference and registry credentials.
+- **Missing input data**: check S3 paths, bucket names, and object-storage credentials.
+- **Import errors in components**: move dependencies into the component image or declare them explicitly for lightweight components.
+- **Permission errors**: confirm that the selected workspace has access to the required secrets, buckets, and Kubernetes resources.
+- **Slow startup**: avoid installing large dependencies at component runtime; use a custom image instead.
+
+## Related Pages
+
+- [Labs](../labs/index.md)
+- [JupyterLab](../labs/jupyterlab.md)
+- [Custom Notebooks](../labs/custom_notebooks.md)
+- [MLflow](mlflow.md)
+- [Model Serving](model_serving.md)

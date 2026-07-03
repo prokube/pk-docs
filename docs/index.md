@@ -1,37 +1,66 @@
-# Welcome to prokube.ai
+---
+aside: false
+pageClass: pk-docs-home-page
+---
 
-prokube.ai is a Kubernetes-native AI platform for teams that need to run AI workloads on infrastructure they control.
+# Welcome to the docs
 
-Most of prokube.ai is built from established open-source tools. We are huge fans of the open-source ecosystem and contribute changes back whenever they are useful beyond our own platform. prokube.ai is the integration and operations layer around that ecosystem: it turns a fragmented set of tools into a coherent platform with sane defaults and shared operational concerns such as tested upgrade paths, workspace and user management, observability, storage integration, audit trails, and operational guardrails.
+Find the right prokube.ai documentation for interactive development, agent workflows, ML workloads, and platform operations.
 
-For convenience, we add our own UI to the mix. It helps users configure, connect, and operate the underlying open-source components without having to write YAML or run a long series of `kubectl` commands for every common task. However, the UI is not required to use the platform. Production workloads, from classic ML models to agent systems, can still be developed and operated through APIs, SDKs, Kubernetes resources, GitOps, and the underlying tools directly.
+prokube.ai is a Kubernetes-native AI platform for teams that need to run AI workloads on infrastructure they control. It builds on established open-source tools and adds an integration and operations layer around them: tested upgrade paths, workspace and user management, observability, storage integration, audit trails, and operational guardrails.
 
-The platform is organized around two product tracks, Labs for interactive development, and a shared foundation:
+<div class="pk-docs-home-actions">
+  <a href="./labs/" class="pk-docs-home-primary">Start with Labs</a>
+  <a href="./admin/" class="pk-docs-home-secondary">Installation</a>
+  <a href="https://prokube.ai/en/contact/" class="pk-docs-home-secondary">Get enterprise support</a>
+</div>
 
-- **AgentOps** for building and operating AI agents with governed model access, tools, memory, and isolated code execution.
-- **MLOps** for developing, training, tracking, and serving machine learning models.
-- **Labs** for interactive development environments such as JupyterLab, VS Code, RStudio, and OpenCode.
+## Browse by Area
 
-Both tracks use the same platform foundation: workspaces, identity, access control, storage, observability, GitOps operations, and Kubernetes infrastructure.
+<div class="pk-docs-card-grid pk-docs-card-grid-4">
+  <a class="pk-docs-card" href="./labs/">
+    <span class="pk-docs-card-kicker">Interactive development</span>
+    <strong>Labs</strong>
+    <span>Launch JupyterLab, VS Code, RStudio, OpenCode, or custom images.</span>
+  </a>
+  <a class="pk-docs-card" href="./agentops/">
+    <span class="pk-docs-card-kicker">Agents and tools</span>
+    <strong>AgentOps</strong>
+    <span>Build, evaluate, run, and manage agents on Kubernetes.</span>
+  </a>
+  <a class="pk-docs-card" href="./mlops/">
+    <span class="pk-docs-card-kicker">Model lifecycle</span>
+    <strong>MLOps</strong>
+    <span>Develop pipelines, track experiments, and serve models.</span>
+  </a>
+  <a class="pk-docs-card" href="./platform/">
+    <span class="pk-docs-card-kicker">Shared foundation</span>
+    <strong>Platform</strong>
+    <span>Understand workspaces, API access, observability, and storage.</span>
+  </a>
+</div>
 
-## Documentation Structure
+## Common Tasks
 
-### AgentOps
-
-AgentOps covers the runtime layer for production AI agents: Agent Gateway, Sandboxes, MCP servers, memory stores, and agent runtimes.
-
-### MLOps
-
-MLOps covers the classic machine learning lifecycle: pipelines, MLflow, model serving, GPU workloads, and data science workflows.
-
-### Labs
-
-Labs cover interactive development environments for experiments, notebooks, prototypes, data exploration, and agent or tool development.
-
-### Platform Foundation
-
-The foundation contains the shared services used by both tracks: users, workspaces, storage, API access, monitoring, logging, and Kubernetes integration.
-
-### Admin
-
-Admin documentation covers installation, operations, upgrades, identity, observability, storage providers, backups, and troubleshooting.
+<div class="pk-docs-link-list">
+  <a class="pk-docs-task-card" href="./labs/#launch-options">
+    <strong>Launch a Lab</strong>
+    <span>Start JupyterLab, VS Code, RStudio, OpenCode, or a custom notebook image inside your workspace.</span>
+    <em>Learn more -></em>
+  </a>
+  <a class="pk-docs-task-card" href="./agentops/sandboxes.html">
+    <strong>Create or claim a sandbox</strong>
+    <span>Give agents an isolated execution environment with controlled resources and workspace boundaries.</span>
+    <em>Learn more -></em>
+  </a>
+  <a class="pk-docs-task-card" href="./labs/#persistence-and-package-installation">
+    <strong>Work with persistent storage</strong>
+    <span>Understand what survives Lab restarts and where to place code, notebooks, packages, and data.</span>
+    <em>Learn more -></em>
+  </a>
+  <a class="pk-docs-task-card" href="./platform/api_access.html">
+    <strong>Configure API access</strong>
+    <span>Use scoped API keys and Agent Gateway routes for programmatic access to platform APIs.</span>
+    <em>Learn more -></em>
+  </a>
+</div>

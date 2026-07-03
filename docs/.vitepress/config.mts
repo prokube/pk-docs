@@ -31,7 +31,7 @@ export default defineConfig({
       { text: 'Labs', link: '/labs/' },
       { text: 'AgentOps', link: '/agentops/' },
       { text: 'MLOps', link: '/mlops/' },
-      { text: 'Platform Foundation', link: '/platform/' },
+      { text: 'Foundation', link: '/platform/' },
       { text: 'Admin', link: '/admin/' }
     ],
     sidebar: [
@@ -70,7 +70,7 @@ export default defineConfig({
         ]
       },
       {
-        text: 'Platform Foundation',
+        text: 'Foundation',
         collapsed: false,
         items: [
           { text: 'Overview', link: '/platform/' },
@@ -86,16 +86,9 @@ export default defineConfig({
         ]
       }
     ],
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/prokube' }
-    ],
     footer: {
       message: 'Built with open-source tools. Deployed as a static site.',
       copyright: 'Copyright © 2024-2026 prokube.ai GmbH'
-    },
-    editLink: {
-      pattern: 'https://github.com/prokube/pk-docs/edit/main/docs/:path',
-      text: 'Edit this page on GitHub'
     }
   }
 })

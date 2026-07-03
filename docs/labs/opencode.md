@@ -1,18 +1,18 @@
 # OpenCode
 
-[OpenCode](https://github.com/anomalyco/opencode) is the most popular open-source AI coding agent on GitHub, with more than 180k stars. OpenCode Labs run it inside a prokube.ai workspace, so you can manage long-running agent sessions from the browser without giving the agent access to your local machine.
+OpenCode Labs run [OpenCode](https://github.com/anomalyco/opencode) inside a prokube.ai workspace, so you can manage long-running agentic coding sessions from the browser without giving the agent access to your local machine.
 
 Because sessions run in the workspace, you can leave tasks running overnight, switch between multiple projects and sessions, and review changes before they reach Git or your local checkout.
 
-prokube.ai uses the open-source [pk-opencode-webui project](https://github.com/prokube/pk-opencode-webui) to run OpenCode in Kubeflow Notebooks. prokube.ai open-sourced this prefix-aware Web UI and Notebook integration so OpenCode can be exposed correctly behind workspace URL prefixes such as Kubeflow Notebook routes. The wrapper is not a separate agent product; it is infrastructure around upstream OpenCode.
+prokube.ai uses the open-source [pk-opencode-webui project](https://github.com/prokube/pk-opencode-webui) to run OpenCode in Kubeflow Notebooks. prokube.ai open-sourced this prefix-aware Web UI and Notebook integration so OpenCode can be exposed correctly behind workspace URL prefixes such as Kubeflow Notebook routes. The integration adds the notebook image, URL-prefix handling, project picker, Git/SSH helpers, MCP management UI, Lab-specific defaults, and workspace integration needed for this deployment model.
 
-::: info Upstream projects
-OpenCode Labs build on [OpenCode](https://github.com/anomalyco/opencode) and [Kubeflow Notebooks](https://www.kubeflow.org/docs/components/notebooks/). They run as [Kubernetes Pods](https://kubernetes.io/docs/concepts/workloads/pods/) inside a prokube.ai workspace. The prokube.ai integration adds the notebook image, URL-prefix handling, project picker, Git/SSH helpers, MCP management UI, Lab-specific defaults, and more UI features needed for this deployment model.
+::: info OpenCode documentation
+For OpenCode features that are not specific to prokube.ai, use the upstream [OpenCode documentation](https://opencode.ai/docs/). For the prokube.ai wrapper and notebook integration, see [`pk-opencode-webui`](https://github.com/prokube/pk-opencode-webui).
 :::
 
 ## When to Use OpenCode Labs
 
-Use OpenCode Labs when you want an agentic coding workflow that runs inside the workspace rather than on your laptop.
+Use OpenCode Labs for fully agentic engineering workflows where code is mostly written, changed, and reviewed by AI agents. OpenCode is a good fit when agents should work iteratively: inspect the repository, propose changes, run commands or tests, react to feedback, and continue across longer sessions inside the workspace rather than on your laptop.
 
 Common uses include:
 
@@ -36,7 +36,7 @@ After the Lab starts, open it from the Labs table. The OpenCode UI is served fro
 
 ![OpenCode welcome screen](../_static/screenshots/labs/opencode/opencode-ui-welcome.png)
 
-The Kubeflow image starts:
+The Lab starts:
 
 - the upstream `opencode serve` backend on an internal loopback port;
 - the prefix-aware web UI on the notebook port used by Kubeflow;
@@ -139,7 +139,7 @@ Remote MCP entries can include a URL, optional Authorization header, custom HTTP
 
 ![OpenCode with MCP](../_static/screenshots/labs/opencode/opencode-in-action-mcp.png)
 
-For platform-managed MCP endpoints and public routing, see [MCP Servers](../agentops/mcp_servers.md). For memory-backed MCP endpoints, see [Memory Stores](../agentops/memory_stores.md).
+For hosting MCP servers on prokube.ai, platform-managed MCP endpoints, and public routing, see [MCP Servers](../agentops/mcp_servers.md). For memory-backed MCP endpoints, see [Memory Stores](../agentops/memory_stores.md).
 
 ## Relationship to Agent Sandboxes
 
