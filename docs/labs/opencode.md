@@ -1,13 +1,13 @@
 # OpenCode
 
-OpenCode Labs run [OpenCode](https://github.com/anomalyco/opencode) inside a prokube.ai workspace, so you can manage long-running agentic coding sessions from the browser without giving the agent access to your local machine.
+OpenCode Labs run [OpenCode](https://github.com/anomalyco/opencode) inside a prokube workspace, so you can manage long-running agentic coding sessions from the browser without giving the agent access to your local machine.
 
 Because sessions run in the workspace, you can leave tasks running overnight, switch between multiple projects and sessions, and review changes before they reach Git or your local checkout.
 
-prokube.ai uses the open-source [pk-opencode-webui project](https://github.com/prokube/pk-opencode-webui) to run OpenCode in Kubeflow Notebooks. prokube.ai open-sourced this prefix-aware Web UI and Notebook integration so OpenCode can be exposed correctly behind workspace URL prefixes such as Kubeflow Notebook routes. The integration adds the notebook image, URL-prefix handling, project picker, Git/SSH helpers, MCP management UI, Lab-specific defaults, and workspace integration needed for this deployment model.
+prokube uses the open-source [pk-opencode-webui project](https://github.com/prokube/pk-opencode-webui) to run OpenCode in Kubeflow Notebooks. prokube.ai open-sourced this prefix-aware Web UI and Notebook integration so OpenCode can be exposed correctly behind workspace URL prefixes such as Kubeflow Notebook routes. The integration adds the notebook image, URL-prefix handling, project picker, Git/SSH helpers, MCP management UI, Lab-specific defaults, and workspace integration needed for this deployment model.
 
 ::: info OpenCode documentation
-For OpenCode features that are not specific to prokube.ai, use the upstream [OpenCode documentation](https://opencode.ai/docs/). For the prokube.ai wrapper and notebook integration, see [`pk-opencode-webui`](https://github.com/prokube/pk-opencode-webui).
+For OpenCode features that are not specific to prokube, use the upstream [OpenCode documentation](https://opencode.ai/docs/). For the prokube wrapper and notebook integration, see [`pk-opencode-webui`](https://github.com/prokube/pk-opencode-webui).
 :::
 
 ## When to Use OpenCode Labs
@@ -60,7 +60,7 @@ For private repositories, configure Git credentials first. The OpenCode image in
 
 ## Connect a Model Provider
 
-OpenCode needs a model provider before it can answer prompts or edit code. Use Settings to connect a provider such as OpenCode, Anthropic, GitHub Copilot, OpenAI, Google, or OpenRouter, depending on what your environment allows. You can also use models hosted on prokube.ai itself, or external models that an administrator exposes through the [Agent Gateway](../agentops/agent_gateway.md).
+OpenCode needs a model provider before it can answer prompts or edit code. Use Settings to connect a provider such as OpenCode, Anthropic, GitHub Copilot, OpenAI, Google, or OpenRouter, depending on what your environment allows. You can also use models hosted on prokube itself, or external models that an administrator exposes through the [Agent Gateway](../agentops/agent_gateway.md).
 
 ![Connect a provider](../_static/screenshots/labs/opencode/connect-provider.png)
 
@@ -74,7 +74,7 @@ A session is a single agent conversation attached to a project. You can keep mul
 
 Within a session, you can switch model/provider settings, attach files, fork from earlier messages, and let OpenCode request permissions before file edits or shell commands.
 
-The UI also exposes features from the prokube.ai wrapper around the OpenCode backend:
+The UI also exposes features from the prokube wrapper around the OpenCode backend:
 
 - project-aware sessions and recent projects;
 - saved prompts available globally or per project;
@@ -89,11 +89,11 @@ The UI also exposes features from the prokube.ai wrapper around the OpenCode bac
 
 ## Control Permissions and Execution
 
-OpenCode can make real changes to files and run commands in the Lab container. If you use it in a workspace with sensitive code, data, credentials, or platform access, prokube.ai recommends starting with narrow permissions and expanding them only when needed.
+OpenCode can make real changes to files and run commands in the Lab container. If you use it in a workspace with sensitive code, data, credentials, or platform access, prokube recommends starting with narrow permissions and expanding them only when needed.
 
 During Lab launch, set the OpenCode security settings explicitly instead of accepting broad access by habit. These settings are the first control surface for what the Lab can access and what OpenCode is allowed to do. If those launch-time controls are not enough for your workflow or risk model, tighten OpenCode itself through its config file.
 
-In the prokube.ai OpenCode image, the global OpenCode config is stored at:
+In the prokube OpenCode image, the global OpenCode config is stored at:
 
 ```text
 /home/jovyan/.config/opencode/opencode.json
@@ -110,7 +110,7 @@ Useful upstream OpenCode references:
 
 OpenCode permissions are configured in `opencode.json`. Defaults can be permissive depending on the tool and environment, so explicitly set sensitive tools to `ask` or `deny` when you want review before edits, shell commands, task delegation, or MCP tool calls. OpenCode also supports tool patterns and MCP-tool wildcards; use those to allow only the operations a project actually needs.
 
-For coding-agent workflows, prokube.ai disables broad Kubernetes and object-storage access by default where possible, and recommends granting only the narrow permissions required for the task. Do not assume `kubectl` access or S3-compatible object storage credentials are available in an OpenCode Lab.
+For coding-agent workflows, prokube disables broad Kubernetes and object-storage access by default where possible, and recommends granting only the narrow permissions required for the task. Do not assume `kubectl` access or S3-compatible object storage credentials are available in an OpenCode Lab.
 
 The OpenCode image is not intended for local container image builds and does not include the Docker/Buildx workflow used by some other Labs.
 
@@ -131,7 +131,7 @@ The terminal runs inside the same Lab pod as OpenCode. It is useful for explicit
 
 ## Add MCP Servers
 
-OpenCode supports [Model Context Protocol](https://modelcontextprotocol.io/) servers. The prokube.ai UI provides a graphical MCP manager for adding remote servers, connecting and disconnecting them, starting OAuth flows where supported, and seeing server status.
+OpenCode supports [Model Context Protocol](https://modelcontextprotocol.io/) servers. The prokube UI provides a graphical MCP manager for adding remote servers, connecting and disconnecting them, starting OAuth flows where supported, and seeing server status.
 
 ![Add MCP servers](../_static/screenshots/labs/opencode/add-mcp-servers.png)
 
@@ -139,7 +139,7 @@ Remote MCP entries can include a URL, optional Authorization header, custom HTTP
 
 ![OpenCode with MCP](../_static/screenshots/labs/opencode/opencode-in-action-mcp.png)
 
-For hosting MCP servers on prokube.ai, platform-managed MCP endpoints, and public routing, see [MCP Servers](../agentops/mcp_servers.md). For memory-backed MCP endpoints, see [Memory Stores](../agentops/memory_stores.md).
+For hosting MCP servers on prokube, platform-managed MCP endpoints, and public routing, see [MCP Servers](../agentops/mcp_servers.md). For memory-backed MCP endpoints, see [Memory Stores](../agentops/memory_stores.md).
 
 ## Relationship to Agent Sandboxes
 

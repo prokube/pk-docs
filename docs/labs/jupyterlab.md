@@ -1,11 +1,11 @@
 # JupyterLab
 
-JupyterLab Labs provide a browser-based Python workspace inside prokube.ai. They are intended for notebooks, data exploration, model development, and quick experiments that should run close to the same storage, compute, and platform services used by production workloads.
+JupyterLab Labs provide a browser-based Python workspace inside prokube. They are intended for notebooks, data exploration, model development, and quick experiments that should run close to the same storage, compute, and platform services used by production workloads.
 
-prokube.ai maintains its own JupyterLab images with platform-oriented defaults: common CLI tools, Python packages, S3-compatible object storage integration, image building support, and the public [`prokube/examples`](https://github.com/prokube/examples) repository are preconfigured where applicable.
+prokube maintains its own JupyterLab images with platform-oriented defaults: common CLI tools, Python packages, S3-compatible object storage integration, image building support, and the public [`prokube/examples`](https://github.com/prokube/examples) repository are preconfigured where applicable.
 
 ::: info JupyterLab documentation
-For JupyterLab features that are not specific to prokube.ai, use the upstream [JupyterLab documentation](https://jupyterlab.readthedocs.io/). Administrators who customize notebook images may also want the [Kubeflow Notebooks documentation](https://www.kubeflow.org/docs/components/notebooks/).
+For JupyterLab features that are not specific to prokube, use the upstream [JupyterLab documentation](https://jupyterlab.readthedocs.io/). Administrators who customize notebook images may also want the [Kubeflow Notebooks documentation](https://www.kubeflow.org/docs/components/notebooks/).
 :::
 
 ## Getting Started
@@ -30,7 +30,7 @@ Typical image families include:
 
 Use [Custom Notebooks](custom_notebooks.md) if you need a controlled package stack, extra system libraries, or a custom web application instead of one of the standard images.
 
-## What the prokube.ai Images Add
+## What the prokube Images Add
 
 The default JupyterLab images include platform-oriented tooling requested in real user environments.
 
@@ -66,7 +66,7 @@ JupyterLab uses the same persistence and package-installation model as other Lab
 
 ## Object Storage in JupyterLab
 
-prokube.ai JupyterLab images can include an S3 browser extension for working with S3-compatible object storage directly from the JupyterLab sidebar.
+prokube JupyterLab images can include an S3 browser extension for working with S3-compatible object storage directly from the JupyterLab sidebar.
 
 ![JupyterLab S3 browser](../_static/screenshots/labs/jupyterlab/jup-lab-s3-explorer-wizzard.png)
 

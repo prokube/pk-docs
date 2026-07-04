@@ -5,9 +5,9 @@ pageClass: pk-docs-home-page
 
 # Welcome to the docs
 
-Find the right prokube.ai documentation for interactive development, agent workflows, ML workloads, and platform operations.
+Find the right prokube documentation for interactive development, agent workflows, ML workloads, and platform operations.
 
-prokube.ai is a Kubernetes-native AI platform for teams that need to run AI workloads on infrastructure they control. It builds on established open-source tools and adds an integration and operations layer around them: tested upgrade paths, workspace and user management, observability, storage integration, audit trails, and operational guardrails.
+prokube is a Kubernetes-native AI platform for teams that need to run AI workloads on infrastructure they control. It builds on established open-source tools and adds an integration and operations layer around them: tested upgrade paths, workspace and user management, observability, storage integration, audit trails, and operational guardrails.
 
 <div class="pk-docs-home-actions">
   <a href="./labs/" class="pk-docs-home-primary">Start with Labs</a>

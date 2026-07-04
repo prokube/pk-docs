@@ -2,7 +2,7 @@
 
 MCP Servers expose tools, skills, and internal APIs to AI agents through the Model Context Protocol.
 
-In prokube.ai, MCP servers are part of the AgentOps track and are managed as platform resources rather than ad-hoc local processes.
+In prokube, MCP servers are part of the AgentOps track and are managed as platform resources rather than ad-hoc local processes.
 
 ## Goals
 

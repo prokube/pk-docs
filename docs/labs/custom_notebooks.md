@@ -2,7 +2,7 @@
 
 Custom Notebooks let you run specialized Lab environments when the standard JupyterLab, VS Code, RStudio, or OpenCode images are not enough.
 
-Use a custom notebook image when you need a controlled package stack, additional system tools, GPU-specific libraries, or a web application that should run inside the same workspace boundary as the rest of your prokube.ai work.
+Use a custom notebook image when you need a controlled package stack, additional system tools, GPU-specific libraries, or a web application that should run inside the same workspace boundary as the rest of your prokube work.
 
 ## Common Uses
 
@@ -34,7 +34,7 @@ The [`prokube/examples` Streamlit example](https://github.com/prokube/examples/t
 
 If your custom image is stored in a private registry, the workspace needs an image pull secret before Kubernetes can start the Lab pod. This may already be handled globally by an administrator, for example through a shared `regcred-*` secret. If not, add registry credentials for the workspace.
 
-In the prokube.ai UI, click your user icon in the top-right corner and open the registry credentials action. Use it to configure the registry server, username, and token or password for the workspace.
+In the prokube UI, click your user icon in the top-right corner and open the registry credentials action. Use it to configure the registry server, username, and token or password for the workspace.
 
 ![Registry credentials](../_static/screenshots/labs/custom-image/registry-credentials-ui.png)
 
@@ -44,7 +44,7 @@ For the legacy Kubernetes-level explanation of image pull secrets, see the exist
 
 ## Custom Solutions
 
-prokube.ai can support custom Lab solutions for teams that need specialized images, custom web applications, GPU stacks, or additional platform integration.
+prokube can support custom Lab solutions for teams that need specialized images, custom web applications, GPU stacks, or additional platform integration.
 
 ## Related Pages
 

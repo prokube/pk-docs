@@ -5,10 +5,10 @@ VS Code can be used with Labs in two ways.
 - Start a browser-based VS Code Lab. The VS Code server runs inside the workspace and is opened through the browser.
 - Attach your local VS Code editor to a running Lab pod through Dev Containers. This can be a VS Code Lab or a JupyterLab Lab.
 
-Both workflows keep code execution inside the prokube.ai workspace, close to workspace storage, cluster services, GPUs, and platform credentials. The difference is mainly where the editor UI runs: in the browser, or in your local VS Code installation.
+Both workflows keep code execution inside the prokube workspace, close to workspace storage, cluster services, GPUs, and platform credentials. The difference is mainly where the editor UI runs: in the browser, or in your local VS Code installation.
 
 ::: info VS Code documentation
-For VS Code features that are not specific to prokube.ai, use the upstream [VS Code documentation](https://code.visualstudio.com/docs). For local attachment workflows, see the [Dev Containers documentation](https://code.visualstudio.com/docs/devcontainers/attach-container#_attach-to-a-container-in-a-kubernetes-cluster).
+For VS Code features that are not specific to prokube, use the upstream [VS Code documentation](https://code.visualstudio.com/docs). For local attachment workflows, see the [Dev Containers documentation](https://code.visualstudio.com/docs/devcontainers/attach-container#_attach-to-a-container-in-a-kubernetes-cluster).
 :::
 
 ## When to Use VS Code Labs
@@ -79,7 +79,7 @@ Prerequisites:
 
 - a running Lab pod in your workspace;
 - local `kubectl` access to the cluster;
-- a kubeconfig available at the default VS Code location, usually `~/.kube/config` on macOS/Linux or `%USERPROFILE%\.kube\config` on Windows. If you do not have one yet, open the prokube.ai UI, click your user icon in the top-right corner, and use the `Download kubeconfig` action;
+- a kubeconfig available at the default VS Code location, usually `~/.kube/config` on macOS/Linux or `%USERPROFILE%\.kube\config` on Windows. If you do not have one yet, open the prokube UI, click your user icon in the top-right corner, and use the `Download kubeconfig` action;
 - the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers);
 - optionally, the [Kubernetes extension](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) for a visual pod browser.
 

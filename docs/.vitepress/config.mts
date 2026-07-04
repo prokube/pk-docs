@@ -3,8 +3,8 @@ import { defineConfig } from 'vitepress'
 const base = process.env.VITEPRESS_BASE ?? '/docs/'
 
 export default defineConfig({
-  title: 'prokube.ai Docs',
-  description: 'Documentation for prokube.ai',
+  title: 'prokube Docs',
+  description: 'Documentation for prokube',
   base,
   cleanUrls: false,
   lastUpdated: true,

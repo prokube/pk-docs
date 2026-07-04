@@ -1,8 +1,8 @@
 # Agent Sandboxes
 
-Agent Sandboxes are isolated Linux environments for AI agents and automation workflows. They give agents a place to run code, inspect files, install packages, keep state across calls, and pause when idle while the workload stays inside the prokube.ai platform environment.
+Agent Sandboxes are isolated Linux environments for AI agents and automation workflows. They give agents a place to run code, inspect files, install packages, keep state across calls, and pause when idle while the workload stays inside the prokube platform environment.
 
-Sandboxes are part of the AgentOps track, but they use the same shared platform foundation as the rest of prokube.ai: workspaces, RBAC, secrets, observability, storage, and Agent Gateway for external API access.
+Sandboxes are part of the AgentOps track, but they use the same shared platform foundation as the rest of prokube: workspaces, RBAC, secrets, observability, storage, and Agent Gateway for external API access.
 
 ## When to Use Sandboxes
 
@@ -333,7 +333,7 @@ Sandbox workflows can also be exposed to MCP-capable clients through a sandbox M
 
 The MCP client still needs the same platform information:
 
-- prokube.ai API URL
+- prokube API URL
 - workspace name
 - API key with sandbox access
 
