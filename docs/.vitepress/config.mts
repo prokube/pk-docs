@@ -75,7 +75,8 @@ export default defineConfig({
         items: [
           { text: 'Overview', link: '/platform/' },
           { text: 'Observability', link: '/platform/observability.html' },
-          { text: 'API Access', link: '/platform/api_access.html' }
+          { text: 'API Access', link: '/platform/api_access.html' },
+          { text: 'API Keys', link: '/platform/api_keys.html' }
         ]
       },
       {
