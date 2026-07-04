@@ -27,28 +27,11 @@ Use Pipelines when interactive work should become repeatable, inspectable, or sc
 
 Use [Labs](../labs/index.md) for exploration and pipeline authoring. You can write, compile, and start Pipelines directly from a Lab. Move to Pipelines when the workflow should become a shared, cluster-executed process rather than an interactive session.
 
-## UI Entry Points
+## Get Started
 
-The prokube.ai UI exposes Pipelines through workspace-scoped pages. Select the workspace first; the selected workspace determines which namespace, runs, experiments, and pipeline definitions you can see.
+The simplest way to get started is to submit a small pipeline from a Lab running inside the same workspace. Paste this code into a notebook cell in [JupyterLab](../labs/jupyterlab.md) or into a Python file in a [VS Code Lab](../labs/vscode.md), then run it.
 
-Common pages:
-
-| Page | Purpose |
-| --- | --- |
-| **Pipelines** | View uploaded pipeline definitions, open pipeline details, and upload pipeline packages. |
-| **Pipeline Runs** | Track run history, inspect status, archive or restore runs, and compare selected runs. |
-| **Experiments** | Organize runs for comparison and create experiments in the selected workspace. |
-| **Recurring Runs** | Manage scheduled or recurring executions when enabled for the installation. |
-
-Pipeline uploads accept compiled pipeline packages such as `.yaml`, `.yml`, `.zip`, or `.tar.gz` files. Pipeline and version names are display names; choose names that make run history easy to understand.
-
-![View pipeline details, versions, and DAG](../_static/screenshots/labs/kfp/pipelin-details-incl-versions-and-dag.png)
-
-## Write and Start a Pipeline from a Lab
-
-The simplest way to get started is to write and submit a small pipeline from a Lab running inside the same workspace. In that case, the Kubeflow Pipelines SDK can usually use the in-cluster configuration.
-
-This minimal pipeline defines two Python components, compiles the pipeline to YAML, and starts a run. You can also skip the explicit compile step and submit the pipeline function directly with the KFP SDK [`Client.create_run_from_pipeline_func`](https://kubeflow-pipelines.readthedocs.io/en/stable/source/client.html#kfp.client.Client.create_run_from_pipeline_func) method.
+This minimal pipeline defines two Python components, compiles the pipeline to YAML, uploads it as a pipeline definition, and starts a run. For direct one-off runs, you can also skip the explicit compile step and submit the pipeline function directly with the KFP SDK [`Client.create_run_from_pipeline_func`](https://kubeflow-pipelines.readthedocs.io/en/stable/source/client.html#kfp.client.Client.create_run_from_pipeline_func) method.
 
 ```python
 import datetime
@@ -76,15 +59,38 @@ def hello_world_pipeline(name: str = "prokube.ai"):
 compiler.Compiler().compile(hello_world_pipeline, "pipeline.yaml")
 
 client = Client()
+timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+namespace = open("/var/run/secrets/kubernetes.io/serviceaccount/namespace").read().strip()
+
+client.upload_pipeline(
+    "pipeline.yaml",
+    pipeline_name=f"hello-world-pipeline-{timestamp}",
+    namespace=namespace,
+)
+
 client.create_run_from_pipeline_package(
     "pipeline.yaml",
     arguments={"name": "prokube.ai"},
     experiment_name="hello-world",
-    run_name=f"Hello world {datetime.datetime.now():%Y-%m-%d %H:%M:%S}",
+    run_name=f"hello-world-run-{timestamp}",
 )
 ```
 
 Use this pattern for first tests and for checking that your Lab can reach the Pipelines API in the selected workspace.
+
+Once submitted, the prokube.ai UI shows entries for the uploaded pipeline definition, the experiment, and the run. Select the workspace first; the selected workspace determines which namespace, runs, experiments, and pipeline definitions you can see.
+
+The **Pipelines** page shows the uploaded `hello-world-pipeline-*` definition. Open it to inspect versions and start runs from the UI.
+
+![Hello World pipeline in the pipelines list](../_static/screenshots/labs/kfp/hello-world-entry-in-pipelines-list.png)
+
+The **Pipeline Runs** page shows the `hello-world-run-*` execution. Open the run to inspect the DAG and component logs; the example below shows the second step selected.
+
+![Running Hello World pipeline DAG](../_static/screenshots/labs/kfp/running-quckstart-pipeline-with-dag.png)
+
+The **Experiments** page shows the `hello-world` experiment used by the run. Use experiments to group related runs for comparison and navigation.
+
+![Hello World experiment entry](../_static/screenshots/labs/kfp/hello-world-entry-in-experiments.png)
 
 ## Run the Examples
 
@@ -113,7 +119,7 @@ Relevant examples:
 
 Use recurring runs when the same pipeline should run automatically, for example for daily preprocessing, scheduled model evaluation, or regular batch scoring. A recurring run references a pipeline and version, then adds a schedule and concurrency settings.
 
-![Create a recurring pipeline run](../_static/screenshots/labs/kfp/create-recurring-run-ui.png)
+![Schedule the Hello World pipeline](../_static/screenshots/labs/kfp/hello-world-schedule.png)
 
 ## Storage and Artifacts
 

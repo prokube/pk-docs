@@ -66,6 +66,7 @@ export default defineConfig({
           { text: 'Overview', link: '/mlops/' },
           { text: 'Pipelines', link: '/mlops/pipelines.html' },
           { text: 'Model Serving', link: '/mlops/model_serving.html' },
+          { text: 'Serverless', link: '/mlops/knative.html' },
           { text: 'MLflow', link: '/mlops/mlflow.html' }
         ]
       },
@@ -75,7 +76,8 @@ export default defineConfig({
         items: [
           { text: 'Overview', link: '/platform/' },
           { text: 'Observability', link: '/platform/observability.html' },
-          { text: 'API Access', link: '/platform/api_access.html' }
+          { text: 'API Access', link: '/platform/api_access.html' },
+          { text: 'API Keys', link: '/platform/api_keys.html' }
         ]
       },
       {
