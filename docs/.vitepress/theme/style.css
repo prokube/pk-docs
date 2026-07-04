@@ -104,6 +104,13 @@ body {
   border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
+@media (max-width: 959px) {
+  .VPNavBarTitle.has-sidebar {
+    background: transparent;
+    border-bottom: none;
+  }
+}
+
 .VPNavBarTitle.has-sidebar .title {
   border-bottom-color: transparent;
 }
