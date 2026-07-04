@@ -31,7 +31,7 @@ prokube.ai is a Kubernetes-native AI platform for teams that need to run AI work
   <a class="pk-docs-card" href="./mlops/">
     <span class="pk-docs-card-kicker">Model lifecycle</span>
     <strong>MLOps</strong>
-    <span>Develop pipelines, track experiments, and serve models.</span>
+    <span>Run pipelines, track experiments with MLflow, and serve models with KServe.</span>
   </a>
   <a class="pk-docs-card" href="./platform/">
     <span class="pk-docs-card-kicker">Shared foundation</span>
@@ -61,6 +61,16 @@ prokube.ai is a Kubernetes-native AI platform for teams that need to run AI work
   <a class="pk-docs-task-card" href="./platform/api_access.html">
     <strong>Configure API access</strong>
     <span>Use scoped API keys and Agent Gateway routes for programmatic access to platform APIs.</span>
+    <em>Learn more -></em>
+  </a>
+  <a class="pk-docs-task-card" href="./mlops/pipelines.html">
+    <strong>Run a pipeline</strong>
+    <span>Write, compile, and submit Kubeflow Pipelines from a Lab to automate reproducible ML workflows.</span>
+    <em>Learn more -></em>
+  </a>
+  <a class="pk-docs-task-card" href="./mlops/model_serving.html">
+    <strong>Deploy a model</strong>
+    <span>Serve trained models as inference endpoints with KServe, test them in the UI, and access them via API.</span>
     <em>Learn more -></em>
   </a>
 </div>
