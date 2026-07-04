@@ -1,10 +1,10 @@
 # MLOps
 
-MLOps is the prokube.ai product track for developing, training, tracking, and serving machine learning models.
+MLOps is the prokube product track for developing, training, tracking, and serving machine learning models.
 
 It covers the classic data science and machine learning lifecycle on top of the shared platform foundation.
 
-We are currently moving the prokube.ai documentation to this site. In the meantime, please use [docs.prokube.ai](https://docs.prokube.ai/latest/) for MLOps-related documentation. These pages will be migrated here soon.
+We are currently moving the prokube documentation to this site. In the meantime, please use [docs.prokube.ai](https://docs.prokube.ai/latest/) for MLOps-related documentation. These pages will be migrated here soon.
 
 ## Core Capabilities
 

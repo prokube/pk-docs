@@ -1,16 +1,16 @@
 # Pipelines
 
-prokube.ai exposes Kubeflow Pipelines for reproducible workflow execution in your workspace.
+prokube exposes Kubeflow Pipelines for reproducible workflow execution in your workspace.
 
 ::: info Kubeflow Pipelines documentation
-For Kubeflow Pipelines features that are not specific to prokube.ai, use the upstream documentation:
+For Kubeflow Pipelines features that are not specific to prokube, use the upstream documentation:
 
 - [Kubeflow Pipelines documentation](https://www.kubeflow.org/docs/components/pipelines/)
 - [Kubeflow Pipelines SDK documentation](https://kubeflow-pipelines.readthedocs.io/)
 - [Kubeflow Pipelines Kubernetes documentation](https://kfp-kubernetes.readthedocs.io/)
 :::
 
-Use this page for the prokube.ai-specific parts: where Pipelines appear in the UI, how workspace scope affects runs, how to submit from Labs, and where to find working examples.
+Use this page for the prokube-specific parts: where Pipelines appear in the UI, how workspace scope affects runs, how to submit from Labs, and where to find working examples.
 
 ## When to Use Pipelines
 
@@ -51,7 +51,7 @@ def print_message(message: str) -> None:
 
 
 @dsl.pipeline(name="hello-world-pipeline")
-def hello_world_pipeline(name: str = "prokube.ai"):
+def hello_world_pipeline(name: str = "prokube"):
     message_task = make_message(name=name)
     print_message(message=message_task.output)
 
@@ -70,7 +70,7 @@ client.upload_pipeline(
 
 client.create_run_from_pipeline_package(
     "pipeline.yaml",
-    arguments={"name": "prokube.ai"},
+    arguments={"name": "prokube"},
     experiment_name="hello-world",
     run_name=f"hello-world-run-{timestamp}",
 )
@@ -78,7 +78,7 @@ client.create_run_from_pipeline_package(
 
 Use this pattern for first tests and for checking that your Lab can reach the Pipelines API in the selected workspace.
 
-Once submitted, the prokube.ai UI shows entries for the uploaded pipeline definition, the experiment, and the run. Select the workspace first; the selected workspace determines which namespace, runs, experiments, and pipeline definitions you can see.
+Once submitted, the prokube UI shows entries for the uploaded pipeline definition, the experiment, and the run. Select the workspace first; the selected workspace determines which namespace, runs, experiments, and pipeline definitions you can see.
 
 The **Pipelines** page shows the uploaded `hello-world-pipeline-*` definition. Open it to inspect versions and start runs from the UI.
 
@@ -94,7 +94,7 @@ The **Experiments** page shows the `hello-world` experiment used by the run. Use
 
 ## Run the Examples
 
-Use the public [`prokube/examples`](https://github.com/prokube/examples) repository for more realistic examples. prokube.ai managed Labs clone this repository into the Lab home directory by default.
+Use the public [`prokube/examples`](https://github.com/prokube/examples) repository for more realistic examples. prokube managed Labs clone this repository into the Lab home directory by default.
 
 Start with the lightweight-components notebook if you want to inspect the pipeline interactively. Open `~/examples/pipelines/lightweight-components/mobile-price-classifications.ipynb` in JupyterLab and execute the cells step by step.
 
@@ -123,14 +123,14 @@ Use recurring runs when the same pipeline should run automatically, for example 
 
 ## Storage and Artifacts
 
-Pipeline components commonly exchange artifacts through object storage. prokube.ai workspaces are configured with S3-compatible object storage, and Labs can use the same storage for datasets, intermediate files, and model artifacts.
+Pipeline components commonly exchange artifacts through object storage. prokube workspaces are configured with S3-compatible object storage, and Labs can use the same storage for datasets, intermediate files, and model artifacts.
 
 Practical rules:
 
 - use object storage for datasets, model files, and pipeline artifacts;
 - avoid relying on a Lab's persistent volume for pipeline runtime data;
 - pass explicit S3 object paths into pipelines when an example expects them;
-- use the **Object Storage** page in the prokube.ai UI to see which buckets are available to your workspace.
+- use the **Object Storage** page in the prokube UI to see which buckets are available to your workspace.
 
 For object-storage access from Labs, see [Object Storage from Labs](../labs/index.md#object-storage-from-labs).
 
@@ -140,13 +140,13 @@ For small experiments, lightweight Python components can be convenient. For team
 
 The [`lightweight-python-package`](https://github.com/prokube/examples/tree/main/pipelines/lightweight-python-package) example shows this pattern with a `Dockerfile`, Python package, pipeline definition, and cluster submission script.
 
-You can build and push images from supported Labs using the remote BuildKit setup. You also need a container registry that accepts pushes from your Lab, and the workspace must be able to pull the resulting images. Ask your administrator which registry to use. For private registries, add pull credentials from the prokube.ai user menu under **Registry Credentials**; they are attached to the workspace namespace so pipeline pods can pull private images. See [Building Container Images](../labs/index.md#building-container-images).
+You can build and push images from supported Labs using the remote BuildKit setup. You also need a container registry that accepts pushes from your Lab, and the workspace must be able to pull the resulting images. Ask your administrator which registry to use. For private registries, add pull credentials from the prokube user menu under **Registry Credentials**; they are attached to the workspace namespace so pipeline pods can pull private images. See [Building Container Images](../labs/index.md#building-container-images).
 
 ## Common Patterns
 
 ### Use Secrets in Components
 
-Create workspace secrets from the prokube.ai user menu under **K8s Secrets**. Secrets are namespace-scoped key-value pairs and can be referenced by workloads without putting the secret values into pipeline code or compiled pipeline YAML.
+Create workspace secrets from the prokube user menu under **K8s Secrets**. Secrets are namespace-scoped key-value pairs and can be referenced by workloads without putting the secret values into pipeline code or compiled pipeline YAML.
 
 Use [`kfp-kubernetes`](https://kfp-kubernetes.readthedocs.io/) to expose selected secret keys to a component as environment variables:
 

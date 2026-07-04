@@ -1,6 +1,6 @@
 # AgentOps
 
-AgentOps is the prokube.ai product track for building and operating AI agents on controlled infrastructure.
+AgentOps is the prokube product track for building and operating AI agents on controlled infrastructure.
 
 It combines governed model access, tool access, memory, isolated code execution, and observability into one platform track. The goal is to let teams run agents without giving them uncontrolled credentials, unmanaged SaaS dependencies, or direct access to sensitive infrastructure.
 

@@ -2,9 +2,9 @@
 
 Labs are browser-based development environments with access to the compute resources, storage, credentials, and platform tools available in your workspace.
 
-You can use Labs to explore data, write code, start platform workflows, and prepare work for production runtimes without setting up a local development environment first. From within a Lab you can access other prokube.ai tools programmatically through `kubectl`, SDKs, CLIs, and APIs, for example to launch pipelines, run hyperparameter tuning or distributed computing experiments, develop MCP servers, and test agent workflows.
+You can use Labs to explore data, write code, start platform workflows, and prepare work for production runtimes without setting up a local development environment first. From within a Lab you can access other prokube tools programmatically through `kubectl`, SDKs, CLIs, and APIs, for example to launch pipelines, run hyperparameter tuning or distributed computing experiments, develop MCP servers, and test agent workflows.
 
-Alongside classic preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md), and [RStudio](rstudio.md) images, prokube.ai also supports [OpenCode](opencode.md) as an agentic engineering environment.
+Alongside classic preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md), and [RStudio](rstudio.md) images, prokube also supports [OpenCode](opencode.md) as an agentic engineering environment.
 
 ![Labs overview](../_static/screenshots/labs/labs-overview.png)
 
@@ -28,9 +28,9 @@ Alongside classic preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md
 
 ## How Labs Work
 
-Labs are built on [Kubeflow Notebooks](https://www.kubeflow.org/docs/components/notebooks/) and run inside your prokube.ai workspace, not on your laptop. Each Lab gets its own [Kubernetes Pod](https://kubernetes.io/docs/concepts/workloads/pods/), resource limits, and mounted storage.
+Labs are built on [Kubeflow Notebooks](https://www.kubeflow.org/docs/components/notebooks/) and run inside your prokube workspace, not on your laptop. Each Lab gets its own [Kubernetes Pod](https://kubernetes.io/docs/concepts/workloads/pods/), resource limits, and mounted storage.
 
-prokube.ai adds curated images, platform credentials, storage defaults, and workspace integrations on top of Kubeflow Notebooks.
+prokube adds curated images, platform credentials, storage defaults, and workspace integrations on top of Kubeflow Notebooks.
 
 ## Workspaces
 
@@ -64,7 +64,7 @@ Key concepts apply across all Lab types:
 - **Workspace storage**: files under the Lab home directory are backed by a [persistent volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and survive restarts. In the default images this is the `jovyan` user's home directory, usually `/home/jovyan`. A persistent volume can be mounted by other Labs or other pods, but the default storage class is commonly `ReadWriteOnce`: in multi-node clusters, the same volume can usually only be mounted read-write by pods on one node at a time.
 - **Data volumes**: additional volumes can be mounted when you need shared datasets or larger working directories. Use object storage or a storage class with the required access mode when multiple pods need concurrent access across nodes.
 - **Compute resources**: CPU, memory, and GPU requests are configured when the Lab is created.
-- **Platform access**: Labs can use workspace credentials, `kubectl`, SDKs, CLIs, and APIs to interact with other prokube.ai tools.
+- **Platform access**: Labs can use workspace credentials, `kubectl`, SDKs, CLIs, and APIs to interact with other prokube tools.
 - **Images**: the selected image defines the IDE, language stack, system tools, and preinstalled packages.
 - **Ephemeral container state**: changes outside mounted volumes should be treated as temporary. If you need extra tools, install them into the persistent home directory with user-space package managers where available, or move them into a custom image.
 
@@ -149,7 +149,7 @@ For Python examples with `s3fs`, pandas, DuckDB, and S3-compatible configuration
 
 ## Building Container Images
 
-The prokube-maintained `pk-*` notebook images generated from the upstream Kubeflow notebook server images include Docker CLI and Buildx support for building container images through a remote [BuildKit](https://github.com/moby/buildkit) service in the cluster. This covers the standard prokube.ai JupyterLab, VS Code/code-server, and RStudio image families. Upstream or fully custom images only have this capability if they include the same tooling and startup configuration.
+The prokube-maintained `pk-*` notebook images generated from the upstream Kubeflow notebook server images include Docker CLI and Buildx support for building container images through a remote [BuildKit](https://github.com/moby/buildkit) service in the cluster. This covers the standard prokube JupyterLab, VS Code/code-server, and RStudio image families. Upstream or fully custom images only have this capability if they include the same tooling and startup configuration.
 
 The Lab pod does not run a local Docker daemon. The image contains the Docker client and Buildx plugin; the actual build runs in the remote BuildKit service configured by `BUILDKIT_HOST` when available.
 

@@ -1,16 +1,16 @@
 # Model Serving
 
-prokube.ai exposes KServe for deploying and scaling machine learning models as inference endpoints in your workspace.
+prokube exposes KServe for deploying and scaling machine learning models as inference endpoints in your workspace.
 
 ::: info KServe documentation
-For KServe features that are not specific to prokube.ai, use the upstream documentation:
+For KServe features that are not specific to prokube, use the upstream documentation:
 
 - [KServe documentation](https://kserve.github.io/website/)
 - [KServe inference protocol (V2)](https://kserve.github.io/website/latest/modelserving/data_plane/v2_protocol/)
 - [KServe autoscaling](https://kserve.github.io/website/docs/model-serving/predictive-inference/autoscaling/)
 :::
 
-Use this page for the prokube.ai-specific parts: where model endpoints appear in the UI, how to deploy and test models, how workspace scope affects serving, and where to find working examples.
+Use this page for the prokube-specific parts: where model endpoints appear in the UI, how to deploy and test models, how workspace scope affects serving, and where to find working examples.
 
 ## When to Use Model Serving
 
@@ -184,7 +184,7 @@ Request history (last 10) is preserved during the session; click **Restore** to 
 ## Autoscaling
 
 ::: info Upstream documentation
-For autoscaling features that are not specific to prokube.ai, use the upstream documentation:
+For autoscaling features that are not specific to prokube, use the upstream documentation:
 
 - [KServe autoscaling](https://kserve.github.io/website/docs/model-serving/predictive-inference/autoscaling/)
 - [Knative Pod Autoscaler (KPA)](https://kserve.github.io/website/docs/model-serving/predictive-inference/autoscaling/kpa-autoscaler/)
@@ -204,7 +204,7 @@ Configure scaling through the **Scaling** section in the deployment form, or set
 
 ### S3-compatible Storage
 
-InferenceServices access models in object storage through a `ServiceAccount` annotated with S3 endpoint details. The prokube.ai workspace is preconfigured with S3-compatible storage; use the **Object Storage** page in the UI to see available buckets.
+InferenceServices access models in object storage through a `ServiceAccount` annotated with S3 endpoint details. The prokube workspace is preconfigured with S3-compatible storage; use the **Object Storage** page in the UI to see available buckets.
 
 For models stored in workspace buckets, the deployment wizard's **Browse S3** button selects the path directly. For `kubectl`-based deployment, a secret named `s3creds` with the correct KServe annotations already exists in the workspace namespace and grants access to the buckets the workspace can see. Reference it from the InferenceService via `spec.predictor.serviceAccountName`.
 
