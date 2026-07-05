@@ -82,15 +82,15 @@ Once submitted, the prokube UI shows entries for the uploaded pipeline definitio
 
 The **Pipelines** page shows the uploaded `hello-world-pipeline-*` definition. Open it to inspect versions and start runs from the UI.
 
-![Hello World pipeline in the pipelines list](../_static/screenshots/labs/kfp/hello-world-entry-in-pipelines-list.png)
+![Hello World pipeline in the pipelines list](../_static/screenshots/mlops/pipelines/hello-world-entry-in-pipelines-list.png)
 
 The **Pipeline Runs** page shows the `hello-world-run-*` execution. Open the run to inspect the DAG and component logs; the example below shows the second step selected.
 
-![Running Hello World pipeline DAG](../_static/screenshots/labs/kfp/running-quckstart-pipeline-with-dag.png)
+![Running Hello World pipeline DAG](../_static/screenshots/mlops/pipelines/running-quckstart-pipeline-with-dag.png)
 
 The **Experiments** page shows the `hello-world` experiment used by the run. Use experiments to group related runs for comparison and navigation.
 
-![Hello World experiment entry](../_static/screenshots/labs/kfp/hello-world-entry-in-experiments.png)
+![Hello World experiment entry](../_static/screenshots/mlops/pipelines/hello-world-entry-in-experiments.png)
 
 ## Run the Examples
 
@@ -119,7 +119,7 @@ Relevant examples:
 
 Use recurring runs when the same pipeline should run automatically, for example for daily preprocessing, scheduled model evaluation, or regular batch scoring. A recurring run references a pipeline and version, then adds a schedule and concurrency settings.
 
-![Schedule the Hello World pipeline](../_static/screenshots/labs/kfp/hello-world-schedule.png)
+![Schedule the Hello World pipeline](../_static/screenshots/mlops/pipelines/hello-world-schedule.png)
 
 ## Storage and Artifacts
 
@@ -140,13 +140,13 @@ For small experiments, lightweight Python components can be convenient. For team
 
 The [`lightweight-python-package`](https://github.com/prokube/examples/tree/main/pipelines/lightweight-python-package) example shows this pattern with a `Dockerfile`, Python package, pipeline definition, and cluster submission script.
 
-You can build and push images from supported Labs using the remote BuildKit setup. You also need a container registry that accepts pushes from your Lab, and the workspace must be able to pull the resulting images. Ask your administrator which registry to use. For private registries, add pull credentials from the prokube user menu under **Registry Credentials**; they are attached to the workspace namespace so pipeline pods can pull private images. See [Building Container Images](../labs/index.md#building-container-images).
+You can build and push images from supported Labs using the remote BuildKit setup. You also need a container registry that accepts pushes from your Lab, and the workspace must be able to pull the resulting images. Ask your administrator which registry to use. For private registries, add pull credentials from the prokube user menu under **Registry Credentials**; they are attached to the workspace namespace so pipeline pods can pull private images. See [Building Container Images](../labs/index.md#building-container-images) and [Registry Credentials](../platform/kubernetes.md#registry-credentials).
 
 ## Common Patterns
 
 ### Use Secrets in Components
 
-Create workspace secrets from the prokube user menu under **K8s Secrets**. Secrets are namespace-scoped key-value pairs and can be referenced by workloads without putting the secret values into pipeline code or compiled pipeline YAML.
+Create workspace secrets from the prokube user menu under **K8s Secrets**. Secrets are namespace-scoped key-value pairs and can be referenced by workloads without putting the secret values into pipeline code or compiled pipeline YAML. See [Kubernetes Secrets](../platform/kubernetes.md#kubernetes-secrets).
 
 Use [`kfp-kubernetes`](https://kfp-kubernetes.readthedocs.io/) to expose selected secret keys to a component as environment variables:
 
@@ -242,11 +242,15 @@ def run_metadata_pipeline():
     )
 ```
 
+## Pod Quota and Cleanup
+
+Large pipelines can approach the workspace pod quota quickly because completed pipeline step pods remain in the workspace namespace for a while after the run finishes. The prokube UI surfaces pod-quota pressure next to the workspace selector and can clean up completed pipeline pods. See [Kubernetes Resources](../platform/kubernetes.md#pod-quota-and-cleanup) for details.
+
 ## Troubleshooting
 
 Start with the Pipeline Runs page. Open the run details and inspect failed steps, UI warnings, pod events, and component logs. The UI surfaces common operational problems, for example missing secrets or workspace pod-count limits. Logs are available from the running pod where possible and from Loki after the pod has already terminated.
 
-![Inspect a pipeline run graph and component logs](../_static/screenshots/labs/kfp/pipeline-run-dag-including-logs-viewer.png)
+![Inspect a pipeline run graph and component logs](../_static/screenshots/mlops/pipelines/pipeline-run-dag-including-logs-viewer.png)
 
 Common causes:
 

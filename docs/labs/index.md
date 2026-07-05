@@ -28,7 +28,7 @@ Alongside classic preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md
 
 ## How Labs Work
 
-Labs are built on [Kubeflow Notebooks](https://www.kubeflow.org/docs/components/notebooks/) and run inside your prokube workspace, not on your laptop. Each Lab gets its own [Kubernetes Pod](https://kubernetes.io/docs/concepts/workloads/pods/), resource limits, and mounted storage.
+Labs are built on [Kubeflow Notebooks](https://www.kubeflow.org/docs/components/notebooks/) and run inside your [prokube workspace](../platform/workspaces.md). Each Lab gets its own [Kubernetes Pod](https://kubernetes.io/docs/concepts/workloads/pods/), resource limits, and mounted storage.
 
 prokube adds curated images, platform credentials, storage defaults, and workspace integrations on top of Kubeflow Notebooks.
 
