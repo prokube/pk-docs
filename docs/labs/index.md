@@ -4,7 +4,7 @@ Labs are browser-based development environments with access to the compute resou
 
 You can use Labs to explore data, write code, start platform workflows, and prepare work for production runtimes without setting up a local development environment first. From within a Lab you can access other prokube tools programmatically through `kubectl`, SDKs, CLIs, and APIs, for example to launch pipelines, run hyperparameter tuning or distributed computing experiments, develop MCP servers, and test agent workflows.
 
-Alongside classic preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md) (including GitHub Copilot), and [RStudio](rstudio.md) images, prokube also supports [OpenCode](opencode.md) as an agentic engineering environment.
+Alongside classic preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md), and [RStudio](rstudio.md) images, prokube also supports agentic engineering environments: GitHub Copilot in VS Code and [OpenCode](opencode.md) as a dedicated agentic coding tool.
 
 ![Labs overview](../_static/screenshots/labs/labs-overview.png)
 
