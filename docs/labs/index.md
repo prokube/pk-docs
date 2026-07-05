@@ -4,7 +4,7 @@ Labs are browser-based development environments with access to the compute resou
 
 You can use Labs to explore data, write code, start platform workflows, and prepare work for production runtimes without setting up a local development environment first. From within a Lab you can access other prokube tools programmatically through `kubectl`, SDKs, CLIs, and APIs, for example to launch pipelines, run hyperparameter tuning or distributed computing experiments, develop MCP servers, and test agent workflows.
 
-Alongside classic preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md), and [RStudio](rstudio.md) images, prokube also supports [OpenCode](opencode.md) as an agentic engineering environment.
+Alongside classic preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md) (including GitHub Copilot), and [RStudio](rstudio.md) images, prokube also supports [OpenCode](opencode.md) as an agentic engineering environment.
 
 ![Labs overview](../_static/screenshots/labs/labs-overview.png)
 
@@ -24,7 +24,7 @@ Alongside classic preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md
 | [VS Code](vscode.md) | Browser-based IDE workflows and local VS Code attachment to running notebook pods |
 | [RStudio](rstudio.md) | R notebooks, statistics workflows, and R package based analysis |
 | [OpenCode](opencode.md) | Agent-assisted coding sessions inside a lab workspace |
-| [Custom Notebooks](custom_notebooks.md) | Custom images and web servers for specialized development environments |
+| [Custom Notebooks](custom_notebooks.md) | Custom images and web servers for specialized applications |
 
 ## How Labs Work
 
@@ -41,7 +41,7 @@ The active workspace determines which namespace, storage, credentials, and acces
 ![Workspace selection](../_static/screenshots/labs/labs-workspace-selection.png)
 
 ::: warning Secrets are workspace-visible
-A workspace is a Kubernetes namespace. Edit and view contributors can read Kubernetes `Secret`s in that namespace, including secrets used by Labs, PodDefaults, pipelines, model-serving workloads, or manually created `kubectl create secret ...` resources.
+Each workspace has its own Kubernetes namespace. Edit and view contributors can read Kubernetes `Secret`s in that namespace, including secrets used by Labs, PodDefaults, pipelines, model-serving workloads, or manually created `kubectl create secret ...` resources.
 
 Do not put personal access tokens, admin credentials, cloud root keys, or other broad credentials into a workspace that other people can access. For team work, use a shared workspace with credentials intended for that team and workload.
 :::
