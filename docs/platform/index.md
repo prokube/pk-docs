@@ -8,6 +8,7 @@ It contains the services that should not be documented as belonging exclusively 
 
 - Workspaces and user management
 - Identity and role-based access control
+- Kubernetes resource access, quotas, and secrets
 - API access and gateway integration
 - Object storage, databases, and persistent volumes
 - Monitoring, logging, tracing, and dashboards

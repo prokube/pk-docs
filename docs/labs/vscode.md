@@ -79,7 +79,7 @@ Prerequisites:
 
 - a running Lab pod in your workspace;
 - local `kubectl` access to the cluster;
-- a kubeconfig available at the default VS Code location, usually `~/.kube/config` on macOS/Linux or `%USERPROFILE%\.kube\config` on Windows. If you do not have one yet, open the prokube UI, click your user icon in the top-right corner, and use the `Download kubeconfig` action;
+- a kubeconfig available at the default VS Code location, usually `~/.kube/config` on macOS/Linux or `%USERPROFILE%\.kube\config` on Windows. If you do not have one yet, open the prokube UI, click your user icon in the top-right corner, and use the `Download kubeconfig` action; see [Download Kubeconfig](../platform/kubernetes.md#download-kubeconfig);
 - the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers);
 - optionally, the [Kubernetes extension](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) for a visual pod browser.
 
