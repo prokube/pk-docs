@@ -269,4 +269,4 @@ Common causes:
 - [Labs](../labs/index.md)
 - [MLflow](mlflow.md)
 - [Pipelines](pipelines.md)
-- [API Access](../platform/api_access.md)
+- [API Keys](../platform/api_keys.md)

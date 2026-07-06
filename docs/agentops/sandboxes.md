@@ -140,7 +140,7 @@ https://<cluster-domain>/sandbox/<workspace>
 
 Do not use direct backend service URLs from external clients.
 
-API keys are managed through the platform API access flow. See [API Access](../platform/api_access.md) for how API-key based access fits into Agent Gateway.
+API keys are managed on the platform **API Keys** page. See [API Keys](../platform/api_keys.md) for key handling and scope guidance.
 
 Current SDK note: the Python and TypeScript SDKs send keys as `x-api-key`. Bearer-style keys are not the SDK default right now.
 
@@ -337,7 +337,7 @@ The MCP client still needs the same platform information:
 - workspace name
 - API key with sandbox access
 
-See [API Access](../platform/api_access.md) for key handling and Agent Gateway context.
+See [API Keys](../platform/api_keys.md) for key handling and scope guidance.
 
 ## Recommended Screenshots
 

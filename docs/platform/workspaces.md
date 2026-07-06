@@ -76,5 +76,4 @@ If you administer prokube, see the existing [IAM user management documentation](
 ## Related Pages
 
 - [Using Labs](../labs/index.md)
-- [API Access](api_access.md)
 - [API Keys](api_keys.md)

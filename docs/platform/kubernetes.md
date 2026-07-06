@@ -110,4 +110,4 @@ For platform log views and retained workload logs, see [Observability](observabi
 - [Observability](observability.md)
 - [Using Labs](../labs/index.md)
 - [Pipelines](../mlops/pipelines.md)
-- [API Access](api_access.md)
+- [API Keys](api_keys.md)

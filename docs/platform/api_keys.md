@@ -1,8 +1,10 @@
 # API Keys
 
-API keys provide scoped programmatic access to services exposed through Agent Gateway. Use them for SDKs, automation, CI jobs, and external clients that need to call prokube services without a browser session.
+API keys provide scoped programmatic access to prokube services. Use them for SDKs, automation, CI jobs, and external clients that need to call platform APIs without a browser session.
 
 API keys are managed per workspace. A key belongs to the workspace that was selected when it was created, and its scopes are evaluated within that workspace.
+
+prokube routes external API traffic through **Agent Gateway**, the public routing and policy layer for API clients. You do not need to configure Agent Gateway to create a key, but it explains why keys can be scoped to workspaces, models, MCP servers, memory stores, and service paths. For more context, see [Agent Gateway](../agentops/agent_gateway.html) and the upstream [agentgateway documentation](https://agentgateway.dev/docs/).
 
 ## Manage Keys in the UI
 
@@ -29,7 +31,7 @@ Choose the narrowest scope that supports your client.
 
 | Scope | Use When | Access |
 |---|---|---|
-| **Workspace Access** | The client needs broad access across services in one workspace. | All Agent Gateway-protected services in the selected workspace. |
+| **Workspace Access** | The client needs broad access across services in one workspace. | All API-key protected services in the selected workspace. |
 | **Specific Services** | The client only needs one or more known services. | Only the selected models, MCP servers, memory stores, or Knative services. |
 
 Specific-service scopes are built from the services currently available in the selected workspace. The UI can include:
@@ -37,7 +39,7 @@ Specific-service scopes are built from the services currently available in the s
 - **Models**: model-serving endpoints.
 - **MCP servers**: AgentOps tools exposed through MCP.
 - **Memory stores**: memory store MCP endpoints.
-- **Knative services**: workspace services exposed through Agent Gateway.
+- **Knative services**: workspace services exposed through the API gateway.
 
 <!-- Screenshot placeholder: Specific Services selector showing available models, MCP servers, memory stores, and Knative services. -->
 
@@ -47,7 +49,7 @@ After creation, the full key value is shown once. Copy it immediately and store 
 
 ## Use a Key
 
-For Agent Gateway service routes, send the key as `x-api-key`:
+For most prokube API routes, send the key as `x-api-key`:
 
 ```bash
 curl "https://<your-domain>/sandbox/<workspace>/sandboxes" \
@@ -87,7 +89,6 @@ From the API Keys page you can:
 
 ## Related Pages
 
-- [API Access](api_access.html)
 - [Agent Gateway](../agentops/agent_gateway.html)
 - [Sandboxes](../agentops/sandboxes.html)
 - [MCP Servers](../agentops/mcp_servers.html)
