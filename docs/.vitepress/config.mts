@@ -65,6 +65,7 @@ export default defineConfig({
         items: [
           { text: 'Overview', link: '/mlops/' },
           { text: 'Pipelines', link: '/mlops/pipelines.html' },
+          { text: 'Hparam Search', link: '/mlops/hyperparameter_tuning.html' },
           { text: 'Model Serving', link: '/mlops/model_serving.html' },
           { text: 'Serverless', link: '/mlops/knative.html' },
           { text: 'MLflow', link: '/mlops/mlflow.html' }

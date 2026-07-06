@@ -3,14 +3,12 @@
 prokube exposes KServe for deploying and scaling machine learning models as inference endpoints in your workspace.
 
 ::: info KServe documentation
-For KServe features that are not specific to prokube, use the upstream documentation:
+Upstream references:
 
 - [KServe documentation](https://kserve.github.io/website/)
 - [KServe inference protocol (V2)](https://kserve.github.io/website/latest/modelserving/data_plane/v2_protocol/)
 - [KServe autoscaling](https://kserve.github.io/website/docs/model-serving/predictive-inference/autoscaling/)
 :::
-
-Use this page for the prokube-specific parts: where model endpoints appear in the UI, how to deploy and test models, how workspace scope affects serving, and where to find working examples.
 
 ## When to Use Model Serving
 

@@ -1,5 +1,9 @@
 # Agent Gateway
 
+::: info Documentation in progress
+This page is an early outline. Full Agent Gateway documentation is still being written and will be added here.
+:::
+
 Agent Gateway provides the external API access layer for AgentOps and selected MLOps workflows.
 
 It is not only an agent feature. The same gateway model can protect sandbox APIs, MCP servers, agent endpoints, and classic model-serving endpoints.

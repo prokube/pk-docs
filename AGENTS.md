@@ -2,7 +2,7 @@
 
 ## Project
 
-This repository contains the new public documentation site for prokube.ai.
+This repository contains the new public documentation site for prokube by prokube.ai.
 
 - Build new documentation here on a green field.
 - Existing documentation can be used as source material and factual reference.
@@ -12,8 +12,10 @@ This repository contains the new public documentation site for prokube.ai.
 
 ## Branding And Tone
 
-- Always write the product name as `prokube.ai`.
-- Do not write `ProKube`, `Prokube`, or standalone `prokube` in user-facing content.
+- Write the product name as `prokube` in user-facing content.
+- Use `prokube.ai` for the company name, legal entity, public domain, URLs, email/domain references, and company actions.
+- Do not write `ProKube`, `Prokube`, or use `prokube.ai` as the product name.
+- Keep actual URLs unchanged, for example `https://prokube.ai/` and `https://docs.prokube.ai/`.
 - Use a sober, developer-friendly tone.
 - Be concise, specific, and information-dense; avoid marketing filler, AI buzzword-heavy phrasing, and non-value-adding side remarks.
 - Edit hard: remove throat-clearing, repetition, and sentences that do not help the reader act or decide.
@@ -27,16 +29,18 @@ This repository contains the new public documentation site for prokube.ai.
 - If facts are uncertain, verify in source repos or ask before documenting.
 - Do not document planned behavior as existing behavior.
 - Avoid exposing credentials, tokens, internal-only URLs, or customer-specific details.
+- For pages that are intentionally incomplete, add a visible VitePress `::: info Documentation in progress` block near the top. Do not leave bare TODO lists as public-facing documentation.
+- Put cross-cutting platform concepts such as Workspaces, Kubernetes resources, API access, observability, and shared security implications under `Foundation`; link to them from Labs, MLOps, and AgentOps pages instead of duplicating long explanations.
 
 ## Tool Documentation Pattern
 
-For pages about upstream tools used in prokube.ai, especially MLOps tools such as Kubeflow Pipelines, Katib, MLflow, KServe, and related components, use a consistent pattern:
+For pages about upstream tools used in prokube, especially MLOps tools such as Kubeflow Pipelines, Katib, MLflow, KServe, and related components, use a consistent pattern:
 
 - Start by linking to the upstream documentation for the tool itself. Do not rewrite full upstream concepts or reference material.
-- Then explain how the tool is exposed, configured, secured, and operated in prokube.ai.
-- Focus on prokube.ai-specific behavior: workspace scope, authentication, storage, examples, UI entry points, operational limits, and integration with other platform components.
+- Then explain how the tool is exposed, configured, secured, and operated in prokube.
+- Focus on prokube-specific behavior: workspace scope, authentication, storage, examples, UI entry points, operational limits, and integration with other platform components.
 - Use the `prokube/examples` repository where possible for concrete examples and task flows.
-- Avoid framing each page as "prokube.ai is based on X". Treat the upstream project as the tool reference and the page as the guide to using it productively on prokube.ai.
+- Avoid framing each page as "prokube is based on X". Treat the upstream project as the tool reference and the page as the guide to using it productively on prokube.
 
 ## Source Repositories
 
@@ -68,13 +72,16 @@ When repos disagree, prefer current shipped behavior in `pkui` and persistent pl
 - This is a VitePress site using content under `docs/`.
 - VitePress config lives in `docs/.vitepress/config.mts`.
 - Theme styling lives in `docs/.vitepress/theme/style.css`.
-- Static assets should live under `docs/public/`.
+- Root-level public assets that must be served at stable paths, such as logos and favicons, should live under `docs/public/`.
+- Content screenshots should live under `docs/_static/screenshots/`, grouped by documentation area: `labs/`, `mlops/`, `platform/`, or `agentops/`.
+- Put cross-cutting screenshots in the matching `platform/` folder instead of a feature-specific folder. For example, pod quota, kubeconfig, registry credentials, Kubernetes Secrets, and workspace selector screenshots belong under `docs/_static/screenshots/platform/`.
 - The default base path is `/docs/`; preserve this unless explicitly asked to change it.
 - `cleanUrls` is disabled intentionally for static GCS-friendly `.html` links.
 
 ## Git Workflow
 
 - Work on feature branches for non-trivial changes.
+- Do not commit directly to protected branches such as `staging`; create a feature branch and PR into `staging`.
 - For assigned GitHub issues, create an isolated worktree from `origin/main` before editing:
 
 ```bash
@@ -88,6 +95,7 @@ git worktree add worktrees/issue-<number> -b feature/issue-<number> origin/main
 - Commit with a concise, descriptive message after verifying the change.
 - Push the branch after committing when working in a repo with a configured remote.
 - If creating a PR, include a short summary and the verification command that was run.
+- Only deploy manually when explicitly asked. A normal docs edit should end at build verification and, when requested, a PR.
 
 ## Local Commands
 

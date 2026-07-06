@@ -438,6 +438,24 @@ body {
   margin: 1.35rem 0;
 }
 
+.custom-block.info {
+  background: rgba(249, 250, 251, 0.78);
+  border-color: rgba(17, 24, 39, 0.08);
+}
+
+.custom-block.info .custom-block-title {
+  color: var(--vp-c-text-1);
+}
+
+.dark .custom-block.info {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.dark .custom-block.info .custom-block-title {
+  color: var(--vp-c-text-1);
+}
+
 .custom-block-title {
   font-weight: 800;
 }
