@@ -1,5 +1,9 @@
 # Admin Documentation
 
+::: info Documentation in progress
+This page is an early outline. Full admin, operator, and installer documentation is still being written and will be added here. Detailed admin documentation is still available at [docs.prokube.ai](https://docs.prokube.ai/).
+:::
+
 Admin documentation covers installation, configuration, operations, upgrades, and troubleshooting.
 
 The future structure should make it clear which parts are shared platform foundation and which parts belong to optional product tracks.

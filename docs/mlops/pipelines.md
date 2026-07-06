@@ -3,14 +3,12 @@
 prokube exposes Kubeflow Pipelines for reproducible workflow execution in your workspace.
 
 ::: info Kubeflow Pipelines documentation
-For Kubeflow Pipelines features that are not specific to prokube, use the upstream documentation:
+Upstream references:
 
 - [Kubeflow Pipelines documentation](https://www.kubeflow.org/docs/components/pipelines/)
 - [Kubeflow Pipelines SDK documentation](https://kubeflow-pipelines.readthedocs.io/)
 - [Kubeflow Pipelines Kubernetes documentation](https://kfp-kubernetes.readthedocs.io/)
 :::
-
-Use this page for the prokube-specific parts: where Pipelines appear in the UI, how workspace scope affects runs, how to submit from Labs, and where to find working examples.
 
 ## When to Use Pipelines
 

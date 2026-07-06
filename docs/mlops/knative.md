@@ -1,16 +1,14 @@
 # Knative Services
 
-prokube.ai exposes Knative Serving for running auto-scaling containerised HTTP services in your workspace.
+prokube exposes Knative Serving for running auto-scaling containerised HTTP services in your workspace.
 
 ::: info Knative documentation
-For Knative features that are not specific to prokube.ai, use the upstream documentation:
+Upstream references:
 
 - [Knative Serving documentation](https://knative.dev/docs/serving/)
 - [Knative Service YAML reference](https://knative.dev/docs/serving/services/)
 - [Knative autoscaling](https://knative.dev/docs/serving/autoscaling/)
 :::
-
-Use this page for the prokube.ai-specific parts: where Knative services appear in the UI, how they differ from KServe InferenceServices, and how to expose them externally.
 
 ## When to Use Knative Directly
 
