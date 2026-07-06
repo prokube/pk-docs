@@ -1,22 +1,18 @@
-# Platform Foundation
+# Foundation
 
-The Platform Foundation is the shared base used by both AgentOps and MLOps.
+Foundation covers the shared platform concepts used across Labs, MLOps, and AgentOps. Start here when you need to understand workspace scope, Kubernetes access, API credentials, or operational visibility.
 
-It contains the services that should not be documented as belonging exclusively to one product track.
+## Core Concepts
 
-## Shared Capabilities
+| Page | Use it for |
+|---|---|
+| [Workspaces](./workspaces.html) | Workspace selection, access boundaries, namespace mapping, and shared ownership. |
+| [Kubernetes Resources](./kubernetes.html) | Kubeconfig access, quotas, pods, secrets, registry credentials, and cleanup tasks. |
+| [API Keys](./api_keys.html) | Scoped programmatic access for SDKs, automation, serving clients, sandboxes, MCP, and external integrations. |
+| [Observability](./observability.html) | Monitoring, logging, tracing, and dashboards. |
 
-- Workspaces and user management
-- Identity and role-based access control
-- Kubernetes resource access, quotas, and secrets
-- API access and gateway integration
-- Object storage, databases, and persistent volumes
-- Monitoring, logging, tracing, and dashboards
-- GitOps-managed operations
-- Kubernetes access and resource isolation
+## Shared Model
 
-## Why This Matters
+AgentOps and MLOps are product tracks on the same platform, not separate environments. They share workspace identity, Kubernetes namespaces, access control, API routing, storage, and observability.
 
-AgentOps and MLOps are product tracks, not separate platforms. They share the same operational model and many of the same technical components.
-
-This section should document the common layer once and link to it from both tracks.
+Feature pages link back to Foundation instead of repeating cross-cutting behavior. If a behavior applies across multiple product tracks, document it here first.

@@ -58,9 +58,9 @@ prokube is a Kubernetes-native AI platform for teams that need to run AI workloa
     <span>Understand what survives Lab restarts and where to place code, notebooks, packages, and data.</span>
     <em>Learn more -></em>
   </a>
-  <a class="pk-docs-task-card" href="./platform/api_access.html">
+  <a class="pk-docs-task-card" href="./platform/api_keys.html">
     <strong>Configure API access</strong>
-    <span>Use scoped API keys and Agent Gateway routes for programmatic access to platform APIs.</span>
+    <span>Create scoped API keys for SDKs, automation, and external access to platform APIs.</span>
     <em>Learn more -></em>
   </a>
   <a class="pk-docs-task-card" href="./mlops/pipelines.html">

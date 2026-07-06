@@ -79,7 +79,6 @@ export default defineConfig({
           { text: 'Workspaces', link: '/platform/workspaces.html' },
           { text: 'Kubernetes Resources', link: '/platform/kubernetes.html' },
           { text: 'Observability', link: '/platform/observability.html' },
-          { text: 'API Access', link: '/platform/api_access.html' },
           { text: 'API Keys', link: '/platform/api_keys.html' }
         ]
       },
