@@ -23,11 +23,15 @@ Each workspace has its own Kubernetes namespace. That namespace is one part of t
 
 Each user gets a personal workspace for their own experiments, development environments, and private platform resources.
 
+Personal workspaces are tied to user lifecycle. Administrators manage them through user and workspace administration; attached personal workspaces are not deleted as regular project workspaces from the Workspaces page.
+
 ### Shared Workspaces
 
 Shared workspaces are for teams that work together on cluster resources such as pipelines, models, agents, Labs, object-storage buckets, and workspace-scoped credentials.
 
 Use a shared workspace when multiple users need to collaborate on the same resources.
+
+Shared workspace access can be granted directly to users or through groups. Group-based access is preferred for teams because it keeps membership and workspace access separate: administrators grant the group access to a workspace once, then add or remove users from the group.
 
 ::: warning Keep workspace boundaries intentional
 Do not invite contributors into personal workspaces. Personal workspaces commonly contain user-specific Labs, storage, credentials, and temporary experiments.
@@ -59,6 +63,26 @@ As a rule of thumb, workspace selection matters for services that schedule workl
 
 Other services handle access through their own integration with prokube. For example, object-storage browsers, MLflow, or similar integrated tools can use OIDC-based user and workspace permissions configured by the platform backend. In those cases, the active workspace selector is not necessarily the control that determines which buckets, experiments, models, or artifacts the current user can access.
 
+## Manage Your Own Workspace
+
+When owner self-service is enabled, workspace owners can open **My Workspaces** to manage members of workspaces they own. This page is not the same as administrator workspace management:
+
+- owners see only workspaces they own;
+- owners can add members by email and remove members from their workspace;
+- owners do not create or delete workspaces from this page;
+- administrator-only settings such as security policy and egress profiles remain under **User Management**.
+
+Members added through owner self-service receive editor access.
+
+## Workspace-Level Policies
+
+Administrators can attach additional policy controls to a workspace:
+
+- **Security policy**: requires new and updated Labs in the workspace to use hardened security settings.
+- **Egress profile**: restricts outbound network access for covered workloads to approved destinations.
+
+Egress profiles are managed under **User Management** > **Network Policies**. See [Network Policies](../admin/network_policies.md).
+
 ## Security Implications
 
 Workspace access affects more than UI pages. It can also affect Kubernetes resources, mounted storage, object-storage credentials, registry credentials, and workload configuration.
@@ -69,11 +93,13 @@ For production workloads, use dedicated credentials with the minimum required ac
 
 ## Request or Change Access
 
-Workspace access must be managed by platform administrators in prokube. If you need access to a workspace, or if a user should be added or removed, contact your administrator.
+Workspace access is managed by platform administrators in prokube, and by workspace owners when owner self-service is enabled. If you need access to a workspace, contact the workspace owner or platform administrator.
 
-If you administer prokube, see the existing [IAM user management documentation](https://docs.prokube.ai/latest/admin_docs/iam_user_management/) while the new admin docs are being migrated.
+If you administer prokube, see [User Management](../admin/user_management.md).
 
 ## Related Pages
 
 - [Using Labs](../labs/index.md)
+- [User Management](../admin/user_management.md)
+- [Network Policies](../admin/network_policies.md)
 - [API Keys](api_keys.md)

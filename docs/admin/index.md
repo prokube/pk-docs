@@ -28,6 +28,7 @@ Detailed admin documentation is still available at [docs.prokube.ai](https://doc
 | Page | Use it for |
 |---|---|
 | [User Management](./user_management.html) | Managing users, workspaces, groups, workspace access, and workspace security policy settings. |
+| [Network Policies](./network_policies.html) | Defining reusable egress profiles and assigning outbound network restrictions to workspaces. |
 | [System Status](./system_status.html) | Running administrator health checks against prokube backend components and integrations. |
 
 Platform-wide metrics, dashboards, alerts, and log-retention configuration remain administrator/operator topics. Use [System Status](./system_status.html) for quick backend health checks and the deployment's Grafana, Prometheus, Alertmanager, and Loki tools for detailed monitoring.

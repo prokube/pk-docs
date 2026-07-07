@@ -89,6 +89,7 @@ export default defineConfig({
         items: [
           { text: 'Overview', link: '/admin/' },
           { text: 'User Management', link: '/admin/user_management.html' },
+          { text: 'Network Policies', link: '/admin/network_policies.html' },
           { text: 'System Status', link: '/admin/system_status.html' }
         ]
       }

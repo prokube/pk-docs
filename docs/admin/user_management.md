@@ -7,8 +7,9 @@ Administrators can manage users, workspaces, groups, and workspace access from t
 Open **User Management** in the admin area. It provides pages for:
 
 - **Users**: create, search, edit, disable, and delete users;
-- **Workspaces**: create and delete workspaces, manage workspace members, and enforce workspace security policy settings;
-- **Groups**: create and delete groups, manage group members, and grant or revoke group access to workspaces.
+- **Workspaces**: create and delete workspaces, manage workspace members, enforce workspace security policy settings, and assign egress profiles;
+- **Groups**: create and delete groups, manage group members, and grant or revoke group access to workspaces;
+- **Network Policies**: define reusable egress profiles for workspace outbound access.
 
 The underlying identity provider remains Keycloak. Use the Keycloak admin console only for advanced IAM tasks that are not exposed in the prokube UI.
 
@@ -29,7 +30,7 @@ To delete a user, open the row action menu and choose **Delete**. Deleting a use
 
 ## Workspaces
 
-Open **User Management** > **Workspaces** to manage workspace namespaces. The table shows each workspace name, member count, group access, security policy state, and available actions.
+Open **User Management** > **Workspaces** to manage workspace namespaces. The table shows each workspace name, workspace type, member count, group access, security policy state, egress profile assignment, and available actions.
 
 To create a workspace:
 
@@ -38,9 +39,13 @@ To create a workspace:
 3. Select an owner user.
 4. Save the workspace.
 
+Workspace names must be Kubernetes-compatible DNS labels: lowercase letters, numbers, and hyphens, starting and ending with a letter or number.
+
 The platform creates the required cluster resources. The workspace owner is shown separately from regular members in the member management panel.
 
 To manage workspace members, click **Manage** on a workspace row. Use the side panel to add users, search existing members, or remove members. Added members receive editor access to the workspace.
+
+Personal workspaces are tied to user lifecycle and cannot be deleted from the Workspaces page while attached to a user.
 
 ### Workspace Security Policy
 
@@ -49,6 +54,14 @@ Use the shield action in the workspace row to enforce or remove the workspace se
 When enforced, prokube sets the `prokube.ai/security-policy: enforced` annotation, applies restricted pod security labels, and requires new and updated Labs in that workspace to use hardened security settings.
 
 Review workloads in the workspace before enforcing the policy. Existing workloads or custom images may need changes if they rely on privileged behavior.
+
+### Workspace Egress Profile
+
+Use **Assign Egress Profile** from the workspace row actions to attach or clear an egress profile. The Workspaces table shows the current assignment and a short destination summary.
+
+Each workspace can have one egress profile assignment. Egress profiles are created under **User Management** > **Network Policies** and define the external host, protocol, and port combinations workloads are allowed to reach.
+
+See [Network Policies](network_policies.md) for profile creation, destination rules, and operational notes.
 
 ### Delete a Workspace
 
@@ -62,6 +75,8 @@ Before deleting a workspace, confirm that required data has been exported or arc
 
 Open **User Management** > **Groups** to manage groups. Groups are useful when multiple users need the same workspace access.
 
+The Groups page supports search and pagination. The management panel shows group members and workspace access for the selected group.
+
 To create a group:
 
 1. Click **Create Group**.
@@ -71,6 +86,8 @@ To create a group:
 To manage a group, click **Manage** on the group row. The side panel lets you add or remove members and grant or revoke workspace access.
 
 Granting workspace access adds the corresponding `pk:<workspace-name>` role to the group. All group members receive access to that workspace.
+
+The Workspaces page also shows which groups have access to each workspace. Use groups for team access instead of adding many users individually.
 
 To delete a group, use the row action menu. Deleting a group removes the group membership relationship, but it does not delete users or workspaces.
 
@@ -100,6 +117,7 @@ Prefer creating and deleting workspaces through the prokube UI. If you must mana
 ## Related Pages
 
 - [Workspaces](../platform/workspaces.md)
+- [Network Policies](network_policies.md)
 - [Kubernetes Resources](../platform/kubernetes.md)
 - [API Keys](../platform/api_keys.md)
 - [Admin Documentation](index.md)
