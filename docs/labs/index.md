@@ -175,6 +175,17 @@ docker buildx build -t <registry>/<image>:<tag> --push .
 
 In prokube-maintained images, `docker build` may be wrapped to use `docker buildx build`, so existing scripts and Makefiles can work with the remote builder. Use `--push`; there is no local Docker image store in the Lab pod.
 
+For multi-architecture images, pass the target platforms explicitly and push the manifest list:
+
+```bash
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  -t <registry>/<image>:<tag> \
+  --push .
+```
+
+Registry credentials are not shared between users by the builder. Log in from your Lab before pushing, and add pull credentials to the workspace when platform workloads need to pull a private image. Build layers may be cached by the remote builder to speed up later builds, but the cache is not a registry and should not be treated as persistent storage.
+
 This setup is only for building and pushing images. It is not a container runtime: images cannot be started with `docker run` inside the Lab. Run workloads through Kubernetes resources, pipelines, model serving, sandboxes, or other platform runtimes instead.
 
 ## Troubleshooting Labs

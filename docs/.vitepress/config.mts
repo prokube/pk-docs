@@ -67,6 +67,7 @@ export default defineConfig({
           { text: 'Pipelines', link: '/mlops/pipelines.html' },
           { text: 'Hparam Search', link: '/mlops/hyperparameter_tuning.html' },
           { text: 'Model Serving', link: '/mlops/model_serving.html' },
+          { text: 'Serving Autoscaling', link: '/mlops/model_serving_autoscaling.html' },
           { text: 'Serverless', link: '/mlops/knative.html' },
           { text: 'MLflow', link: '/mlops/mlflow.html' }
         ]
@@ -90,7 +91,8 @@ export default defineConfig({
         items: [
           { text: 'Overview', link: '/admin/' },
           { text: 'User Management', link: '/admin/user_management.html' },
-          { text: 'Network Policies', link: '/admin/network_policies.html' }
+          { text: 'Network Policies', link: '/admin/network_policies.html' },
+          { text: 'Operations Runbooks', link: '/admin/operations_runbooks.html' }
         ]
       }
     ],

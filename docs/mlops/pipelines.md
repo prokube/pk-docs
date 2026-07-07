@@ -25,6 +25,20 @@ Use Pipelines when interactive work should become repeatable, inspectable, or sc
 
 Use [Labs](../labs/index.md) for exploration and pipeline authoring. You can write, compile, and start Pipelines directly from a Lab. Move to Pipelines when the workflow should become a shared, cluster-executed process rather than an interactive session.
 
+## Core Concepts
+
+Kubeflow Pipelines uses a few recurring concepts:
+
+- **Components** are the individual steps of a workflow. Lightweight components package Python functions; container components run an explicit container image and command.
+- **Pipelines** define the directed graph of components, parameters, and dependencies.
+- **Runs** are concrete executions of a pipeline.
+- **Experiments** group related runs so you can compare results and navigate history.
+- **Recurring runs** start pipeline runs on a schedule.
+- **Artifacts** are files, models, metrics, or other outputs produced by components, usually stored in object storage.
+- **Parameters** are small typed values passed into pipelines or between components; use artifacts or explicit `s3://` paths for larger data.
+
+The examples in these docs use current KFP SDK patterns. Avoid starting new work with legacy KFP v1 DSL examples unless your administrator confirms that compatibility is required for your deployment.
+
 ## Get Started
 
 The simplest way to get started is to submit a small pipeline from a Lab running inside the same workspace. Paste this code into a notebook cell in [JupyterLab](../labs/jupyterlab.md) or into a Python file in a [VS Code Lab](../labs/vscode.md), then run it.
