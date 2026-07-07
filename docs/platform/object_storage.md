@@ -29,6 +29,8 @@ Use it for day-to-day file operations:
 
 Prefer this browser when you need a standalone storage view without opening a Lab or external S3 client.
 
+If you are already working in a notebook, the [JupyterLab S3 browser](../labs/jupyterlab.md#object-storage-in-jupyterlab) provides similar object-storage access from the JupyterLab sidebar.
+
 ![Object Storage browser](../_static/screenshots/platform/object-storage/object-storage-browser.png)
 
 ![Object Storage upload](../_static/screenshots/platform/object-storage/object-storage-upload.png)
