@@ -13,6 +13,14 @@ Open **User Management** in the admin area. It provides pages for:
 
 The underlying identity provider remains Keycloak. Use the Keycloak admin console only for advanced IAM tasks that are not exposed in the prokube UI.
 
+Common platform roles are:
+
+- `pk-user`: allows normal platform access for authenticated users;
+- `pk-admin`: grants access to administrator views and platform administration workflows;
+- `pk:<workspace-name>`: grants access to a specific workspace namespace.
+
+Prefer assigning workspace access through the prokube UI. Direct role edits in Keycloak are easy to misapply and can affect Kubernetes, object-storage, and workload access.
+
 ## Users
 
 Open **User Management** > **Users** to view platform users. The table shows username, email address, group memberships, account status, and creation time. Use search to find users by username or email.
