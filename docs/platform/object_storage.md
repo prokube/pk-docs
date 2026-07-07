@@ -145,7 +145,7 @@ External S3 clients need these settings:
 - access key ID;
 - secret access key.
 
-Create and rotate these credentials only through the storage or account management flow enabled by your administrator. Store secret keys in a password manager or secret store. Do not commit them to notebooks, repositories, pipeline definitions, or container images.
+For deployments that expose the MinIO Console, create and rotate personal S3 access keys in the MinIO UI, usually under `https://<your-prokube-domain>/minio/`. Sign in with the same SSO account you use for prokube, open **Access Keys**, and create a new access key. Store the secret key in a password manager or secret store when it is shown. Do not commit secret keys to notebooks, repositories, pipeline definitions, or container images.
 
 Configure `s3fs` explicitly for external access:
 
@@ -170,7 +170,7 @@ The prokube Object Storage browser covers normal file browsing, upload, download
 
 Use the MinIO UI only when you need account-level or storage-administration functions that are not exposed in the prokube browser, such as:
 
-- creating or managing personal S3 access keys, if enabled;
+- creating or managing personal S3 access keys for external clients, if enabled;
 - reviewing MinIO-specific account settings;
 - performing bucket or policy administration tasks allowed by your administrator.
 
