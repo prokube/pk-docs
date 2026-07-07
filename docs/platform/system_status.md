@@ -8,6 +8,8 @@ Use this page to inspect pod quota pressure before starting new workloads, clean
 
 Open the user menu in the prokube UI and select **System Status**.
 
+![System Status in the user menu](../_static/screenshots/platform/system-status/system-status-user-menu.png)
+
 The page may also be available directly at `/system-status`.
 
 All authenticated users can open the page to inspect workspace pod quota. The **Component Health** and **Backend Info** sections are visible only to realm administrators.
@@ -58,11 +60,15 @@ Possible states:
 
 The summary bar counts healthy, degraded, unhealthy, and disabled components.
 
+![Admin Component Health](../_static/screenshots/platform/system-status/system-status-admin-health.png)
+
 ## Admin Backend Info
 
 Realm administrators also see **Backend Info**, including backend version and enabled backend modules.
 
 Use this to confirm which backend version and modules are active in the current deployment before debugging feature behavior.
+
+![Backend Info](../_static/screenshots/platform/system-status/system-status-backend-info.png)
 
 ## Refresh Checks
 
