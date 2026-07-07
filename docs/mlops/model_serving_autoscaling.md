@@ -236,7 +236,7 @@ With `AverageValue`, KEDA treats the query result as a total and computes a per-
 
 Use the [`serving/kserve-keda-autoscaling`](https://github.com/prokube/examples/tree/main/serving/kserve-keda-autoscaling) example for a complete load generator and calibration workflow.
 
-For production, do not reuse the demo threshold blindly. Measure the per-replica throughput where latency begins to degrade, then set the KEDA threshold below that point with enough headroom for bursty traffic.
+For production, do not reuse the demo threshold blindly. Measure the per-replica throughput where latency begins to degrade, then set the KEDA threshold below that point with enough headroom for bursty traffic. The [`kserve-keda-autoscaling` calibration workflow](https://github.com/prokube/examples/tree/main/serving/kserve-keda-autoscaling#calibrating-the-threshold) provides a concrete starting point.
 
 ### Metric Choices
 
@@ -286,6 +286,7 @@ advanced:
 
 ## Related Pages
 
+- [KEDA autoscaling example](https://github.com/prokube/examples/tree/main/serving/kserve-keda-autoscaling)
 - [Model Serving](model_serving.md)
 - [Observability](../platform/observability.md)
 - [API Keys](../platform/api_keys.md)
