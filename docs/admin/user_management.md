@@ -17,12 +17,16 @@ The underlying identity provider remains Keycloak. Use the Keycloak admin consol
 
 Open **User Management** > **Users** to view platform users. The table shows username, email address, group memberships, account status, and creation time. Use search to find users by username or email.
 
+![Users page](../_static/screenshots/admin/user-management/users-page.png)
+
 To create a user:
 
 1. Click **Create User**.
 2. Enter username, email, first name, last name, and an initial password.
 3. Keep **Require password change** enabled unless you have a specific reason not to.
 4. Save the user.
+
+![Create User dialog](../_static/screenshots/admin/user-management/create-user-dialog.png)
 
 To update a user, open the row action menu and choose **Edit**. The prokube UI can update the user's first name, last name, and enabled status. Usernames and email addresses are not changed from this dialog.
 
@@ -31,6 +35,8 @@ To delete a user, open the row action menu and choose **Delete**. Deleting a use
 ## Workspaces
 
 Open **User Management** > **Workspaces** to manage workspace namespaces. The table shows each workspace name, workspace type, member count, group access, security policy state, egress profile assignment, and available actions.
+
+![Workspaces page](../_static/screenshots/admin/user-management/workspaces-page.png)
 
 To create a workspace:
 
@@ -43,7 +49,11 @@ Workspace names must be Kubernetes-compatible DNS labels: lowercase letters, num
 
 The platform creates the required cluster resources. The workspace owner is shown separately from regular members in the member management panel.
 
+![Create Workspace dialog](../_static/screenshots/admin/user-management/create-workspace-dialog.png)
+
 To manage workspace members, click **Manage** on a workspace row. Use the side panel to add users, search existing members, or remove members. Added members receive editor access to the workspace.
+
+![Workspace members panel](../_static/screenshots/admin/user-management/workspace-members-panel.png)
 
 Personal workspaces are tied to user lifecycle and cannot be deleted from the Workspaces page while attached to a user.
 
@@ -55,6 +65,8 @@ When enforced, prokube sets the `prokube.ai/security-policy: enforced` annotatio
 
 Review workloads in the workspace before enforcing the policy. Existing workloads or custom images may need changes if they rely on privileged behavior.
 
+![Workspace security policy dialog](../_static/screenshots/admin/user-management/workspace-security-policy-dialog.png)
+
 ### Workspace Egress Profile
 
 Use **Assign Egress Profile** from the workspace row actions to attach or clear an egress profile. The Workspaces table shows the current assignment and a short destination summary.
@@ -62,6 +74,8 @@ Use **Assign Egress Profile** from the workspace row actions to attach or clear 
 Each workspace can have one egress profile assignment. Egress profiles are created under **User Management** > **Network Policies** and define the external host, protocol, and port combinations workloads are allowed to reach.
 
 See [Network Policies](network_policies.md) for profile creation, destination rules, and operational notes.
+
+![Workspace egress profile dialog](../_static/screenshots/admin/user-management/workspace-egress-profile-dialog.png)
 
 ### Delete a Workspace
 
