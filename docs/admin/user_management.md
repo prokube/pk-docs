@@ -103,6 +103,8 @@ To create a group:
 
 To manage a group, click **Manage** on the group row. The side panel lets you add or remove members and grant or revoke workspace access.
 
+![Group management panel](../_static/screenshots/admin/user-management/group-management-panel.png)
+
 Granting workspace access adds the corresponding `pk:<workspace-name>` role to the group. All group members receive access to that workspace.
 
 The Workspaces page also shows which groups have access to each workspace. Use groups for team access instead of adding many users individually.
