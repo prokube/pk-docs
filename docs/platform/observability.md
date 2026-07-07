@@ -64,6 +64,14 @@ Examples:
 
 Use metrics to understand rates, latency, resource pressure, and longer-term behavior. Use logs to inspect specific failures, startup output, stack traces, and request-level details.
 
+When these tools are exposed by your deployment:
+
+- use Grafana for curated dashboards and ad hoc exploration;
+- use Prometheus or Grafana Explore for metrics queries;
+- use Loki or Grafana Explore for log queries that need LogQL beyond the prokube Logs page.
+
+Broad Grafana or Loki access can expose logs and metrics across namespaces depending on the configured permissions. Treat platform dashboards as administrator-facing unless your administrator has documented the access scope for your user or group.
+
 ## Kubernetes Events
 
 Logs do not replace Kubernetes events. Events are often the best first signal for scheduling failures, image pull errors, missing secrets, failed volume mounts, admission failures, and quota pressure.

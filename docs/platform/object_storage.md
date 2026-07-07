@@ -83,6 +83,29 @@ Use pandas with an `s3://` path:
 import pandas as pd
 
 df = pd.read_parquet("s3://my-bucket/path/data.parquet")
+csv = pd.read_csv("s3://my-bucket/path/data.csv")
+```
+
+For external clients where credentials are not discovered from the environment, pass explicit storage options instead of embedding secrets in source files:
+
+```python
+import getpass
+import pandas as pd
+
+AWS_ENDPOINT_URL = "https://minio.<your-prokube-domain>"
+AWS_ACCESS_KEY_ID = "<access-key-id>"
+AWS_SECRET_ACCESS_KEY = getpass.getpass("S3 secret access key: ")
+
+storage_options = {
+    "client_kwargs": {"endpoint_url": AWS_ENDPOINT_URL},
+    "key": AWS_ACCESS_KEY_ID,
+    "secret": AWS_SECRET_ACCESS_KEY,
+}
+
+df = pd.read_parquet(
+    "s3://my-bucket/path/data.parquet",
+    storage_options=storage_options,
+)
 ```
 
 DuckDB can read files from object storage through its `httpfs` extension. In managed Labs, S3-compatible endpoint and credential environment variables are usually provided by the workspace configuration:
@@ -105,6 +128,21 @@ import os
 
 conn.execute(f"SET s3_access_key_id='{os.environ['AWS_ACCESS_KEY_ID']}'")
 conn.execute(f"SET s3_secret_access_key='{os.environ['AWS_SECRET_ACCESS_KEY']}'")
+```
+
+To check whether DuckDB can discover credentials in the current environment, run `CALL load_aws_credentials();` after loading the `httpfs` extension.
+
+R clients can use S3-compatible libraries such as `aws.s3`. In a managed RStudio Lab, credentials are usually provided by the workspace configuration:
+
+```r
+library(aws.s3)
+library(readr)
+
+bucket <- "my-bucket"
+key <- "path/data.csv"
+
+obj <- get_object(object = key, bucket = bucket, region = "")
+df <- read_csv(rawToChar(obj))
 ```
 
 JupyterLab images can also include an S3 browser extension in the JupyterLab sidebar. See [JupyterLab](../labs/jupyterlab.md#object-storage-in-jupyterlab).
@@ -177,6 +215,8 @@ Use the MinIO UI only when you need account-level or storage-administration func
 ## Security and Scope
 
 Object storage access is workspace- and permission-dependent. A bucket visible in one workspace or tool may not be visible in another.
+
+Availability, retention, backups, lifecycle policies, and storage redundancy depend on the deployment. Do not assume object storage is a permanent archive unless your administrator has documented the retention and backup policy for your workspace.
 
 Follow these rules:
 
