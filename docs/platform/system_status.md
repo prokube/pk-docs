@@ -26,6 +26,8 @@ The top section shows pod quota usage across all workspaces you can access. Each
 - completed pipeline pod count;
 - warning or critical state when usage approaches or exceeds the quota.
 
+![Workspace pod quota overview](../_static/screenshots/platform/system-status/system-status-quota-overview.png)
+
 To keep the page responsive, quota details are not loaded for every workspace at once. The currently selected workspace is loaded automatically when it is in your accessible workspace list. If the selected workspace is not available, the first visible workspace card is loaded. Other workspace cards show **Load pod quota** until you load them manually.
 
 Use **Refresh** on a workspace card to update that workspace's quota numbers on demand. If you have many workspaces, use **Load more workspaces** to show additional cards.
@@ -37,6 +39,8 @@ When a workspace has completed pipeline pods, the workspace card can show **Clea
 This action deletes completed Argo Workflows / Kubeflow Pipelines pod resources in that workspace. It does not delete running pods, pending pods, unrelated pods, pipeline metadata, artifacts, or logs.
 
 Use this when completed pipeline pods are consuming workspace pod quota and blocking new work.
+
+![Delete Completed Pipeline Pods dialog](../_static/screenshots/platform/system-status/system-status-cleanup-dialog.png)
 
 ## Admin Component Health
 
