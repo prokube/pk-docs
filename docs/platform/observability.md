@@ -73,8 +73,8 @@ The Logs page searches application and container logs stored in Loki. It does no
 ## Related Pages
 
 - [Kubernetes Resources](kubernetes.md)
+- [System Status](system_status.md)
 - [Labs](../labs/index.md)
 - [Pipelines](../mlops/pipelines.md)
 - [Model Serving](../mlops/model_serving.md)
-- [System Status](../admin/system_status.md)
 - [Admin Documentation](../admin/index.md)

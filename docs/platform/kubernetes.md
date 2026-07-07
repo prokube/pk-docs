@@ -144,6 +144,7 @@ If you use tools such as OpenLens and cannot list cluster namespaces, add the na
 - [Workspaces](workspaces.md)
 - [Object Storage](object_storage.md)
 - [Observability](observability.md)
+- [System Status](system_status.md)
 - [Using Labs](../labs/index.md)
 - [Pipelines](../mlops/pipelines.md)
 - [API Keys](api_keys.md)
