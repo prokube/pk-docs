@@ -29,6 +29,10 @@ Use it for day-to-day file operations:
 
 Prefer this browser when you need a standalone storage view without opening a Lab or external S3 client.
 
+![Object Storage browser](../_static/screenshots/platform/object-storage/object-storage-browser.png)
+
+![Object Storage upload](../_static/screenshots/platform/object-storage/object-storage-upload.png)
+
 ## Use Object Paths
 
 Many prokube workflows expect S3-compatible object paths in this form:
@@ -45,6 +49,8 @@ Common examples:
 - load files from a JupyterLab notebook or VS Code Lab.
 
 Copy paths from the Object Storage browser instead of typing bucket names manually when possible.
+
+![Object Storage object actions](../_static/screenshots/platform/object-storage/object-storage-object-actions.png)
 
 ## Access from Labs
 
