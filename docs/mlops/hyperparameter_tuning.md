@@ -323,7 +323,7 @@ It should:
 - include all runtime dependencies in the image instead of installing them interactively;
 - write models and artifacts to object storage if they must survive trial pod cleanup.
 
-For image builds from Labs, see [Building Container Images](../labs/index.md#building-container-images). For workspace object storage, see [Object Storage from Labs](../labs/index.md#object-storage-from-labs).
+For image builds from Labs, see [Building Container Images](../labs/index.md#building-container-images). For workspace object storage, see [Object Storage](../platform/object_storage.md).
 
 ## Operational Notes
 

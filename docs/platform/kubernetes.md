@@ -100,14 +100,51 @@ Common pod states:
 - `ImagePullBackOff`: Kubernetes cannot pull the container image. Check the image name and registry credentials.
 - `CreateContainerConfigError`: a referenced secret, config, or key is missing.
 - `CrashLoopBackOff`: the container starts and exits repeatedly. Check container logs.
+- `Init:Error`: an init container failed. Check the init-container logs with `kubectl logs <pod-name> -n <workspace> -c <init-container-name>`.
 - `Pending`: Kubernetes cannot schedule the pod. Check resource requests, quotas, GPUs, and workspace pod limits.
 
-For platform log views and retained workload logs, see [Observability](observability.md).
+If a container fails with `exec format error`, the image or binary is likely built for the wrong CPU architecture. This commonly happens when an image built on an ARM laptop is used on `amd64` cluster nodes. Rebuild the image for the target platform, for example with `docker buildx build --platform linux/amd64 --push ...`.
+
+For platform log views and retained workload logs, see [Observability](observability.md). For workspace bucket access and S3-compatible storage, see [Object Storage](object_storage.md).
+
+## Port Forward Services
+
+For short-lived local debugging, forward a workspace service to your machine:
+
+```bash
+kubectl port-forward -n <workspace> svc/<service-name> <local-port>:<service-port>
+```
+
+The service is then available at `localhost:<local-port>` while the command is running.
+
+Port forwards are a debugging tool, not production access. If a port forward exits repeatedly, restart it only while you are actively debugging:
+
+```bash
+while true; do
+  kubectl port-forward -n <workspace> svc/<service-name> <local-port>:<service-port>
+done
+```
+
+For stable external access, use the platform feature designed for that workload, such as model-serving endpoints, API gateway routes, Knative services, or agent/sandbox ingress.
+
+## Check Your Permissions
+
+Use `kubectl auth can-i` to check whether your current identity can perform an action in a workspace namespace:
+
+```bash
+kubectl auth can-i get pods -n <workspace>
+kubectl auth can-i create secrets -n <workspace>
+kubectl auth can-i delete pods -n <workspace>
+```
+
+If you use tools such as OpenLens and cannot list cluster namespaces, add the namespaces you can access manually in the tool's cluster settings. Non-admin users often cannot list every namespace in the cluster.
 
 ## Related Pages
 
 - [Workspaces](workspaces.md)
+- [Object Storage](object_storage.md)
 - [Observability](observability.md)
+- [System Status](system_status.md)
 - [Using Labs](../labs/index.md)
 - [Pipelines](../mlops/pipelines.md)
 - [API Keys](api_keys.md)

@@ -130,7 +130,7 @@ Practical rules:
 - pass explicit S3 object paths into pipelines when an example expects them;
 - use the **Object Storage** page in the prokube UI to see which buckets are available to your workspace.
 
-For object-storage access from Labs, see [Object Storage from Labs](../labs/index.md#object-storage-from-labs).
+For object-storage access from Labs, external clients, and storage security notes, see [Object Storage](../platform/object_storage.md).
 
 ## Component Images
 
@@ -240,6 +240,29 @@ def run_metadata_pipeline():
     )
 ```
 
+### Schedule Components on Specific Nodes
+
+By default, pipeline pods are scheduled on any node that satisfies their resource requests. If a component needs a specific node pool, GPU type, or other node label, add a node selector constraint to that task.
+
+Example:
+
+```python
+from kfp import dsl
+
+
+@dsl.component
+def train():
+    print("training")
+
+
+@dsl.pipeline
+def training_pipeline():
+    task = train()
+    task.add_node_selector_constraint("nvidia.com/gpu.product", "NVIDIA-H100-NVL")
+```
+
+The label must exist on a suitable node, and the workspace must be allowed to use that scheduling option. If the task stays `Pending`, check pod events and resource requests.
+
 ## Pod Quota and Cleanup
 
 Large pipelines can approach the workspace pod quota quickly because completed pipeline step pods remain in the workspace namespace for a while after the run finishes. The prokube UI surfaces pod-quota pressure next to the workspace selector and can clean up completed pipeline pods. See [Kubernetes Resources](../platform/kubernetes.md#pod-quota-and-cleanup) for details.
@@ -247,6 +270,8 @@ Large pipelines can approach the workspace pod quota quickly because completed p
 ## Troubleshooting
 
 Start with the Pipeline Runs page. Open the run details and inspect failed steps, UI warnings, pod events, and component logs. The UI surfaces common operational problems, for example missing secrets or workspace pod-count limits. Logs are available from the running pod where possible and from Loki after the pod has already terminated.
+
+Use the [Logs browser](../platform/observability.md#logs-browser) when the pipeline details page does not show the logs you need or when you want to search across pods by time range, pod name, container, or label.
 
 ![Inspect a pipeline run graph and component logs](../_static/screenshots/mlops/pipelines/pipeline-run-dag-including-logs-viewer.png)
 
@@ -257,6 +282,7 @@ Common causes:
 - **Import errors in components**: move dependencies into the component image or declare them explicitly for lightweight components.
 - **Permission errors**: confirm that the selected workspace has access to the required secrets, buckets, and Kubernetes resources.
 - **Slow startup**: avoid installing large dependencies at component runtime; use a custom image instead.
+- **Wrong CPU architecture**: if a component fails with `exec format error`, rebuild the image for the cluster node architecture, commonly `linux/amd64`.
 
 ## Related Pages
 

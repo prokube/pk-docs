@@ -87,6 +87,8 @@ The `Configurations` and `Security options` fields are administrator-provided op
 
 For example, GPU-specific workloads may use an affinity configuration so that the Lab is scheduled on nodes with the required GPU type. If the required option is not visible in the launch dialog, ask your platform administrator.
 
+Configurations can also expose selected Kubernetes Secret values as environment variables. Create the secret in the workspace first, for example through **K8s Secrets** in the prokube user menu, then select the matching configuration when launching the Lab. Do not put secret values directly into notebooks, shell history, or container images.
+
 ## Persistence and Package Installation
 
 Files in the Lab home directory are backed by the workspace volume and survive Lab restarts. In the default images this is the `jovyan` user's home directory, usually `/home/jovyan`. This is the right place for notebooks, source code, configuration files, and cloned repositories.
@@ -133,6 +135,17 @@ brew install htop
 
 The installation lives under `/home/jovyan` in the default images and survives Lab restarts. For team-wide or production environments, move required tools into a [Custom Notebook](custom_notebooks.md) image instead.
 
+For Node.js workflows, use a user-space version manager such as [nvm](https://github.com/nvm-sh/nvm) so the installation lives in the persistent home directory:
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+nvm install 20
+```
+
+If you need the same Node.js version for a team workflow, prefer a custom image with the runtime pinned and tested.
+
 ## Object Storage from Labs
 
 Labs can work with S3-compatible object storage through Python libraries, SDKs, UI extensions, and command-line tools, depending on the selected image and workspace configuration.
@@ -145,7 +158,7 @@ rclone copy local-file minio:my-bucket/path/
 rclone copy minio:my-bucket/path/file ./file
 ```
 
-For Python examples with `s3fs`, pandas, DuckDB, and S3-compatible configuration, use the existing MinIO documentation at [docs.prokube.ai](https://docs.prokube.ai/latest/user_docs/minio/) while this section is being migrated.
+For Python examples with `s3fs`, pandas, S3-compatible configuration, external clients, and storage security notes, see [Object Storage](../platform/object_storage.md).
 
 ## Building Container Images
 
@@ -179,8 +192,9 @@ Common cases:
 
 - **The Lab does not start**: check pod events for image pull errors, missing secrets, failed volume mounts, resource quota limits, or scheduling errors.
 - **The browser shows an upstream connection error**: the Lab pod may not be ready yet, may have crashed, or may be unable to start the expected web server. Check pod status and logs.
+- **The Lab starts and then crashes**: use the [Logs browser](../platform/observability.md#logs-browser) to search the Lab pod logs by workspace and pod name.
 - **A private custom image cannot be pulled**: verify the image reference and registry credentials. See [Registry Credentials](custom_notebooks.md#registry-credentials).
-- **A volume cannot be attached**: another running pod may still be using a `ReadWriteOnce` volume on a different node, or the cluster may still have a stale volume attachment after a node restart. Stop other Labs using the volume and contact your administrator if the attachment does not clear.
+- **A volume cannot be attached**: another running pod may still be using a `ReadWriteOnce` volume on a different node, or the cluster may still have a stale volume attachment after a node restart. Stop other Labs using the volume and contact your administrator if the attachment does not clear. Do not delete `VolumeAttachment` resources yourself unless you administer the cluster and have verified the stale attachment.
 - **The Lab cannot be resized**: create a new Lab with the desired resources and reuse the relevant persistent volume. If the volume itself is too small, create or request a larger volume and copy the data.
 - **A deleted Lab leaves data behind**: this is expected for persistent volumes. Delete unused volumes separately when you no longer need them.
 - **A Lab server object or pod appears stuck**: check events first. If a pod remains after deleting the Lab, ask an administrator or use `kubectl` only if you understand which pod belongs to the Lab.
