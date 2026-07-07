@@ -12,7 +12,7 @@ MCP servers expose tools, data sources, and internal APIs to AI assistants throu
 
 Use MCP servers when an agent or MCP-capable client needs governed access to a tool, for example sandbox execution, browser automation, databases, internal APIs, or other services that should not be called with broad user credentials.
 
-For runnable manifests and a small custom FastMCP server image, see the [`agentops/mcp-toolhive`](https://github.com/prokube/examples/tree/main/agentops/mcp-toolhive) example.
+For runnable manifests and a small custom FastMCP runbook server image, see the [`agentops/mcp-toolhive`](https://github.com/prokube/examples/tree/main/agentops/mcp-toolhive) example.
 
 ## How prokube Runs MCP Servers
 
