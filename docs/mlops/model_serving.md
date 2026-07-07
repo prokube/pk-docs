@@ -202,6 +202,8 @@ For strict per-replica request concurrency, use KServe/Knative YAML fields such 
 
 KEDA and the Knative Pod Autoscaler should not manage the same workload at the same time. If you configure KEDA manually, use the deployment mode and annotations required by your KServe version and cluster policy.
 
+For a detailed KPA walkthrough and a manual KEDA/vLLM token-throughput example, see [Model Serving Autoscaling](model_serving_autoscaling.md).
+
 ## Storage and Credentials
 
 ### S3-compatible Storage
@@ -313,4 +315,5 @@ spec:
 - [Object Storage](../platform/object_storage.md)
 - [MLflow](mlflow.md)
 - [Pipelines](pipelines.md)
+- [Model Serving Autoscaling](model_serving_autoscaling.md)
 - [API Keys](../platform/api_keys.md)

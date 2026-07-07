@@ -29,6 +29,7 @@ Detailed admin documentation is still available at [docs.prokube.ai](https://doc
 |---|---|
 | [User Management](./user_management.html) | Managing users, workspaces, groups, workspace access, and workspace security policy settings. |
 | [Network Policies](./network_policies.html) | Defining reusable egress profiles and assigning outbound network restrictions to workspaces. |
+| [Operations Runbooks](./operations_runbooks.html) | Administrator runbooks for MinIO, Keycloak bootstrap, and observability operations. |
 | [System Status](../platform/system_status.html) | Checking administrator-only backend component health and backend metadata; the same page also shows workspace pod quota to all users. |
 
 Platform-wide metrics, dashboards, alerts, and log-retention configuration remain administrator/operator topics. Use [System Status](../platform/system_status.html) for quick backend health checks, then use the deployment's Grafana, Prometheus, Alertmanager, and Loki tools for detailed monitoring.
