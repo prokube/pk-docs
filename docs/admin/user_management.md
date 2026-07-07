@@ -89,6 +89,8 @@ Before deleting a workspace, confirm that required data has been exported or arc
 
 Open **User Management** > **Groups** to manage groups. Groups are useful when multiple users need the same workspace access.
 
+![Groups page](../_static/screenshots/admin/user-management/groups-page.png)
+
 The Groups page supports search and pagination. The management panel shows group members and workspace access for the selected group.
 
 To create a group:
@@ -96,6 +98,8 @@ To create a group:
 1. Click **Create Group**.
 2. Enter the group name and optional description.
 3. Save the group.
+
+![Create Group dialog](../_static/screenshots/admin/user-management/create-group-dialog.png)
 
 To manage a group, click **Manage** on the group row. The side panel lets you add or remove members and grant or revoke workspace access.
 
