@@ -1,76 +1,16 @@
-# Cloud Build configuration for the prokube.ai documentation site.
-#
-# Branch targets:
-# - main:    deploys to prokube.ai/docs     via gs://prokube-website-production/docs/
-# - staging: deploys to prokube.cloud/docs  via gs://prokube-website/docs/
-#
-# The docs/ prefix in these buckets is excluded from the main website sync,
-# so this pipeline manages it independently.
-#
-# Register a Cloud Build trigger:
-#   Event: Push to branch
-#   Source: prokube/pk-docs
-#   Branch: ^(main|staging)$
-#   Cloud Build config: cloudbuild.yaml
+# We run this cloudbuild only from the gh-pages branch.
+# The GitHub workflow builds VitePress, pushes the generated site to gh-pages,
+# and includes this file in the generated output for the Cloud Build trigger.
 
 substitutions:
-  _PRODUCTION_GCS_BUCKET: 'prokube-website-production'
-  _STAGING_GCS_BUCKET: 'prokube-website'
-  _GCS_BUCKET: ''
+  # Staging-only target. Override this in the Cloud Build trigger to use a
+  # dedicated docs bucket, for example gs://prokube-docs-staging/.
+  _DOCS_GCS_TARGET: 'gs://prokube-website/docs/'
 
 steps:
-  - name: node:22
-    entrypoint: bash
-    args:
-      - -c
-      - |
-        set -euo pipefail
-        npm ci
-
-  - name: node:22
-    entrypoint: bash
-    args:
-      - -c
-      - |
-        set -euo pipefail
-        npm run build
-
+  # Upload all content from gh-pages branch to prokube.cloud/docs.
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
-    entrypoint: bash
-    args:
-      - -c
-      - |
-        set -euo pipefail
-
-        branch="$$BRANCH_NAME"
-        docs_prefix="docs"
-        gcs_bucket="$$_GCS_BUCKET"
-
-        if [ -z "$$gcs_bucket" ]; then
-          if [ "$$branch" = "main" ]; then
-            gcs_bucket="$$_PRODUCTION_GCS_BUCKET"
-          elif [ "$$branch" = "staging" ]; then
-            gcs_bucket="$$_STAGING_GCS_BUCKET"
-          else
-            echo "No deployment target for branch '$$branch'. Skipping."
-            exit 0
-          fi
-        fi
-
-        echo "Deploying $$branch to gs://$$gcs_bucket/$$docs_prefix/"
-
-        # Full sync of the built site into the docs/ prefix.
-        gsutil -m rsync -r -d docs/.vitepress/dist "gs://$$gcs_bucket/$$docs_prefix"
-
-        # Copy HTML files with no-cache headers so content updates are visible immediately.
-        shopt -s globstar nullglob
-        for html_file in docs/.vitepress/dist/**/*.html; do
-          object_path="docs/$${html_file#docs/.vitepress/dist/}"
-          gsutil -h "Cache-Control:no-cache" -h "Content-Type:text/html" cp "$$html_file" "gs://$$gcs_bucket/$$object_path"
-        done
-
-        # Cache static assets (fonts, images, JS, CSS) for a year.
-        gsutil -m setmeta -h "Cache-Control:public, max-age=31536000, immutable" "gs://$$gcs_bucket/$$docs_prefix/assets/**"
+    args: ['gsutil', '-m', 'rsync', '-r', '-d', '.', '${_DOCS_GCS_TARGET}']
 
 options:
   logging: CLOUD_LOGGING_ONLY
