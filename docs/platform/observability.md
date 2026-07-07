@@ -18,6 +18,8 @@ Basic workflow:
 
 Access is scoped to the workspaces you can access.
 
+![Logs browser](../_static/screenshots/platform/observability/logs-browser.png)
+
 ## Filter Logs
 
 Start with broad filters and narrow the query when needed:
@@ -32,11 +34,15 @@ Use advanced filters for targeted debugging:
 - **Container name**: filter a specific container in a multi-container pod.
 - **Label filters**: filter by Kubernetes labels discovered from the selected workspace.
 
+![Logs advanced filters](../_static/screenshots/platform/observability/logs-advanced-filters.png)
+
 ## Read and Export Results
 
 After a search, the Logs page shows returned entries and a histogram for the selected time range. Use the histogram to spot bursts of activity and narrow the time window.
 
 Use **Download** to save the shown log entries as a text file for sharing or offline analysis. Review downloaded logs before sharing them outside your team; application logs can contain user data, object paths, request payloads, or other sensitive values.
+
+![Logs results](../_static/screenshots/platform/observability/logs-results.png)
 
 ## Common Uses
 
