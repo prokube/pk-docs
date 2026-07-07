@@ -87,6 +87,8 @@ Relevant examples:
 | [`mlflow/mlflow-kfp-example.ipynb`](https://github.com/prokube/examples/blob/main/mlflow/mlflow-kfp-example.ipynb) | You want to use MLflow tracking inside a Kubeflow Pipeline. |
 | [`mlflow/mobile-price-classification`](https://github.com/prokube/examples/tree/main/mlflow/mobile-price-classification) | You want a pipeline-oriented example that tracks a model and registers it in MLflow. |
 
+MLflow artifacts are stored through platform-managed object storage. For general object-storage browsing and S3-compatible client access, see [Object Storage](../platform/object_storage.md).
+
 ## Permissions and Naming
 
 MLflow permissions are independent of prokube workspace membership.

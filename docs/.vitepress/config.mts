@@ -78,6 +78,7 @@ export default defineConfig({
           { text: 'Overview', link: '/platform/' },
           { text: 'Workspaces', link: '/platform/workspaces.html' },
           { text: 'Kubernetes Resources', link: '/platform/kubernetes.html' },
+          { text: 'Object Storage', link: '/platform/object_storage.html' },
           { text: 'Observability', link: '/platform/observability.html' },
           { text: 'API Keys', link: '/platform/api_keys.html' }
         ]
@@ -86,7 +87,9 @@ export default defineConfig({
         text: 'Admin',
         collapsed: false,
         items: [
-          { text: 'Overview', link: '/admin/' }
+          { text: 'Overview', link: '/admin/' },
+          { text: 'User Management', link: '/admin/user_management.html' },
+          { text: 'System Status', link: '/admin/system_status.html' }
         ]
       }
     ],

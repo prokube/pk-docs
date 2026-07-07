@@ -202,7 +202,7 @@ Configure scaling through the **Scaling** section in the deployment form, or set
 
 ### S3-compatible Storage
 
-InferenceServices access models in object storage through a `ServiceAccount` annotated with S3 endpoint details. The prokube workspace is preconfigured with S3-compatible storage; use the **Object Storage** page in the UI to see available buckets.
+InferenceServices access models in object storage through a `ServiceAccount` annotated with S3 endpoint details. The prokube workspace is preconfigured with S3-compatible storage; use the **Object Storage** page in the UI to see available buckets. See [Object Storage](../platform/object_storage.md) for storage browser, path, and client details.
 
 For models stored in workspace buckets, the deployment wizard's **Browse S3** button selects the path directly. For `kubectl`-based deployment, a secret named `s3creds` with the correct KServe annotations already exists in the workspace namespace and grants access to the buckets the workspace can see. Reference it from the InferenceService via `spec.predictor.serviceAccountName`.
 
@@ -256,6 +256,8 @@ To find library versions pinned in a runtime image, browse the KServe repository
 
 Start with the model detail page in the UI. The **Conditions** tab surfaces KServe condition states. The **Logs** tab shows predictor pod logs. The **Events** tab shows Kubernetes events.
 
+Use the [Logs browser](../platform/observability.md#logs-browser) when you need to search retained logs by pod, container, label, or time range.
+
 Common causes:
 
 - **Model not Ready** – check the Conditions tab for the failure reason. Common issues: invalid storage URI, missing credentials, insufficient resources.
@@ -267,6 +269,7 @@ Common causes:
 ## Related Pages
 
 - [Labs](../labs/index.md)
+- [Object Storage](../platform/object_storage.md)
 - [MLflow](mlflow.md)
 - [Pipelines](pipelines.md)
 - [API Keys](../platform/api_keys.md)

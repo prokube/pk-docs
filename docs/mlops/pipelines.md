@@ -130,7 +130,7 @@ Practical rules:
 - pass explicit S3 object paths into pipelines when an example expects them;
 - use the **Object Storage** page in the prokube UI to see which buckets are available to your workspace.
 
-For object-storage access from Labs, see [Object Storage from Labs](../labs/index.md#object-storage-from-labs).
+For object-storage access from Labs, external clients, and storage security notes, see [Object Storage](../platform/object_storage.md).
 
 ## Component Images
 
@@ -247,6 +247,8 @@ Large pipelines can approach the workspace pod quota quickly because completed p
 ## Troubleshooting
 
 Start with the Pipeline Runs page. Open the run details and inspect failed steps, UI warnings, pod events, and component logs. The UI surfaces common operational problems, for example missing secrets or workspace pod-count limits. Logs are available from the running pod where possible and from Loki after the pod has already terminated.
+
+Use the [Logs browser](../platform/observability.md#logs-browser) when the pipeline details page does not show the logs you need or when you want to search across pods by time range, pod name, container, or label.
 
 ![Inspect a pipeline run graph and component logs](../_static/screenshots/mlops/pipelines/pipeline-run-dag-including-logs-viewer.png)
 

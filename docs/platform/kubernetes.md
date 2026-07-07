@@ -102,11 +102,12 @@ Common pod states:
 - `CrashLoopBackOff`: the container starts and exits repeatedly. Check container logs.
 - `Pending`: Kubernetes cannot schedule the pod. Check resource requests, quotas, GPUs, and workspace pod limits.
 
-For platform log views and retained workload logs, see [Observability](observability.md).
+For platform log views and retained workload logs, see [Observability](observability.md). For workspace bucket access and S3-compatible storage, see [Object Storage](object_storage.md).
 
 ## Related Pages
 
 - [Workspaces](workspaces.md)
+- [Object Storage](object_storage.md)
 - [Observability](observability.md)
 - [Using Labs](../labs/index.md)
 - [Pipelines](../mlops/pipelines.md)

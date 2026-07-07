@@ -72,7 +72,7 @@ prokube JupyterLab images can include an S3 browser extension for working with S
 
 The extension lets you browse buckets, upload and download files, copy S3 paths, and generate snippets for loading data with common Python libraries. The required S3 endpoint and credentials are provided through the workspace configuration, so users normally do not need to configure access manually.
 
-For terminal and Python access to object storage from Labs, see [Object Storage from Labs](index.md#object-storage-from-labs).
+For terminal, Python, and external-client access to object storage, see [Object Storage](../platform/object_storage.md).
 
 Some workflows need custom container images, for example pipeline components, KServe predictors, custom model servers, or agent runtimes. For the shared image-building workflow and limitations, see [Building Container Images](index.md#building-container-images).
 

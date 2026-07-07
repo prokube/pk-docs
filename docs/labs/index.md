@@ -145,7 +145,7 @@ rclone copy local-file minio:my-bucket/path/
 rclone copy minio:my-bucket/path/file ./file
 ```
 
-For Python examples with `s3fs`, pandas, DuckDB, and S3-compatible configuration, use the existing MinIO documentation at [docs.prokube.ai](https://docs.prokube.ai/latest/user_docs/minio/) while this section is being migrated.
+For Python examples with `s3fs`, pandas, S3-compatible configuration, external clients, and storage security notes, see [Object Storage](../platform/object_storage.md).
 
 ## Building Container Images
 
@@ -179,6 +179,7 @@ Common cases:
 
 - **The Lab does not start**: check pod events for image pull errors, missing secrets, failed volume mounts, resource quota limits, or scheduling errors.
 - **The browser shows an upstream connection error**: the Lab pod may not be ready yet, may have crashed, or may be unable to start the expected web server. Check pod status and logs.
+- **The Lab starts and then crashes**: use the [Logs browser](../platform/observability.md#logs-browser) to search the Lab pod logs by workspace and pod name.
 - **A private custom image cannot be pulled**: verify the image reference and registry credentials. See [Registry Credentials](custom_notebooks.md#registry-credentials).
 - **A volume cannot be attached**: another running pod may still be using a `ReadWriteOnce` volume on a different node, or the cluster may still have a stale volume attachment after a node restart. Stop other Labs using the volume and contact your administrator if the attachment does not clear.
 - **The Lab cannot be resized**: create a new Lab with the desired resources and reuse the relevant persistent volume. If the volume itself is too small, create or request a larger volume and copy the data.
