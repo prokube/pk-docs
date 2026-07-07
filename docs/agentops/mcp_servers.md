@@ -1,16 +1,24 @@
 # MCP Servers
 
-Upstream references: [Model Context Protocol](https://modelcontextprotocol.io/) and [ToolHive](https://docs.stacklok.com/toolhive/).
+::: info Upstream documentation
+For MCP and ToolHive concepts that are not specific to prokube, use the upstream documentation:
+
+- [Model Context Protocol documentation](https://modelcontextprotocol.io/)
+- [ToolHive documentation](https://docs.stacklok.com/toolhive/)
+- [ToolHive MCPServer API reference](https://docs.stacklok.com/toolhive/reference/mcpserver/)
+:::
 
 MCP servers expose tools, data sources, and internal APIs to AI assistants through the Model Context Protocol. In prokube, MCP servers run as Kubernetes workloads managed by ToolHive instead of local processes on a developer machine.
 
 Use MCP servers when an agent or MCP-capable client needs governed access to a tool, for example sandbox execution, browser automation, databases, internal APIs, or other services that should not be called with broad user credentials.
 
+For runnable manifests and a small custom FastMCP server image, see the [`agentops/mcp-toolhive`](https://github.com/prokube/examples/tree/main/agentops/mcp-toolhive) example.
+
 ## How prokube Runs MCP Servers
 
-Open **MCP** from the prokube UI sidebar under **Serving**. Select the workspace before deploying or inspecting servers.
+Open **MCP** from the prokube UI sidebar under **AgentOps**. Select the workspace before deploying or inspecting servers.
 
-An MCP server is deployed into the selected workspace namespace as a ToolHive `MCPServer` resource. prokube provides the UI, workspace authorization, registry integration, logs, events, metrics, and optional gateway access. ToolHive handles the MCP server runtime and proxying inside the cluster.
+An MCP server is deployed into the selected workspace namespace as a [ToolHive `MCPServer`](https://docs.stacklok.com/toolhive/reference/mcpserver/) resource. prokube provides the UI, workspace authorization, registry integration, logs, events, metrics, and optional gateway access. ToolHive handles the MCP server runtime and proxying inside the cluster.
 
 The MCP page contains two main sections:
 
@@ -131,3 +139,4 @@ Live view is only available for servers that declare live-view support in the ca
 - [Kubernetes Resources](../platform/kubernetes.html)
 - [Agent Sandboxes](./sandboxes.html)
 - [Agents](./agents.html)
+- [`prokube/examples` MCP ToolHive example](https://github.com/prokube/examples/tree/main/agentops/mcp-toolhive)
