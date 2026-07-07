@@ -240,6 +240,29 @@ def run_metadata_pipeline():
     )
 ```
 
+### Schedule Components on Specific Nodes
+
+By default, pipeline pods are scheduled on any node that satisfies their resource requests. If a component needs a specific node pool, GPU type, or other node label, add a node selector constraint to that task.
+
+Example:
+
+```python
+from kfp import dsl
+
+
+@dsl.component
+def train():
+    print("training")
+
+
+@dsl.pipeline
+def training_pipeline():
+    task = train()
+    task.add_node_selector_constraint("nvidia.com/gpu.product", "NVIDIA-H100-NVL")
+```
+
+The label must exist on a suitable node, and the workspace must be allowed to use that scheduling option. If the task stays `Pending`, check pod events and resource requests.
+
 ## Pod Quota and Cleanup
 
 Large pipelines can approach the workspace pod quota quickly because completed pipeline step pods remain in the workspace namespace for a while after the run finishes. The prokube UI surfaces pod-quota pressure next to the workspace selector and can clean up completed pipeline pods. See [Kubernetes Resources](../platform/kubernetes.md#pod-quota-and-cleanup) for details.
@@ -259,6 +282,7 @@ Common causes:
 - **Import errors in components**: move dependencies into the component image or declare them explicitly for lightweight components.
 - **Permission errors**: confirm that the selected workspace has access to the required secrets, buckets, and Kubernetes resources.
 - **Slow startup**: avoid installing large dependencies at component runtime; use a custom image instead.
+- **Wrong CPU architecture**: if a component fails with `exec format error`, rebuild the image for the cluster node architecture, commonly `linux/amd64`.
 
 ## Related Pages
 

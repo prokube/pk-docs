@@ -126,7 +126,7 @@ OpenCode Labs include an integrated terminal backed by the OpenCode PTY API. Use
 
 The terminal runs inside the same Lab pod as OpenCode. It is useful for explicit manual commands, but it is not a separate sandbox. If you need package installation patterns or object-storage access in a Lab where those permissions are intentionally enabled, use the shared Labs guidance:
 
-- [Object Storage from Labs](index.md#object-storage-from-labs)
+- [Object Storage](../platform/object_storage.md)
 - [Persistence and Package Installation](index.md#persistence-and-package-installation)
 
 ## Add MCP Servers

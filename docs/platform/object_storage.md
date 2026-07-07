@@ -77,7 +77,51 @@ import pandas as pd
 df = pd.read_parquet("s3://my-bucket/path/data.parquet")
 ```
 
+DuckDB can read files from object storage through its `httpfs` extension. In managed Labs, S3-compatible endpoint and credential environment variables are usually provided by the workspace configuration:
+
+```python
+import duckdb
+
+conn = duckdb.connect()
+conn.execute("INSTALL httpfs")
+conn.execute("LOAD httpfs")
+conn.execute("SET s3_url_style='path'")
+
+df = conn.sql("SELECT * FROM read_parquet('s3://my-bucket/path/data.parquet') LIMIT 10").df()
+```
+
+If DuckDB cannot discover credentials automatically, configure it from environment variables rather than hard-coding secrets:
+
+```python
+import os
+
+conn.execute(f"SET s3_access_key_id='{os.environ['AWS_ACCESS_KEY_ID']}'")
+conn.execute(f"SET s3_secret_access_key='{os.environ['AWS_SECRET_ACCESS_KEY']}'")
+```
+
 JupyterLab images can also include an S3 browser extension in the JupyterLab sidebar. See [JupyterLab](../labs/jupyterlab.md#object-storage-in-jupyterlab).
+
+## Access from Workloads
+
+Labs and model-serving workloads usually receive object-storage configuration automatically. Other Kubernetes workloads, such as custom pods, Katib trials, PyTorchJobs, or pipeline components, may need the workspace `s3creds` secret injected explicitly.
+
+For a plain pod or training-job manifest, inject only the keys the workload needs:
+
+```yaml
+env:
+  - name: AWS_ACCESS_KEY_ID
+    valueFrom:
+      secretKeyRef:
+        name: s3creds
+        key: AWS_ACCESS_KEY_ID
+  - name: AWS_SECRET_ACCESS_KEY
+    valueFrom:
+      secretKeyRef:
+        name: s3creds
+        key: AWS_SECRET_ACCESS_KEY
+```
+
+For Kubeflow Pipelines, use `kfp-kubernetes` instead of embedding credentials in pipeline code or compiled YAML. See [Use Secrets in Components](../mlops/pipelines.md#use-secrets-in-components).
 
 ## External S3 Clients
 
@@ -139,9 +183,11 @@ Follow these rules:
 | Symptom | Check |
 |---|---|
 | Bucket is not visible | Confirm that the selected workspace or user has access to the bucket. |
-| Upload fails | Check file size limits, available storage, and whether the bucket policy allows writes. |
+| Upload fails | Check file size limits, available storage, and whether the bucket policy allows writes. For large files, use a Lab terminal, `rclone`, or another S3-compatible client instead of the browser upload path. |
 | Pipeline cannot read an object | Verify the exact `s3://` path and the workspace credentials used by the pipeline pod. |
+| Katib, PyTorchJob, or a custom pod cannot read objects | Inject the workspace `s3creds` secret into the workload container and verify the S3 client uses those environment variables. |
 | Model serving cannot load a model | Verify the storage URI, model artifact layout, and KServe storage credentials. See [Model Serving](../mlops/model_serving.md#s3-compatible-storage). |
+| DuckDB cannot read an object | Load the `httpfs` extension, use `s3://` paths, and confirm DuckDB can discover or is explicitly given the S3 credentials. |
 | External client returns authentication errors | Check endpoint URL, access key, secret key, and whether the credential has permission for the bucket. |
 
 ## Related Pages

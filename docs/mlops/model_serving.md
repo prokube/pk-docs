@@ -198,6 +198,10 @@ KServe supports three autoscaling strategies:
 
 Configure scaling through the **Scaling** section in the deployment form, or set `scaleTarget`, `scaleMetric`, and `minReplicas`/`maxReplicas` directly in the YAML manifest.
 
+For strict per-replica request concurrency, use KServe/Knative YAML fields such as `containerConcurrency`. For LLM workloads, request count is often not enough to model load accurately; token throughput, queue depth, and GPU memory pressure can be better scaling signals. The [`kserve-keda-autoscaling`](https://github.com/prokube/examples/tree/main/serving/kserve-keda-autoscaling) example shows a KEDA-based pattern for this.
+
+KEDA and the Knative Pod Autoscaler should not manage the same workload at the same time. If you configure KEDA manually, use the deployment mode and annotations required by your KServe version and cluster policy.
+
 ## Storage and Credentials
 
 ### S3-compatible Storage
@@ -264,7 +268,44 @@ Common causes:
 - **ModuleNotFoundError** – library version mismatch between training and serving runtime. See [Version Matching](#version-matching).
 - **Image pull errors** – verify the container image reference and registry credentials for custom predictors.
 - **401 Unauthorized** – missing or invalid API key. Create an API key from the user menu under **API Keys**.
-- **Model load timeout** – large models may need increased `progressDeadline` or an administrator-configured local model cache. See the admin guide for enabling [local model cache](https://docs.prokube.ai/latest/admin_docs/model_serving.html).
+- **Pods are running but the InferenceService is not ready** – check KServe conditions first. If the model and transformer pods look healthy but readiness does not progress, an administrator may need to inspect Knative Serving controller logs and route status.
+- **Model load timeout** – large models may need a longer Knative progress deadline or an administrator-configured local model cache. In YAML, set `serving.knative.dev/progress-deadline` under `spec.predictor.annotations` when supported by your cluster.
+- **Service IP range exhausted** – errors such as `failed to allocate a serviceIP: range is full` are cluster-level capacity issues. Ask an administrator to inspect stale Services, Knative revision garbage collection, and service CIDR capacity.
+- **Model needs a specific node type** – use YAML to set `spec.predictor.nodeSelector`, affinity, or tolerations when the cluster allows those fields. The form may not expose advanced scheduling fields.
+
+Example progress-deadline annotation:
+
+```yaml
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: large-model
+spec:
+  predictor:
+    annotations:
+      serving.knative.dev/progress-deadline: 180m
+    model:
+      modelFormat:
+        name: huggingface
+      storageUri: s3://models/large-model
+```
+
+Example node selector:
+
+```yaml
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: gpu-model
+spec:
+  predictor:
+    nodeSelector:
+      nvidia.com/gpu.product: NVIDIA-H100-NVL
+    model:
+      modelFormat:
+        name: huggingface
+      storageUri: s3://models/gpu-model
+```
 
 ## Related Pages
 
