@@ -74,7 +74,7 @@ Prefer custom images that run as non-root and work with a read-only root filesys
 
 The deploy dialog can generate a ToolHive `MCPServer` manifest before creating the resource. Use the YAML preview when you need to inspect or adjust the generated manifest.
 
-The namespace is set by prokube to the selected workspace namespace. Custom YAML must still be a ToolHive `MCPServer` resource using a supported `toolhive.stacklok.dev` API version.
+You can also submit an `MCPServer` manifest through the UI for advanced cases. The namespace is set by prokube to the selected workspace namespace. Custom YAML must still be a ToolHive `MCPServer` resource using a supported `toolhive.stacklok.dev` API version.
 
 ## Connect Clients
 
