@@ -40,6 +40,42 @@ Common MicroK8s setup areas include:
 
 Do not treat MicroK8s as the default recommendation for larger production clusters. For larger on-premise deployments, consider a full Kubernetes distribution and storage stack with a documented support model.
 
+### MicroK8s Certificate Maintenance
+
+MicroK8s clusters use internal certificates for Kubernetes API and control-plane communication. On long-running self-managed clusters, include certificate checks in the maintenance calendar. Expired certificates can break `kubectl`, web access through cluster components, and node-to-control-plane communication.
+
+Check certificate validity on a MicroK8s node:
+
+```bash
+sudo microk8s.refresh-certs -c
+```
+
+Renew the API server and front-proxy client certificates:
+
+```bash
+sudo microk8s.refresh-certs -e server.crt
+sudo microk8s.refresh-certs -e front-proxy-client.crt
+```
+
+In multi-node MicroK8s clusters, run the required renewal on each affected node and plan a short maintenance window. After renewal, restart MicroK8s if components do not recover cleanly:
+
+```bash
+sudo microk8s stop
+sudo microk8s start
+```
+
+If the deployment uses a self-signed or private TLS certificate for the Kubernetes API or authentication integration, update the corresponding platform secret as part of certificate rotation. In deployments that use the legacy `k8s-cert` secret for authservice trust, recreate it with the renewed certificate and restart authservice:
+
+```bash
+kubectl delete secret k8s-cert -n istio-system
+kubectl create secret generic k8s-cert \
+  --from-file=k8s.crt=<your-tls-cert> \
+  -n istio-system
+kubectl rollout restart statefulset/authservice -n istio-system
+```
+
+Verify the exact secret name and namespace in the target deployment before applying this step; newer deployments may use a different trust distribution mechanism.
+
 ## Storage and GPUs
 
 Deployment choice affects storage and GPU behavior. For example, single-node storage can be simple but has limited failure tolerance; distributed storage can improve availability but needs careful capacity and failure-domain planning. GPU scheduling, MIG, and time-slicing also depend on the node setup and NVIDIA operator configuration.
