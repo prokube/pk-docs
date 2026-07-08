@@ -80,6 +80,7 @@ export default defineConfig({
           { text: 'Workspaces', link: '/platform/workspaces.html' },
           { text: 'Kubernetes Resources', link: '/platform/kubernetes.html' },
           { text: 'Object Storage', link: '/platform/object_storage.html' },
+          { text: 'Platform Databases', link: '/platform/databases.html' },
           { text: 'Observability', link: '/platform/observability.html' },
           { text: 'System Status', link: '/platform/system_status.html' },
           { text: 'API Keys', link: '/platform/api_keys.html' }
@@ -92,6 +93,7 @@ export default defineConfig({
           { text: 'Overview', link: '/admin/' },
           { text: 'User Management', link: '/admin/user_management.html' },
           { text: 'Network Policies', link: '/admin/network_policies.html' },
+          { text: 'Deployment Options', link: '/admin/deployment_options.html' },
           { text: 'Operations Runbooks', link: '/admin/operations_runbooks.html' }
         ]
       }

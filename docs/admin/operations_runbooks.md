@@ -332,10 +332,102 @@ Use `.*` in regular expressions. A bare `*` is not a valid replacement for regex
 
 Be careful with shared dashboards and broad Explore access. Depending on permissions, a Grafana dashboard or Loki query can expose logs from multiple namespaces. Do not publish log dashboards broadly unless namespace scoping and access controls have been verified.
 
+### Alertmanager
+
+Alertmanager handles alert notification routing. In prokube deployments that use `kube-prometheus-stack`, Prometheus alerting rules are usually defined with `PrometheusRule` resources, while notification routing is defined with `AlertmanagerConfig` resources.
+
+Use upstream references for the full API surface:
+
+- [Alertmanager documentation](https://prometheus.io/docs/alerting/latest/alertmanager/)
+- [Prometheus alerting rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/)
+- [PrometheusRule API](https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PrometheusRule)
+- [AlertmanagerConfig API](https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1beta1.AlertmanagerConfig)
+
+List existing rules and routing configs:
+
+```bash
+kubectl get prometheusrules -A
+kubectl get alertmanagerconfigs -A
+```
+
+To route critical alerts to Microsoft Teams, create a Teams Workflow that accepts webhook alerts, store the webhook URL in a Kubernetes Secret, and reference it from an `AlertmanagerConfig` using `msteamsv2Configs`.
+
+Microsoft is retiring older Microsoft 365 connector workflows. Use Teams Workflows / Power Automate based incoming webhooks with `msteamsv2Configs`, not the older Teams connector configuration.
+
+Create the webhook secret in the namespace selected by the Alertmanager configuration:
+
+```bash
+kubectl create secret generic msteams-webhook-secret \
+  -n monitoring \
+  --from-literal=webhook-url='<teams-workflow-webhook-url>'
+```
+
+Example route for alerts labeled `severity="critical"`:
+
+```yaml
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: critical-alerts-to-teams
+  namespace: monitoring
+spec:
+  receivers:
+    - name: teams-critical
+      msteamsv2Configs:
+        - sendResolved: true
+          title: '[prokube] {{ template "msteamsv2.default.title" . }}'
+          webhookURL:
+            name: msteams-webhook-secret
+            key: webhook-url
+  route:
+    receiver: teams-critical
+    matchers:
+      - name: severity
+        matchType: =
+        value: critical
+```
+
+Example `PrometheusRule` for pods that remain in `CrashLoopBackOff`:
+
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: workspace-crashloop-alerts
+  namespace: monitoring
+  labels:
+    role: alert-rules
+spec:
+  groups:
+    - name: workspace-crashloop
+      rules:
+        - alert: PodCrashLooping
+          expr: >
+            max_over_time(
+              kube_pod_container_status_waiting_reason{
+                job="kube-state-metrics",
+                namespace="<workspace>",
+                reason="CrashLoopBackOff"
+              }[3m]
+            ) >= 1
+          for: 3m
+          labels:
+            severity: critical
+          annotations:
+            summary: Pod in {{ $labels.namespace }} is crash looping.
+            description: >
+              Pod {{ $labels.namespace }}/{{ $labels.pod }} container
+              {{ $labels.container }} has been waiting with reason
+              CrashLoopBackOff for more than 3 minutes.
+```
+
+Alerting on KServe/Knative service health requires the relevant Knative custom-resource metrics to be exported by kube-state-metrics. Verify the metric names and labels in Prometheus before deploying production alert rules.
+
 ## Related Pages
 
 - [Admin Overview](index.md)
 - [User Management](user_management.md)
 - [Object Storage](../platform/object_storage.md)
+- [Platform Databases](../platform/databases.md)
 - [Observability](../platform/observability.md)
 - [Model Serving Autoscaling](../mlops/model_serving_autoscaling.md)
