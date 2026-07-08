@@ -72,6 +72,8 @@ Key concepts apply across all Lab types:
 
 Running Labs reserve CPU, memory, GPU, and volume attachments in the cluster. Stop Labs when you no longer need the running process.
 
+Some deployments enable notebook culling for idle JupyterLab servers. Culling is controller configuration, not a guarantee that every Lab type behaves the same way. VS Code, RStudio, OpenCode, and custom notebook images can have different idle-detection behavior depending on the installed controllers and images.
+
 Common lifecycle operations:
 
 - **Stop**: stops the Lab pod and releases compute resources. Files on mounted persistent volumes remain.
@@ -88,6 +90,8 @@ The `Configurations` and `Security options` fields are administrator-provided op
 For example, GPU-specific workloads may use an affinity configuration so that the Lab is scheduled on nodes with the required GPU type. If the required option is not visible in the launch dialog, ask your platform administrator.
 
 Configurations can also expose selected Kubernetes Secret values as environment variables. Create the secret in the workspace first, for example through **K8s Secrets** in the prokube user menu, then select the matching configuration when launching the Lab. Do not put secret values directly into notebooks, shell history, or container images.
+
+Administrators create these options with Kubeflow PodDefaults or equivalent notebook configuration. Users can select only the configurations exposed to the workspace. If a required secret, node affinity, toleration, or environment variable is missing, ask the platform administrator to add a reusable configuration instead of editing generated notebook resources by hand.
 
 ## Persistence and Package Installation
 

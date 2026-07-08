@@ -6,7 +6,6 @@ prokube provides S3-compatible object storage for datasets, model artifacts, pip
 For MinIO concepts and client reference that are not specific to prokube, use the upstream documentation:
 
 - [MinIO documentation](https://docs.min.io/community/minio-object-store/)
-- [MinIO Client reference](https://min.io/docs/minio/linux/reference/minio-mc.html)
 :::
 
 ## Object Storage Browser

@@ -65,7 +65,7 @@ Changing MinIO policies can affect notebooks, pipelines, model serving, and exte
 
 MinIO lifecycle rules can expire old objects automatically. They are useful for intermediate artifacts, old pipeline outputs, temporary exports, and other data with a known retention period.
 
-Configure lifecycle rules per bucket in the MinIO Console or with `mc`. Do not apply expiration rules to buckets that contain records, models, or audit-relevant artifacts unless the retention policy explicitly permits deletion.
+Configure lifecycle rules per bucket in the MinIO Console or with an S3-compatible administration client. Do not apply expiration rules to buckets that contain records, models, or audit-relevant artifacts unless the retention policy explicitly permits deletion.
 
 Typical workflow:
 
@@ -78,13 +78,27 @@ Typical workflow:
 
 Browser uploads can fail with `413 Request Entity Too Large` when an ingress or gateway request-body limit is lower than the object size.
 
-Prefer S3 clients such as `mc`, `rclone`, or SDKs for large files. If browser uploads must support larger files, adjust the request-body limit in the ingress or gateway used by the deployment. For ingress-nginx deployments, the relevant annotation is commonly:
+Prefer S3 clients such as `rclone` or SDKs for large files. If browser uploads must support larger files, adjust the request-body limit in the ingress or gateway used by the deployment. For ingress-nginx deployments, the relevant annotation is commonly:
 
 ```yaml
 nginx.ingress.kubernetes.io/proxy-body-size: "500m"
 ```
 
 Use the mechanism that matches the actual gateway in your cluster; not every prokube deployment uses ingress-nginx.
+
+### MinIO TLS Certificates
+
+MinIO Operator and tenant TLS certificates are deployment-specific and may be managed by cert-manager, the MinIO Operator, or static Kubernetes Secrets. Before renewing certificates, identify the actual trust chain and secret names in the target cluster.
+
+Useful inspection commands:
+
+```bash
+kubectl get secrets -A | grep -i minio
+kubectl get tenant -n minio -o yaml
+kubectl get pods -n minio
+```
+
+If MinIO pods report TLS or certificate expiration errors, plan a maintenance window, confirm backups, renew the certificates through the deployment's certificate authority or GitOps process, and restart only the affected operator or tenant pods after the new secrets are in place. Do not delete TLS secrets in a running production tenant unless the installed MinIO Operator documentation and deployment runbook explicitly require that recovery path.
 
 ### Tenant Resize or StorageClass Migration
 
@@ -218,6 +232,30 @@ After first login:
 5. Remove or disable temporary bootstrap credentials according to the deployment policy.
 
 To grant prokube platform administration rights, assign the user to the `pk-admin` group in the prokube realm or use the prokube UI when it exposes the needed flow. Do not use the Keycloak master admin account for routine platform administration.
+
+### Login 502 from Large Response Headers
+
+A `502` during login can happen before the request reaches the application if the ingress cannot buffer large response headers, such as large cookies or identity-provider tokens. In ingress-nginx logs this commonly appears as `upstream sent too big header`.
+
+Check the ingress controller logs first:
+
+```bash
+kubectl logs -n ingress-nginx deploy/ingress-nginx-controller
+```
+
+If the deployment uses ingress-nginx, increase the proxy buffer size on the affected ingress:
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: main
+  namespace: istio-system
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "32k"
+```
+
+Use the mechanism that matches the actual gateway in your cluster. Not every prokube deployment uses ingress-nginx, and gateway-specific buffer settings belong in the deployment configuration rather than one-off live patches when GitOps manages the cluster.
 
 ## MicroK8s Certificate Maintenance
 
@@ -457,7 +495,62 @@ spec:
               CrashLoopBackOff for more than 3 minutes.
 ```
 
+### KServe and Knative Service Alerts
+
 Alerting on KServe/Knative service health requires the relevant Knative custom-resource metrics to be exported by kube-state-metrics. Verify the metric names and labels in Prometheus before deploying production alert rules.
+
+This pattern applies to default serverless KServe deployments that use Knative Revisions. It does not apply to every deployment mode.
+
+If kube-state-metrics is configured to expose Knative `Revision` readiness, a rule can alert when no revision for a service is ready. Example expression shape:
+
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: knative-service-revision-alerts
+  namespace: monitoring
+  labels:
+    role: alert-rules
+spec:
+  groups:
+    - name: knative-revision-alerts
+      rules:
+        - alert: KnativeServiceCompletelyDown
+          expr: |
+            label_replace(
+              kube_customresource_knative_revision{type="Ready"} == 0,
+              "service_name", "$1", "name", "^(.*)-[0-9]+$"
+            )
+            unless on(namespace, service_name)
+            label_replace(
+              kube_customresource_knative_revision{type="Ready"} == 1,
+              "service_name", "$1", "name", "^(.*)-[0-9]+$"
+            )
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: Knative service {{ $labels.service_name }} is completely down.
+            description: No ready revision exists for {{ $labels.namespace }}/{{ $labels.service_name }}.
+```
+
+Treat this as a starting point. Confirm the metric name, labels, revision naming convention, and namespace selection in the installed kube-state-metrics configuration before enabling paging alerts.
+
+### Katib Suggestion Controller OOM
+
+Large Katib experiments, especially Bayesian optimization workloads, can exhaust the suggestion controller's memory. Symptoms include new trials no longer being created and `OOMKilled` restarts on Katib suggestion-controller pods.
+
+Inspect the controller state:
+
+```bash
+kubectl get pods -n kubeflow | grep katib
+kubectl describe pod <katib-suggestion-pod> -n kubeflow
+kubectl logs <katib-suggestion-pod> -n kubeflow --previous
+```
+
+Increase suggestion-controller CPU and memory in the authoritative Katib configuration for the deployment, commonly the `katib-config` ConfigMap or Helm/Kustomize values that render it. In GitOps-managed clusters, update the deployment repository instead of live-editing generated resources.
+
+After rollout, verify that the suggestion pod stays running and that experiments create new trials again. If OOMs continue, reduce experiment parallelism or search-space size, or choose a lighter suggestion algorithm.
 
 ## Related Pages
 

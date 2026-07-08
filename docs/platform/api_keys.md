@@ -60,7 +60,7 @@ Choose the authentication format expected by the client:
 | Format | Use when |
 |---|---|
 | `Authorization: Bearer <key>` | The client is OpenAI-compatible or expects bearer authentication. This is the recommended format for LLM clients. |
-| `x-api-key: <key>` | The client uses existing prokube service examples for Sandboxes, MCP, A2A, KServe, or other non-OpenAI-style APIs. |
+| `x-api-key: <key>` | The client uses existing prokube service examples for Sandboxes, MCP, A2A, or other non-OpenAI-style APIs. |
 
 Use the service page for the exact URL and request body. Examples:
 

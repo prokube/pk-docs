@@ -81,6 +81,7 @@ export default defineConfig({
           { text: 'Kubernetes Resources', link: '/platform/kubernetes.html' },
           { text: 'Object Storage', link: '/platform/object_storage.html' },
           { text: 'Platform Databases', link: '/platform/databases.html' },
+          { text: 'Component Versions', link: '/platform/component_versions.html' },
           { text: 'Observability', link: '/platform/observability.html' },
           { text: 'System Status', link: '/platform/system_status.html' },
           { text: 'API Keys', link: '/platform/api_keys.html' }
@@ -91,8 +92,16 @@ export default defineConfig({
         collapsed: false,
         items: [
           { text: 'Overview', link: '/admin/' },
+          { text: 'Installation Planning', link: '/admin/installation.html' },
           { text: 'User Management', link: '/admin/user_management.html' },
+          { text: 'Identity Providers', link: '/admin/identity_providers.html' },
           { text: 'Network Policies', link: '/admin/network_policies.html' },
+          { text: 'Application Networking', link: '/admin/application_networking.html' },
+          { text: 'Application Authentication', link: '/admin/application_authentication.html' },
+          { text: 'Storage', link: '/admin/storage.html' },
+          { text: 'GPU Administration', link: '/admin/gpu.html' },
+          { text: 'Backup and Restore', link: '/admin/backup_restore.html' },
+          { text: 'Upgrading', link: '/admin/upgrading.html' },
           { text: 'Operations Runbooks', link: '/admin/operations_runbooks.html' }
         ]
       }

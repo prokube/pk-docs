@@ -47,3 +47,4 @@ For a starting point, see Crunchy Data's [PostgreSQL performance tuning guidance
 - [Workspaces](workspaces.md)
 - [Kubernetes Resources](kubernetes.md)
 - [Object Storage](object_storage.md)
+- [Backup and Restore](../admin/backup_restore.md)
