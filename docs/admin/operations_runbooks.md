@@ -219,6 +219,79 @@ After first login:
 
 To grant prokube platform administration rights, assign the user to the `pk-admin` group in the prokube realm or use the prokube UI when it exposes the needed flow. Do not use the Keycloak master admin account for routine platform administration.
 
+## Workspace Defaults and Image Pull Secrets
+
+prokube workspaces are Kubernetes namespaces with platform-managed defaults. Two defaults are especially important for administrators: shared registry credentials and workspace resource quotas.
+
+### Global Registry Credentials
+
+prokube includes a secret propagation operator for shared image pull credentials. It watches registry credential secrets in the `ops` namespace whose names start with `regcred` and copies them into active namespaces.
+
+During reconciliation, the operator:
+
+- copies managed `regcred*` secrets from `ops` into other active namespaces;
+- removes propagated copies when the source secret is removed from `ops`;
+- patches `default*` service accounts, including `default`, `default-editor`, and `default-viewer`, so their `imagePullSecrets` include the managed registry credentials;
+- preserves non-`regcred*` image pull secrets already present on those service accounts.
+
+Use this mechanism for cluster-wide registry credentials that many workspaces need. For credentials intended for one workspace only, use the user-facing **Registry Credentials** flow instead; see [Kubernetes Resources](../platform/kubernetes.md#registry-credentials).
+
+To inspect the current global credentials:
+
+```bash
+kubectl get secrets -n ops 'regcred*'
+```
+
+To verify propagation into a workspace:
+
+```bash
+kubectl get secrets -n <workspace> 'regcred*'
+kubectl get serviceaccount default-editor -n <workspace> -o yaml
+```
+
+Treat global registry credentials as shared infrastructure secrets. Rotate them deliberately, verify affected workloads after rotation, and avoid using personal registry tokens for cluster-wide pulls.
+
+### Workspace Resource Quotas
+
+New workspaces receive a default `Profile` resource quota. The current platform patch sets a default pod limit of 100 pods per workspace:
+
+```yaml
+spec:
+  resourceQuotaSpec:
+    hard:
+      count/pods: "100"
+```
+
+This prevents a single workspace from creating an unbounded number of pods and exhausting cluster capacity. Large pipeline runs, Katib experiments, distributed training jobs, and scale-out serving workloads can hit this limit quickly.
+
+Users can see pod quota pressure in [System Status](../platform/system_status.md) and through quota warnings in the prokube UI. Administrators can inspect the live quota directly:
+
+```bash
+kubectl get resourcequota -n <workspace>
+kubectl describe resourcequota -n <workspace>
+```
+
+To change quota for one workspace, edit the corresponding Kubeflow `Profile` or the generated `ResourceQuota`, depending on the deployment's reconciliation model. Prefer editing the authoritative `Profile` when the profile controller owns quota generation.
+
+Example profile-level quota shape:
+
+```yaml
+apiVersion: kubeflow.org/v1
+kind: Profile
+metadata:
+  name: <workspace>
+spec:
+  resourceQuotaSpec:
+    hard:
+      count/pods: "100"
+      persistentvolumeclaims: "2"
+      <storage-class>.storageclass.storage.k8s.io/requests.storage: 10Gi
+```
+
+To change defaults for future workspaces, update the profile patch used by the `pk-user-management-operator` in the deployment repository and roll it out through the normal GitOps or release process. In current platform configuration, that patch is maintained under the user-management operator profile patches, but deployments may carry environment-specific overlays. Do not patch generated resources by hand when GitOps or an operator will overwrite them.
+
+Quota changes are capacity decisions. Before increasing limits, check node capacity, autoscaler behavior, storage class capacity, GPU availability, and expected concurrency for the workload class.
+
 ## Prometheus, Grafana, and Loki
 
 prokube deployments commonly expose observability tools under these paths:
