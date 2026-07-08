@@ -10,6 +10,10 @@ Each workspace can have at most one assigned egress profile.
 
 An assigned profile applies to Istio-injected workloads in the workspace. prokube keeps DNS and required internal egress-control traffic allowed so approved hosts can resolve and route through the egress gateway.
 
+::: warning Istio sidecar required
+Egress profiles restrict only workloads that are part of the Istio mesh and routed through the platform egress controls. Workloads without Istio sidecar injection are not filtered by these profiles and can still use any network path allowed by the cluster and underlying network.
+:::
+
 ![Network Policies page](../_static/screenshots/admin/network-policies/network-policies-page.png)
 
 The UI shows profile assignment state in the **Egress Profile** column on the Workspaces page:

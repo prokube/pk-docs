@@ -11,7 +11,7 @@ Open **User Management** in the admin area. It provides pages for:
 - **Groups**: create and delete groups, manage group members, and grant or revoke group access to workspaces;
 - **Network Policies**: define reusable egress profiles for workspace outbound access.
 
-The underlying identity provider remains Keycloak. Use the Keycloak admin console only for advanced IAM tasks that are not exposed in the prokube UI.
+The underlying identity provider is [Keycloak](identity_providers.md). Use the Keycloak admin console only for advanced IAM tasks that are not exposed in the prokube UI.
 
 Common platform roles are:
 

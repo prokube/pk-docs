@@ -2,7 +2,7 @@
 
 prokube uses Keycloak as the platform identity broker. External identity providers connect corporate login systems to prokube while Keycloak remains the integration point for platform groups, application clients, and tokens.
 
-Use the Keycloak admin console only for identity-provider setup and advanced IAM operations. Routine user, workspace, and group administration should use [User Management](user_management.md) when the required flow is available there.
+Use the Keycloak admin console only for connecting to external identity-providers such as Azure AD / Entra ID for an enterprise wide SSO setup and advanced IAM operations. Routine user, workspace, and group administration should use [User Management](user_management.md) when the required flow is available there.
 
 ## Planning
 
