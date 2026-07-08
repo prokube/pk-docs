@@ -93,7 +93,6 @@ export default defineConfig({
           { text: 'Overview', link: '/admin/' },
           { text: 'User Management', link: '/admin/user_management.html' },
           { text: 'Network Policies', link: '/admin/network_policies.html' },
-          { text: 'Deployment Options', link: '/admin/deployment_options.html' },
           { text: 'Operations Runbooks', link: '/admin/operations_runbooks.html' }
         ]
       }

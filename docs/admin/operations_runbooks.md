@@ -219,6 +219,42 @@ After first login:
 
 To grant prokube platform administration rights, assign the user to the `pk-admin` group in the prokube realm or use the prokube UI when it exposes the needed flow. Do not use the Keycloak master admin account for routine platform administration.
 
+## MicroK8s Certificate Maintenance
+
+MicroK8s is one option for very small self-managed prokube deployments. On long-running MicroK8s clusters, include certificate checks in the maintenance calendar. Expired internal certificates can break `kubectl`, web access through cluster components, and node-to-control-plane communication.
+
+Check certificate validity on a MicroK8s node:
+
+```bash
+sudo microk8s.refresh-certs -c
+```
+
+Renew the API server and front-proxy client certificates:
+
+```bash
+sudo microk8s.refresh-certs -e server.crt
+sudo microk8s.refresh-certs -e front-proxy-client.crt
+```
+
+In multi-node MicroK8s clusters, run the required renewal on each affected node and plan a short maintenance window. After renewal, restart MicroK8s if components do not recover cleanly:
+
+```bash
+sudo microk8s stop
+sudo microk8s start
+```
+
+If the deployment uses a self-signed or private TLS certificate for the Kubernetes API or authentication integration, update the corresponding platform secret as part of certificate rotation. In deployments that use the legacy `k8s-cert` secret for authservice trust, recreate it with the renewed certificate and restart authservice:
+
+```bash
+kubectl delete secret k8s-cert -n istio-system
+kubectl create secret generic k8s-cert \
+  --from-file=k8s.crt=<your-tls-cert> \
+  -n istio-system
+kubectl rollout restart statefulset/authservice -n istio-system
+```
+
+Verify the exact secret name and namespace in the target deployment before applying this step; newer deployments may use a different trust distribution mechanism.
+
 ## Workspace Defaults and Image Pull Secrets
 
 prokube workspaces are Kubernetes namespaces with platform-managed defaults. Two defaults are especially important for administrators: shared registry credentials and workspace resource quotas.
