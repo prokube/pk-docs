@@ -110,7 +110,13 @@ Common permission levels:
 
 Administrators can grant access to users or groups. Group-based permissions are the preferred pattern for team resources because they avoid granting access user by user.
 
+MLflow administrators can manage users, groups, service accounts, permissions, experiments, runs, registered models, model versions, and prompts through the MLflow OIDC permissions UI when the deployment exposes those features. Treat MLflow admin access as platform-level access: it can expose experiments and artifacts across teams.
+
+After Keycloak group or role changes, users may need to sign out and sign in again before MLflow receives updated claims.
+
 For shared workspaces, MLflow service-account tokens are the recommended way to authenticate shared pipelines and scheduled jobs. Ask an administrator to create an MLflow service account and generate a token for it instead of storing one person's personal token in a shared namespace.
+
+For team workflows, create shared experiments and registered models owned by a group or service account, then grant group permissions explicitly. Avoid building pipelines around one user's personal MLflow token; when that user rotates or loses the token, scheduled jobs fail.
 
 Experiment names, prompt names, and registered model names are global in the central MLflow instance. If a name already exists and you do not have access to it, MLflow may return a permission error rather than a simple name-conflict message.
 
@@ -186,3 +192,9 @@ The workspace namespace must contain an `mlflow-credentials` secret with `MLFLOW
 | KServe cannot import an `mlflow://` model | Check the `mlflow-credentials` secret and confirm that the cluster has the MLflow storage initializer enabled. |
 | A client stops working after token rotation | Creating a new personal access token invalidates the previous one. Update all notebooks, secrets, and workloads that still use the old token. |
 | Model is not found in the registry | Model names are global. Verify the exact registered model name, version or alias, and your permissions. |
+
+## Garbage Collection
+
+Deleting MLflow experiments, runs, registered models, or model versions in the UI is usually a soft delete. Names and artifacts can remain in the backend until an administrator runs MLflow garbage collection for the deployment.
+
+Garbage collection is irreversible. Before running it, administrators should confirm the target backend store, artifact store, retention policy, and backup state. Do not run GC from a user Lab against the central MLflow instance unless the platform team has explicitly approved that procedure.

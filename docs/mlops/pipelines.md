@@ -200,6 +200,44 @@ For example, a daily pipeline can pass `YYYY-MM` to an expensive data-loading co
 
 Use [`dsl.ExitHandler`](https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/control-flow/#exit-handling) for cleanup or notifications that should run when a pipeline exits. Keep webhook URLs and tokens in workspace secrets, not in pipeline source code.
 
+Example shape:
+
+```python
+from kfp import dsl, kubernetes
+from kfp.dsl import PipelineTaskFinalStatus
+
+
+@dsl.component
+def notify(status: PipelineTaskFinalStatus):
+    import os
+    import urllib.request
+
+    webhook_url = os.environ["WEBHOOK_URL"]
+    body = f"Pipeline finished with state: {status.state}".encode()
+    request = urllib.request.Request(webhook_url, data=body, method="POST")
+    urllib.request.urlopen(request, timeout=10)
+
+
+@dsl.component
+def train():
+    print("training")
+
+
+@dsl.pipeline
+def training_with_notification():
+    notify_task = notify()
+    kubernetes.use_secret_as_env(
+        notify_task,
+        secret_name="pipeline-notification-webhook",
+        secret_key_to_env={"WEBHOOK_URL": "WEBHOOK_URL"},
+    )
+
+    with dsl.ExitHandler(notify_task):
+        train()
+```
+
+This pattern also works for Teams or Power Automate webhooks when the webhook URL is stored in a Kubernetes Secret. Do not hard-code webhook URLs in pipeline source or compiled YAML.
+
 ### Access Multiple Outputs
 
 When a component has more than one output, do not rely on `task.output`. Access the output by name:

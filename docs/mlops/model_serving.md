@@ -258,6 +258,20 @@ Alternatively, ask your administrator for the current KServe version.
 
 To find library versions pinned in a runtime image, browse the KServe repository at the matching tag under `python/<runtime>/pyproject.toml`. See the upstream [version matching guide](https://kserve.github.io/website/) for details.
 
+Version matching is especially important for models serialized with `pickle`, `joblib`, or framework-native formats that load Python objects. A model trained with one scikit-learn, PyTorch, XGBoost, or Python version can fail during serving even when the artifact path and credentials are correct.
+
+Administrators can inspect installed `ServingRuntime` and `ClusterServingRuntime` resources to identify the runtime image used by a deployment:
+
+```bash
+kubectl get servingruntime,clusterservingruntime -A
+```
+
+## Local Model Cache
+
+Some KServe versions support local model cache resources for large S3-backed models. A local cache can reduce cold-start time by keeping model artifacts on selected nodes, but it is a cluster-level feature that requires administrator configuration and enough node-local storage.
+
+Use local cache only when the installed KServe version and platform configuration support it. Users should not assume that adding a large model to object storage automatically enables node-local caching.
+
 ## Troubleshooting
 
 Start with the model detail page in the UI. The **Conditions** tab surfaces KServe condition states. The **Logs** tab shows predictor pod logs. The **Events** tab shows Kubernetes events.
