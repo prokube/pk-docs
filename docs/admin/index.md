@@ -1,27 +1,16 @@
 # Admin Documentation
 
-::: info Documentation in progress
-This page is an early outline. Full admin, operator, and installer documentation is still being written and will be added here. Detailed admin documentation is still available at [docs.prokube.ai](https://docs.prokube.ai/).
-:::
+Admin documentation covers installation planning, platform configuration, user and workspace administration, operations, upgrades, and troubleshooting.
 
-Admin documentation covers installation, configuration, user and workspace administration, operations, upgrades, and troubleshooting.
+Use these pages when you operate a prokube deployment, connect it to organizational infrastructure, or expose custom workloads through the platform. User-facing concepts that apply across Labs, MLOps, and AgentOps are documented under [Foundation](../platform/index.md).
 
-The future structure should make it clear which parts are shared platform foundation and which parts belong to optional product tracks.
+## What Admins Own
 
-## Track-Oriented Installation
-
-The installer should eventually support different installation profiles, for example:
-
-- Full platform
-- MLOps-focused setup
-- AgentOps-focused setup
-- Sandbox-focused setup
-
-The exact scope of these profiles still needs to be defined.
-
-## Current State
-
-Detailed admin documentation is still available at [docs.prokube.ai](https://docs.prokube.ai/). New operator and installer documentation will be added here over time.
+- deployment prerequisites such as Kubernetes, DNS, TLS, storage, identity, and registry access;
+- workspace, user, group, and network-policy administration;
+- external identity-provider and custom application integration;
+- capacity-sensitive resources such as storage, GPUs, databases, and object storage;
+- backup, restore, upgrade, observability, and incident runbooks.
 
 ## Available Pages
 
