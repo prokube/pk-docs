@@ -4,7 +4,7 @@ This page describes the common patterns for exposing custom applications through
 
 ## Service and Gateway Routing
 
-A Kubernetes `Service` exposes pods inside the cluster. It does not make the application reachable from a browser by itself.
+A Kubernetes `Service` exposes pods inside the cluster. It does not make the application reachable from a browser or other external services by itself.
 
 For user-facing HTTP applications, route gateway traffic to the Service with Istio resources such as `VirtualService`. In many prokube deployments, authenticated user-facing applications route through the `kubeflow/kubeflow-gateway` gateway.
 
