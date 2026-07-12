@@ -54,7 +54,7 @@ from prokube.sandbox import SandboxPool
 
 pool = SandboxPool.create(
     name="sandbox-sdk-quickstart",
-    image="pk-sandbox:python-datascience",
+    image="europe-west3-docker.pkg.dev/prokube-internal/prokube-customer/pk-sandbox-base:v14-05-2026",
     pool_size=1,
     cpu="1",
     memory="2Gi",
@@ -238,7 +238,7 @@ Direct creation is a cold-start path. The API returns before the sandbox is full
 from prokube.sandbox import Sandbox
 
 sbx = Sandbox.create(
-    image="pk-sandbox:python-datascience",
+    image="europe-west3-docker.pkg.dev/prokube-internal/prokube-customer/pk-sandbox-base:v14-05-2026",
     cpu="1",
     memory="1Gi",
     allow_internet_access=False,
