@@ -45,7 +45,7 @@ Do not put API keys in source code, notebooks, screenshots, tickets, or chat mes
 
 ### 3. Create or Use a WarmPool
 
-WarmPools keep ready-to-claim sandboxes available for low-latency starts. Create one with the SDK, or use an existing pool prepared by your workspace owner.
+WarmPools keep ready-to-claim sandboxes available for low-latency starts. This example creates a small pool with the SDK. If a pool with the same name already exists, choose a different name or delete the old pool first.
 
 ```python
 import time
