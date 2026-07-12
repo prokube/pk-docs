@@ -29,7 +29,17 @@ export PROKUBE_WORKSPACE="<workspace>"
 export PROKUBE_API_KEY="<api-key>"
 ```
 
-In a managed Lab, `PROKUBE_WORKSPACE` can often be derived from the mounted service account namespace, but `PROKUBE_API_URL` must still point at the pkui base URL. Create and rotate keys on the **API Keys** page. See [API Keys](../platform/api_keys.html) for scope and key-handling guidance.
+In a managed Lab, you can use the in-cluster Agent Gateway service without an API key:
+
+```bash
+export PROKUBE_API_URL="http://agentgateway-proxy.agentgateway-system.svc.cluster.local"
+export PROKUBE_WORKSPACE="<workspace>"
+export PROKUBE_USER_ID="<user-or-workspace>"
+```
+
+The example notebook detects the workspace from the mounted service account namespace and uses the in-cluster Agent Gateway service when `PROKUBE_API_URL` is not already set.
+
+Create and rotate external keys on the **API Keys** page. See [API Keys](../platform/api_keys.html) for scope and key-handling guidance.
 
 Do not put API keys in source code, notebooks, screenshots, tickets, or chat messages.
 
@@ -123,7 +133,7 @@ try {
 | **Sandbox** | One isolated runtime environment with code execution, shell commands, and file access. |
 | **WarmPool** | A pool of pre-created sandbox pods. Claiming from a WarmPool is faster than creating a cold sandbox. |
 | **Direct sandbox** | A standalone sandbox created from an image. It usually takes longer to become ready. |
-| **API key** | A scoped key used by external SDK clients. Sandbox SDKs send it as `x-api-key`. |
+| **API key** | A scoped key used by external SDK clients. Use the SDK's configured API-key header mode for your deployment. |
 
 ## When to Use a WarmPool
 
@@ -253,7 +263,7 @@ Delete a sandbox when the task is done. SDK context managers and `try/finally` b
 
 | Symptom | Check |
 |---|---|
-| SDK returns `401` | Confirm `PROKUBE_API_KEY` is set, copied correctly, enabled, and sent as `x-api-key`. |
+| SDK returns `401` | Confirm external clients have a valid `PROKUBE_API_KEY`, or in-cluster clients have `PROKUBE_USER_ID` or `KF_USER` set. |
 | SDK returns `403` | Confirm the key belongs to the workspace and includes the Sandbox API scope. |
 | Claim waits and then times out | Check WarmPool readiness and available pods. Increase pool size or use a less constrained image/resource profile. |
 | Sandbox stays `Pending` | Check image pull, scheduling capacity, runtime class availability, and workspace quota. |
