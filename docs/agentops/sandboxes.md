@@ -1,6 +1,6 @@
 # Agent Sandboxes
 
-Agent Sandboxes are workspace-scoped Linux environments for agents, notebooks, and automation that need to run code, shell commands, and file operations inside prokube.
+Agent Sandboxes are workspace-scoped Linux environments where agents can run code, execute shell commands, and read or write files without running that workload on the user's machine.
 
 Use them when a workflow needs an execution environment rather than a fixed API call: generated Python code, shell commands, package installs, file inspection, tests, or multi-step agent state.
 
@@ -8,6 +8,112 @@ Sandboxes are exposed in two ways:
 
 - **pkui** for creating pools, inspecting capacity, and managing active sandboxes.
 - **SDKs** for agents and automation that claim, use, pause, resume, and delete sandboxes programmatically.
+
+## Get Started
+
+The fastest way to try Sandboxes is to claim a ready sandbox from a WarmPool with the Python SDK.
+
+### 1. Install the SDK
+
+```bash
+pip install "git+https://github.com/prokube/prokube-sdk.git@v0.1.3"
+```
+
+### 2. Configure Access
+
+External clients need an API key with **Sandbox API** access:
+
+```bash
+export PROKUBE_API_URL="https://<cluster-domain>/pkui"
+export PROKUBE_WORKSPACE="<workspace>"
+export PROKUBE_API_KEY="<api-key>"
+```
+
+In a managed Lab, `PROKUBE_WORKSPACE` can often be derived from the mounted service account namespace, but `PROKUBE_API_URL` must still point at the pkui base URL. Create and rotate keys on the **API Keys** page. See [API Keys](../platform/api_keys.html) for scope and key-handling guidance.
+
+Do not put API keys in source code, notebooks, screenshots, tickets, or chat messages.
+
+### 3. Claim and Use a Sandbox
+
+```python
+from prokube.sandbox import Sandbox
+
+with Sandbox.from_pool("python-pool") as sbx:
+    result = sbx.run_code("print('hello from sandbox')")
+    print(result.stdout)
+
+    command = sbx.commands.run("python --version")
+    print(command.stdout)
+
+    sbx.files.write("/workspace/input.txt", "hello")
+    content = sbx.files.read("/workspace/input.txt")
+    print(content.decode() if isinstance(content, bytes) else content)
+```
+
+The context manager deletes the claimed sandbox when the block exits. In longer-running agents, use `try`/`finally` or the SDK context manager so cleanup still runs after errors.
+
+### Stateful Code Execution
+
+`run_code()` uses a stateful Python kernel. Imports and variables persist across calls while the sandbox stays running.
+
+```python
+from prokube.sandbox import Sandbox
+
+with Sandbox.from_pool("python-pool") as sbx:
+    sbx.run_code("import statistics")
+    sbx.run_code("values = [1, 2, 3, 4]")
+    result = sbx.run_code("print(statistics.mean(values))")
+    print(result.stdout)
+```
+
+## Run the Example Notebook
+
+Use the public [`prokube/examples`](https://github.com/prokube/examples) repository for a step-by-step notebook. prokube managed Labs clone this repository into the Lab home directory by default.
+
+Open this notebook in JupyterLab:
+
+```text
+~/examples/sandboxes/sdk-quickstart/sandbox-sdk-quickstart.ipynb
+```
+
+The notebook covers SDK installation, configuration, WarmPool claims, stateful code execution, shell commands, file operations under `/workspace`, and cleanup.
+
+Repository path:
+
+[`sandboxes/sdk-quickstart`](https://github.com/prokube/examples/tree/main/sandboxes/sdk-quickstart)
+
+## SDK Versions
+
+Use the current SDK releases for new clients:
+
+| SDK | Recommended version | Install |
+|---|---:|---|
+| Python | `v0.1.3` | `pip install "git+https://github.com/prokube/prokube-sdk.git@v0.1.3"` |
+| TypeScript | `v2026-07-05` | `npm install https://github.com/prokube/prokube-sdk-ts/releases/download/v2026-07-05/prokube-v2026-07-05.tgz` |
+
+Older SDK versions still work for the basic list, claim, run, and kill flows, but new clients should move to the versions above. They include the current Agent Gateway routing, pending/readiness timeout behavior, and WarmPool exhaustion handling.
+
+## TypeScript SDK
+
+```typescript
+import { Sandbox } from "prokube";
+
+const sbx = await Sandbox.fromPool("python-pool");
+
+try {
+  const result = await sbx.runCode("print('hello from sandbox')");
+  console.log(result.stdout);
+
+  const command = await sbx.commands.run("python --version");
+  console.log(command.stdout);
+
+  await sbx.files.write("/workspace/input.txt", "hello");
+  const content = await sbx.files.read("/workspace/input.txt");
+  console.log(new TextDecoder().decode(content));
+} finally {
+  await sbx.kill();
+}
+```
 
 ## Core Concepts
 
@@ -90,6 +196,24 @@ Use **Create Sandbox** for a standalone sandbox from a selected image.
 
 Direct creation is a cold-start path. The API returns before the sandbox is fully ready; clients should wait until the sandbox reaches `Running` before executing code.
 
+```python
+from prokube.sandbox import Sandbox
+
+sbx = Sandbox.create(
+    image="pk-sandbox:python-datascience",
+    cpu="1",
+    memory="1Gi",
+    allow_internet_access=False,
+)
+
+try:
+    sbx.wait_until_ready(timeout=180)
+    result = sbx.commands.run("python --version")
+    print(result.stdout)
+finally:
+    sbx.kill()
+```
+
 ## Lifecycle and Persistence
 
 Sandboxes move through phases such as `Pending`, `Running`, `Paused`, `Failed`, and `Completed`.
@@ -124,141 +248,6 @@ Use a restore script such as `~/.sandbox-restore.sh` when a sandbox needs to rec
 ### Kill/Delete
 
 Delete a sandbox when the task is done. SDK context managers and `try/finally` blocks should always clean up claimed sandboxes.
-
-## SDK Versions
-
-Use the current SDK releases for new clients:
-
-| SDK | Recommended version | Install |
-|---|---:|---|
-| Python | `v0.1.3` | `pip install "git+https://github.com/prokube/prokube-sdk.git@v0.1.3"` |
-| TypeScript | `v2026-07-05` | `npm install https://github.com/prokube/prokube-sdk-ts/releases/download/v2026-07-05/prokube-v2026-07-05.tgz` |
-
-Older SDK versions still work for the basic list, claim, run, and kill flows, but new clients should move to the versions above. They include the current Agent Gateway routing, pending/readiness timeout behavior, and WarmPool exhaustion handling.
-
-## Configure SDK Access
-
-External clients need three values:
-
-```bash
-export PROKUBE_API_URL="https://<cluster-domain>/pkui"
-export PROKUBE_WORKSPACE="<workspace>"
-export PROKUBE_API_KEY="<api-key>"
-```
-
-Create the key in **API Keys** and include the **Sandbox API** service scope. See [API Keys](../platform/api_keys.html) for key creation, scope, and rotation guidance.
-
-Do not put API keys in source code, notebooks, screenshots, tickets, or chat messages.
-
-## Python SDK
-
-### Claim from a WarmPool
-
-```python
-from prokube.sandbox import Sandbox
-
-with Sandbox.from_pool("python-pool") as sbx:
-    result = sbx.run_code("print('hello from sandbox')")
-    print(result.stdout)
-```
-
-### Run Stateful Code
-
-```python
-from prokube.sandbox import Sandbox
-
-with Sandbox.from_pool("python-pool") as sbx:
-    sbx.run_code("import statistics")
-    sbx.run_code("values = [1, 2, 3, 4]")
-    result = sbx.run_code("print(statistics.mean(values))")
-    print(result.stdout)
-```
-
-### Shell Commands and Files
-
-```python
-from prokube.sandbox import Sandbox
-
-with Sandbox.from_pool("python-pool") as sbx:
-    command = sbx.commands.run("python --version")
-    print(command.stdout)
-
-    sbx.files.write("/workspace/input.txt", "hello")
-    content = sbx.files.read("/workspace/input.txt")
-    print(content)
-```
-
-### Create a Direct Sandbox
-
-```python
-from prokube.sandbox import Sandbox
-
-sbx = Sandbox.create(
-    image="pk-sandbox:python-datascience",
-    cpu="1",
-    memory="1Gi",
-    allow_internet_access=False,
-)
-
-try:
-    sbx.wait_until_ready(timeout=180)
-    result = sbx.commands.run("python --version")
-    print(result.stdout)
-finally:
-    sbx.kill()
-```
-
-## TypeScript SDK
-
-### Claim from a WarmPool
-
-```typescript
-import { Sandbox } from "prokube";
-
-const sbx = await Sandbox.fromPool("python-pool");
-
-try {
-  const result = await sbx.runCode("print('hello from sandbox')");
-  console.log(result.stdout);
-} finally {
-  await sbx.kill();
-}
-```
-
-### Run Stateful Code
-
-```typescript
-import { Sandbox } from "prokube";
-
-const sbx = await Sandbox.fromPool("python-pool");
-
-try {
-  await sbx.runCode("x = 41");
-  const result = await sbx.runCode("print(x + 1)");
-  console.log(result.stdout);
-} finally {
-  await sbx.kill();
-}
-```
-
-### Shell Commands and Files
-
-```typescript
-import { Sandbox } from "prokube";
-
-const sbx = await Sandbox.fromPool("python-pool");
-
-try {
-  const command = await sbx.commands.run("python --version");
-  console.log(command.stdout);
-
-  await sbx.files.write("/workspace/input.txt", "hello");
-  const content = await sbx.files.read("/workspace/input.txt");
-  console.log(new TextDecoder().decode(content));
-} finally {
-  await sbx.kill();
-}
-```
 
 ## Troubleshooting
 
