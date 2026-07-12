@@ -11,7 +11,7 @@ Sandboxes are exposed in two ways:
 
 ## Get Started
 
-The fastest way to try Sandboxes is to claim a ready sandbox from a WarmPool with the Python SDK.
+The fastest way to try Sandboxes is to use the Python SDK from a managed Lab. The SDK can create a WarmPool, claim a sandbox, run code, execute shell commands, read and write files, and clean up resources again.
 
 ### 1. Install the SDK
 
@@ -43,12 +43,38 @@ Create and rotate external keys on the **API Keys** page. See [API Keys](../plat
 
 Do not put API keys in source code, notebooks, screenshots, tickets, or chat messages.
 
-### 3. Claim and Use a Sandbox
+### 3. Create or Use a WarmPool
+
+WarmPools keep ready-to-claim sandboxes available for low-latency starts. Create one with the SDK, or use an existing pool prepared by your workspace owner.
+
+```python
+import time
+
+from prokube.sandbox import SandboxPool
+
+pool = SandboxPool.create(
+    name="sandbox-sdk-quickstart",
+    image="pk-sandbox:python-datascience",
+    pool_size=1,
+    cpu="1",
+    memory="2Gi",
+)
+
+for _ in range(60):
+    pool.refresh()
+    if pool.ready_replicas > 0:
+        break
+    time.sleep(2)
+```
+
+If your deployment uses a different sandbox image, use one of the images offered in pkui or set the image explicitly for your workspace.
+
+### 4. Claim and Use a Sandbox
 
 ```python
 from prokube.sandbox import Sandbox
 
-with Sandbox.from_pool("python-pool") as sbx:
+with Sandbox.from_pool("sandbox-sdk-quickstart") as sbx:
     result = sbx.run_code("print('hello from sandbox')")
     print(result.stdout)
 
@@ -86,7 +112,9 @@ Open this notebook in JupyterLab:
 ~/examples/sandboxes/sdk-quickstart/sandbox-sdk-quickstart.ipynb
 ```
 
-The notebook covers SDK installation, configuration, WarmPool claims, stateful code execution, shell commands, file operations under `/workspace`, and cleanup.
+The notebook covers SDK installation, managed Lab configuration, WarmPool creation, WarmPool claims, stateful code execution, shell commands, file operations under `/workspace`, and cleanup.
+
+The notebook focuses on the SDK and Agent Sandbox features. Examples that integrate Sandboxes with an agent framework belong in separate example directories.
 
 Repository path:
 
