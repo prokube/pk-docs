@@ -60,11 +60,17 @@ pool = SandboxPool.create(
     memory="2Gi",
 )
 
-for _ in range(60):
+deadline = time.monotonic() + 120
+while time.monotonic() < deadline:
     pool.refresh()
-    if pool.ready_replicas > 0:
+    if pool.ready_replicas >= pool.pool_size:
         break
     time.sleep(2)
+else:
+    raise TimeoutError(
+        f"Pool {pool.name} did not become ready: "
+        f"{pool.ready_replicas}/{pool.pool_size} ready"
+    )
 ```
 
 If your deployment uses a different sandbox image, use one of the images offered in pkui or set the image explicitly for your workspace.
