@@ -37,7 +37,7 @@ export PROKUBE_WORKSPACE="<workspace>"
 export PROKUBE_USER_ID="<user-or-workspace>"
 ```
 
-The example notebook detects the workspace from the mounted service account namespace and uses the in-cluster Agent Gateway service when `PROKUBE_API_URL` is not already set.
+The example notebook uses the in-cluster Agent Gateway service in managed Labs. For external access, set `PROKUBE_API_URL`, `PROKUBE_WORKSPACE`, and `PROKUBE_API_KEY` explicitly.
 
 Create and rotate external keys on the **API Keys** page. See [API Keys](../platform/api_keys.html) for scope and key-handling guidance.
 
