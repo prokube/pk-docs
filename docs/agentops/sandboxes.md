@@ -232,6 +232,8 @@ Claiming reserves one ready sandbox from a pool. The claimed sandbox can then ru
 
 If the claim does not set an auto-idle timeout, it inherits the pool default. If the pool has no default, the platform default applies.
 
+If both the pool and the claim set an auto-idle timeout, the claim value wins for that sandbox. The pool value is only the default for future claims that do not provide their own timeout.
+
 If no pool capacity is available, the SDK returns a capacity/backpressure error instead of silently creating unlimited pending sandboxes.
 
 ### Create a Direct Sandbox
@@ -268,6 +270,12 @@ Sandboxes move through phases such as `Pending`, `Running`, `Paused`, `Failed`, 
 
 Current SDK releases enforce readiness timeouts while waiting for pending sandboxes. If the sandbox does not become ready in time, the client gets a timeout instead of waiting indefinitely.
 
+For normal newly created or newly claimed `Pending` sandboxes, use delete/`kill()` to cancel the sandbox. Pause is not the cancellation path for these sandboxes.
+
+There is one exception: a `Pending` sandbox created while resuming a previously paused sandbox can be paused again. In that case, pause cancels the in-progress resume and returns the sandbox to `Paused`. This is useful when resume cannot get cluster capacity quickly enough.
+
+WarmPool claims also have bounded waiting. If no ready capacity becomes available, the API returns `pool_exhausted` with HTTP `429`, and current SDKs expose that as a pool-exhaustion error instead of creating unbounded pending sandboxes.
+
 ### Running
 
 `Running` sandboxes can execute Python code, shell commands, and file operations.
@@ -277,6 +285,8 @@ Python code execution uses a Jupyter-style kernel. Variables and imports persist
 ### Pause and Resume
 
 Pausing a sandbox stops the underlying pod and frees compute resources. Resuming starts it again.
+
+Pause is supported for `Running` sandboxes and for `Pending` sandboxes that are in the middle of resuming from `Paused`. It is not supported as a general pause operation for arbitrary newly created `Pending` sandboxes.
 
 Persistent paths are restored after resume:
 
