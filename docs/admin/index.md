@@ -9,7 +9,7 @@ Use these pages when you operate a prokube deployment, connect it to organizatio
 - deployment prerequisites such as Kubernetes, DNS, TLS, storage, identity, and registry access;
 - workspace, user, group, and network-policy administration;
 - external identity-provider and custom application integration;
-- capacity-sensitive resources such as storage, GPUs, databases, and object storage;
+- capacity-sensitive resources such as storage, GPUs, databases, and file storage;
 - backup, restore, upgrade, observability, and incident runbooks.
 
 ## Available Pages

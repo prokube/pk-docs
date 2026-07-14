@@ -321,9 +321,9 @@ It should:
 - print the objective metric name exactly as configured in `objectiveMetricName`;
 - exit with a non-zero status when training fails so Katib can count failed trials;
 - include all runtime dependencies in the image instead of installing them interactively;
-- write models and artifacts to object storage if they must survive trial pod cleanup.
+- write models and artifacts to S3-compatible file storage if they must survive trial pod cleanup.
 
-For image builds from Labs, see [Building Container Images](../labs/index.md#building-container-images). For workspace object storage, see [Object Storage](../platform/object_storage.md).
+For image builds from Labs, see [Building Container Images](../labs/index.md#building-container-images). For workspace file storage, see [File Storage](../platform/file_storage.md).
 
 ## Operational Notes
 

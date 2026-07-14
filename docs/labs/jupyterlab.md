@@ -2,7 +2,7 @@
 
 JupyterLab Labs provide a browser-based Python workspace inside prokube. They are intended for notebooks, data exploration, model development, and quick experiments that should run close to the same storage, compute, and platform services used by production workloads.
 
-prokube maintains its own JupyterLab images with platform-oriented defaults: common CLI tools, Python packages, S3-compatible object storage integration, image building support, and the public [`prokube/examples`](https://github.com/prokube/examples) repository are preconfigured where applicable.
+prokube maintains its own JupyterLab images with platform-oriented defaults: common CLI tools, Python packages, S3-compatible file storage integration, image building support, and the public [`prokube/examples`](https://github.com/prokube/examples) repository are preconfigured where applicable.
 
 ::: info JupyterLab documentation
 For JupyterLab features that are not specific to prokube, use the upstream [JupyterLab documentation](https://jupyterlab.readthedocs.io/). Administrators who customize notebook images may also want the [Kubeflow Notebooks documentation](https://www.kubeflow.org/docs/components/notebooks/).
@@ -38,8 +38,8 @@ Included capabilities depend on the selected image, but the prokube-maintained i
 
 - command-line tools such as `kubectl`, `git`, `tmux`, `tree`, `ripgrep`, `fzf`, `htop`, `curl`, `make`, `gcc`, `nvim`, and `zsh`;
 - Python tooling and SDKs used across the platform, including the Kubeflow Pipelines SDK, MLflow, `s3fs`, `pyarrow`, debugging helpers, and `uv`;
-- S3-compatible object storage access through `rclone`, with a preconfigured `minio` remote where available;
-- optional S3 browsing in the JupyterLab sidebar for object storage workflows;
+- S3-compatible file storage access through `rclone`, with a preconfigured `minio` remote where available;
+- optional S3 browsing in the JupyterLab sidebar for file-storage workflows;
 - container image build support through Docker CLI and Buildx backed by a remote BuildKit service;
 - automatic cloning of the public [`prokube/examples`](https://github.com/prokube/examples) repository into the Lab home directory on first start.
 
@@ -51,7 +51,7 @@ A JupyterLab Lab runs inside your workspace as a [Kubernetes Pod](https://kubern
 
 - starting Kubeflow Pipelines with the KFP SDK;
 - running hyperparameter tuning or distributed computing experiments;
-- reading and writing datasets or model artifacts in S3-compatible object storage;
+- reading and writing datasets or model artifacts in S3-compatible file storage;
 - building container images for pipeline components or serving runtimes;
 - using `kubectl` to inspect workspace resources when your role allows it;
 - working through examples from the cloned `prokube/examples` repository.
@@ -64,15 +64,15 @@ The public [`prokube/examples`](https://github.com/prokube/examples) repository 
 
 JupyterLab uses the same persistence and package-installation model as other Labs. See [Using Labs](index.md#persistence-and-package-installation) for the shared storage rules and [Custom Notebooks](custom_notebooks.md) for repeatable image-based environments.
 
-## Object Storage in JupyterLab
+## File Storage in JupyterLab
 
-prokube JupyterLab images can include an S3 browser extension for working with S3-compatible object storage directly from the JupyterLab sidebar.
+prokube JupyterLab images can include an S3 browser extension for working with S3-compatible file storage directly from the JupyterLab sidebar.
 
 ![JupyterLab S3 browser](../_static/screenshots/labs/jupyterlab/jup-lab-s3-explorer-wizzard.png)
 
 The extension lets you browse buckets, upload and download files, copy S3 paths, and generate snippets for loading data with common Python libraries. The required S3 endpoint and credentials are provided through the workspace configuration, so users normally do not need to configure access manually.
 
-For terminal, Python, and external-client access to object storage, see [Object Storage](../platform/object_storage.md).
+For terminal, Python, and external-client access to S3-backed file storage, see [File Storage](../platform/file_storage.md).
 
 Some workflows need custom container images, for example pipeline components, KServe predictors, custom model servers, or agent runtimes. For the shared image-building workflow and limitations, see [Building Container Images](index.md#building-container-images).
 

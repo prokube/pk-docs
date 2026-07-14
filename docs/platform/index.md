@@ -8,7 +8,7 @@ Foundation covers the shared platform concepts used across Labs, MLOps, and Agen
 |---|---|
 | [Workspaces](./workspaces.html) | Workspace selection, access boundaries, namespace mapping, and shared ownership. |
 | [Kubernetes Resources](./kubernetes.html) | Kubeconfig access, quotas, pods, secrets, registry credentials, and cleanup tasks. |
-| [Object Storage](./object_storage.html) | S3-compatible buckets, object paths, UI file operations, and storage access from workloads. |
+| [File Storage](./file_storage.html) | S3-backed buckets, PVC-backed volumes, file paths, UI file operations, and storage access from workloads. |
 | [Platform Databases](./databases.html) | PostgreSQL and TimescaleDB availability, scope, credentials, and operational expectations. |
 | [Component Versions](./component_versions.html) | Finding the deployed prokube and upstream component versions for compatibility checks. |
 | [Observability](./observability.html) | Monitoring, logging, tracing, and dashboards. |

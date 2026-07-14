@@ -62,7 +62,7 @@ When you launch a Lab, the same basic options apply across JupyterLab, VS Code, 
 Key concepts apply across all Lab types:
 
 - **Workspace storage**: files under the Lab home directory are backed by a [persistent volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and survive restarts. In the default images this is the `jovyan` user's home directory, usually `/home/jovyan`. A persistent volume can be mounted by other Labs or other pods, but the default storage class is commonly `ReadWriteOnce`: in multi-node clusters, the same volume can usually only be mounted read-write by pods on one node at a time.
-- **Data volumes**: additional volumes can be mounted when you need shared datasets or larger working directories. Use object storage or a storage class with the required access mode when multiple pods need concurrent access across nodes.
+- **Data volumes**: additional volumes can be mounted when you need shared datasets or larger working directories. Use S3-compatible file storage or a storage class with the required access mode when multiple pods need concurrent access across nodes.
 - **Compute resources**: CPU, memory, and GPU requests are configured when the Lab is created.
 - **Platform access**: Labs can use workspace credentials, `kubectl`, SDKs, CLIs, and APIs to interact with other prokube tools.
 - **Images**: the selected image defines the IDE, language stack, system tools, and preinstalled packages.
@@ -108,9 +108,9 @@ For additional packages, prefer installs that write into the persistent home dir
 - keep dependency files such as `requirements.txt`, `pyproject.toml`, `poetry.lock`, `environment.yml`, `package.json`, or `renv.lock` with your project;
 - create a [Custom Notebook](custom_notebooks.md) image for team workflows or system-level dependencies.
 
-For large datasets, shared artifacts, pipeline outputs, and model files, prefer object storage over the workspace volume. Workspace volumes are useful for interactive work, but object storage is the better integration point for pipelines, MLflow, and model serving.
+For large datasets, shared artifacts, pipeline outputs, and model files, prefer S3-compatible file storage over the workspace volume. Workspace volumes are useful for interactive work, but S3-backed storage is the better integration point for pipelines, MLflow, and model serving. For a platform-wide comparison, see [File Storage](../platform/file_storage.md).
 
-Do not use the same workspace volume from multiple running Labs at the same time unless your administrator has explicitly designed the storage setup for that pattern. Use separate data volumes or object storage for shared datasets and artifacts.
+Do not use the same workspace volume from multiple running Labs at the same time unless your administrator has explicitly designed the storage setup for that pattern. Use separate data volumes or S3-compatible file storage for shared datasets and artifacts.
 
 ## Installing Tools Without Root
 
@@ -150,11 +150,11 @@ nvm install 20
 
 If you need the same Node.js version for a team workflow, prefer a custom image with the runtime pinned and tested.
 
-## Object Storage from Labs
+## File Storage from Labs
 
-Labs can work with S3-compatible object storage through Python libraries, SDKs, UI extensions, and command-line tools, depending on the selected image and workspace configuration.
+Labs can work with S3-compatible file storage through Python libraries, SDKs, UI extensions, and command-line tools, depending on the selected image and workspace configuration.
 
-The prokube-maintained `pk-*` notebook images include `rclone` with a preconfigured `minio` remote when the workspace object-storage configuration is available. Use it from a Lab terminal:
+The prokube-maintained `pk-*` notebook images include `rclone` with a preconfigured `minio` remote when the workspace file-storage configuration is available. Use it from a Lab terminal:
 
 ```bash
 rclone lsd minio:
@@ -162,7 +162,7 @@ rclone copy local-file minio:my-bucket/path/
 rclone copy minio:my-bucket/path/file ./file
 ```
 
-For Python examples with `s3fs`, pandas, S3-compatible configuration, external clients, and storage security notes, see [Object Storage](../platform/object_storage.md).
+For S3-backed file storage, PVC-backed file storage, Python and R examples, `s3fs`, pandas, S3-compatible configuration, external clients, and storage security notes, see [File Storage](../platform/file_storage.md).
 
 ## Building Container Images
 
