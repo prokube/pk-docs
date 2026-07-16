@@ -30,9 +30,9 @@ Prefer this browser when you need a standalone storage view without opening a La
 
 If you are already working in a notebook, the [JupyterLab S3 browser](../labs/jupyterlab.md#object-storage-in-jupyterlab) provides similar object-storage access from the JupyterLab sidebar.
 
-![Object Storage browser](../_static/screenshots/platform/object-storage/object-storage-browser.png)
+![Object Storage browser](../../../_static/screenshots/platform/object-storage/object-storage-browser.png)
 
-![Object Storage upload](../_static/screenshots/platform/object-storage/object-storage-upload.png)
+![Object Storage upload](../../../_static/screenshots/platform/object-storage/object-storage-upload.png)
 
 ## Use Object Paths
 
@@ -51,7 +51,7 @@ Common examples:
 
 Copy paths from the Object Storage browser instead of typing bucket names manually when possible.
 
-![Object Storage object actions](../_static/screenshots/platform/object-storage/object-storage-object-actions.png)
+![Object Storage object actions](../../../_static/screenshots/platform/object-storage/object-storage-object-actions.png)
 
 ## Access from Labs
 

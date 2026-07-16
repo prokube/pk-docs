@@ -6,7 +6,7 @@ You can use Labs to explore data, write code, start platform workflows, and prep
 
 Alongside classic preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md), and [RStudio](rstudio.md) images, prokube also supports agentic engineering environments: GitHub Copilot in VS Code and [OpenCode](opencode.md) as a dedicated agentic coding tool.
 
-![Labs overview](../_static/screenshots/labs/labs-overview.png)
+![Labs overview](../../../_static/screenshots/labs/labs-overview.png)
 
 ## When to Use Labs
 
@@ -38,7 +38,7 @@ Labs run in the currently selected workspace. Most users have a personal workspa
 
 The active workspace determines which namespace, storage, credentials, and access rules the Lab uses. When you have access to multiple workspaces, select the workspace before launching a Lab.
 
-![Workspace selection](../_static/screenshots/labs/labs-workspace-selection.png)
+![Workspace selection](../../../_static/screenshots/labs/labs-workspace-selection.png)
 
 ::: warning Secrets are workspace-visible
 Each workspace has its own Kubernetes namespace. Edit and view contributors can read Kubernetes `Secret`s in that namespace, including secrets used by Labs, PodDefaults, pipelines, model-serving workloads, or manually created `kubectl create secret ...` resources.

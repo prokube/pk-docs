@@ -14,7 +14,7 @@ An assigned profile applies to Istio-injected workloads in the workspace. prokub
 Egress profiles restrict only workloads that are part of the Istio mesh and routed through the platform egress controls. Workloads without Istio sidecar injection are not filtered by these profiles and can still use any network path allowed by the cluster and underlying network.
 :::
 
-![Network Policies page](../_static/screenshots/admin/network-policies/network-policies-page.png)
+![Network Policies page](../../../_static/screenshots/admin/network-policies/network-policies-page.png)
 
 The UI shows profile assignment state in the **Egress Profile** column on the Workspaces page:
 
@@ -35,9 +35,9 @@ Set:
 
 Leave **Allowed Destinations** empty to create a **No Internet Access** profile. This blocks external egress while preserving DNS and required internal egress-control traffic.
 
-![Create Egress Profile dialog](../_static/screenshots/admin/network-policies/create-egress-profile-dialog.png)
+![Create Egress Profile dialog](../../../_static/screenshots/admin/network-policies/create-egress-profile-dialog.png)
 
-![No internet access egress profile](../_static/screenshots/admin/network-policies/egress-profile-no-internet.png)
+![No internet access egress profile](../../../_static/screenshots/admin/network-policies/egress-profile-no-internet.png)
 
 ## Destination Rules
 
@@ -65,7 +65,7 @@ Port rules:
 - `TCP` destinations must use exact hostnames;
 - for opaque `TCP`, one port can target only one host per profile because same-port TCP routes cannot be distinguished by host.
 
-![Egress profile destination rules](../_static/screenshots/admin/network-policies/egress-profile-destination-rules.png)
+![Egress profile destination rules](../../../_static/screenshots/admin/network-policies/egress-profile-destination-rules.png)
 
 ## Assign a Profile to a Workspace
 
@@ -86,7 +86,7 @@ Use **Edit** on the Network Policies page to change the profile name, descriptio
 
 Profiles cannot be deleted while assigned to workspaces. Clear all workspace assignments first, then delete the profile.
 
-![Delete Egress Profile dialog](../_static/screenshots/admin/network-policies/delete-egress-profile-dialog.png)
+![Delete Egress Profile dialog](../../../_static/screenshots/admin/network-policies/delete-egress-profile-dialog.png)
 
 ## Operational Notes
 

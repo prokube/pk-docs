@@ -30,11 +30,11 @@ You can also combine OpenCode with sandboxes through MCP. This is useful when yo
 
 Create an OpenCode Lab from the Labs page. The launch dialog uses the same core options as other Labs: name, compute resources, storage, configurations, and security options.
 
-![Launch OpenCode Lab](../_static/screenshots/labs/opencode/opencode-spawner.png)
+![Launch OpenCode Lab](../../../_static/screenshots/labs/opencode/opencode-spawner.png)
 
 After the Lab starts, open it from the Labs table. The OpenCode UI is served from the Lab pod and connects to the OpenCode API server running in the same container.
 
-![OpenCode welcome screen](../_static/screenshots/labs/opencode/opencode-ui-welcome.png)
+![OpenCode welcome screen](../../../_static/screenshots/labs/opencode/opencode-ui-welcome.png)
 
 The Lab starts:
 
@@ -50,19 +50,19 @@ OpenCode Labs use the same lifecycle and persistence model as other Labs. See [M
 
 On first open, choose a project directory or clone a Git repository. The project picker can browse the Lab filesystem, create folders, clone repositories, and reopen recent projects.
 
-![Open a project](../_static/screenshots/labs/opencode/open-project-ui.png)
+![Open a project](../../../_static/screenshots/labs/opencode/open-project-ui.png)
 
 Keep active work under the persistent home directory, usually `/home/jovyan`, or another mounted volume. Files written only to the container filesystem are lost when the Lab is recreated.
 
 For private repositories, configure Git credentials first. The OpenCode image includes Git and an SSH helper in Settings. If no SSH key exists, the UI shows the `ssh-keygen -t ed25519` command. Open the integrated terminal with the terminal button in the bottom-left corner, run the command there, then return to Settings. The UI displays public keys found under `~/.ssh/*.pub` so you can add them to GitHub, GitLab, or another Git host.
 
-![Create an SSH key](../_static/screenshots/labs/opencode/create-ssh-key.png)
+![Create an SSH key](../../../_static/screenshots/labs/opencode/create-ssh-key.png)
 
 ## Connect a Model Provider
 
 OpenCode needs a model provider before it can answer prompts or edit code. Use Settings to connect a provider such as OpenCode, Anthropic, GitHub Copilot, OpenAI, Google, or OpenRouter, depending on what your environment allows. You can also use models hosted on prokube itself, or external models that an administrator exposes through the [Agent Gateway](../agentops/agent_gateway.md).
 
-![Connect a provider](../_static/screenshots/labs/opencode/connect-provider.png)
+![Connect a provider](../../../_static/screenshots/labs/opencode/connect-provider.png)
 
 Provider credentials are stored in the Lab environment according to OpenCode's configuration behavior. Treat them as workspace-scoped credentials: use narrowly scoped keys, avoid personal or administrator credentials, and rotate or remove keys when they are no longer needed.
 
@@ -83,9 +83,9 @@ The UI also exposes features from the prokube wrapper around the OpenCode backen
 - file tree, file viewer, diffs, and image attachments;
 - session timeline rendering for tool calls and agent activity.
 
-![Slash commands and pickers](../_static/screenshots/labs/opencode/slash-commands.png)
+![Slash commands and pickers](../../../_static/screenshots/labs/opencode/slash-commands.png)
 
-![OpenCode in action](../_static/screenshots/labs/opencode/opencode-in-action-pathing.png)
+![OpenCode in action](../../../_static/screenshots/labs/opencode/opencode-in-action-pathing.png)
 
 ## Control Permissions and Execution
 
@@ -122,7 +122,7 @@ If OpenCode should only inspect or orchestrate work, run edits, tests, and comma
 
 OpenCode Labs include an integrated terminal backed by the OpenCode PTY API. Use it for normal development commands such as `git`, SSH setup, package managers, tests, and CLIs that are available in the selected image.
 
-![Integrated terminal](../_static/screenshots/labs/opencode/terminal-and-todo-ui.png)
+![Integrated terminal](../../../_static/screenshots/labs/opencode/terminal-and-todo-ui.png)
 
 The terminal runs inside the same Lab pod as OpenCode. It is useful for explicit manual commands, but it is not a separate sandbox. If you need package installation patterns or object-storage access in a Lab where those permissions are intentionally enabled, use the shared Labs guidance:
 
@@ -133,11 +133,11 @@ The terminal runs inside the same Lab pod as OpenCode. It is useful for explicit
 
 OpenCode supports [Model Context Protocol](https://modelcontextprotocol.io/) servers. The prokube UI provides a graphical MCP manager for adding remote servers, connecting and disconnecting them, starting OAuth flows where supported, and seeing server status.
 
-![Add MCP servers](../_static/screenshots/labs/opencode/add-mcp-servers.png)
+![Add MCP servers](../../../_static/screenshots/labs/opencode/add-mcp-servers.png)
 
 Remote MCP entries can include a URL, optional Authorization header, custom HTTP headers, timeout, and OAuth settings. The UI writes MCP configuration through OpenCode's config APIs.
 
-![OpenCode with MCP](../_static/screenshots/labs/opencode/opencode-in-action-mcp.png)
+![OpenCode with MCP](../../../_static/screenshots/labs/opencode/opencode-in-action-mcp.png)
 
 For hosting MCP servers on prokube, platform-managed MCP endpoints, and public routing, see [MCP Servers](../agentops/mcp_servers.md). For memory-backed MCP endpoints, see [Memory Stores](../agentops/memory_stores.md).
 

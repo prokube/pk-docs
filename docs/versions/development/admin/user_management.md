@@ -25,7 +25,7 @@ Prefer assigning workspace access through the prokube UI. Direct role edits in K
 
 Open **User Management** > **Users** to view platform users. The table shows username, email address, group memberships, account status, and creation time. Use search to find users by username or email.
 
-![Users page](../_static/screenshots/admin/user-management/users-page.png)
+![Users page](../../../_static/screenshots/admin/user-management/users-page.png)
 
 To create a user:
 
@@ -34,7 +34,7 @@ To create a user:
 3. Keep **Require password change** enabled unless you have a specific reason not to.
 4. Save the user.
 
-![Create User dialog](../_static/screenshots/admin/user-management/create-user-dialog.png)
+![Create User dialog](../../../_static/screenshots/admin/user-management/create-user-dialog.png)
 
 To update a user, open the row action menu and choose **Edit**. The prokube UI can update the user's first name, last name, and enabled status. Usernames and email addresses are not changed from this dialog.
 
@@ -44,7 +44,7 @@ To delete a user, open the row action menu and choose **Delete**. Deleting a use
 
 Open **User Management** > **Workspaces** to manage workspace namespaces. The table shows each workspace name, workspace type, member count, group access, security policy state, egress profile assignment, and available actions.
 
-![Workspaces page](../_static/screenshots/admin/user-management/workspaces-page.png)
+![Workspaces page](../../../_static/screenshots/admin/user-management/workspaces-page.png)
 
 To create a workspace:
 
@@ -57,11 +57,11 @@ Workspace names must be Kubernetes-compatible DNS labels: lowercase letters, num
 
 The platform creates the required cluster resources. The workspace owner is shown separately from regular members in the member management panel.
 
-![Create Workspace dialog](../_static/screenshots/admin/user-management/create-workspace-dialog.png)
+![Create Workspace dialog](../../../_static/screenshots/admin/user-management/create-workspace-dialog.png)
 
 To manage workspace members, click **Manage** on a workspace row. Use the side panel to add users, search existing members, or remove members. Added members receive editor access to the workspace.
 
-![Workspace members panel](../_static/screenshots/admin/user-management/workspace-members-panel.png)
+![Workspace members panel](../../../_static/screenshots/admin/user-management/workspace-members-panel.png)
 
 Personal workspaces are tied to user lifecycle and cannot be deleted from the Workspaces page while attached to a user.
 
@@ -73,7 +73,7 @@ When enforced, prokube sets the `prokube.ai/security-policy: enforced` annotatio
 
 Review workloads in the workspace before enforcing the policy. Existing workloads or custom images may need changes if they rely on privileged behavior.
 
-![Workspace security policy dialog](../_static/screenshots/admin/user-management/workspace-security-policy-dialog.png)
+![Workspace security policy dialog](../../../_static/screenshots/admin/user-management/workspace-security-policy-dialog.png)
 
 ### Workspace Egress Profile
 
@@ -83,7 +83,7 @@ Each workspace can have one egress profile assignment. Egress profiles are creat
 
 See [Network Policies](network_policies.md) for profile creation, destination rules, and operational notes.
 
-![Workspace egress profile dialog](../_static/screenshots/admin/user-management/workspace-egress-profile-dialog.png)
+![Workspace egress profile dialog](../../../_static/screenshots/admin/user-management/workspace-egress-profile-dialog.png)
 
 ### Delete a Workspace
 
@@ -97,7 +97,7 @@ Before deleting a workspace, confirm that required data has been exported or arc
 
 Open **User Management** > **Groups** to manage groups. Groups are useful when multiple users need the same workspace access.
 
-![Groups page](../_static/screenshots/admin/user-management/groups-page.png)
+![Groups page](../../../_static/screenshots/admin/user-management/groups-page.png)
 
 The Groups page supports search and pagination. The management panel shows group members and workspace access for the selected group.
 
@@ -107,11 +107,11 @@ To create a group:
 2. Enter the group name and optional description.
 3. Save the group.
 
-![Create Group dialog](../_static/screenshots/admin/user-management/create-group-dialog.png)
+![Create Group dialog](../../../_static/screenshots/admin/user-management/create-group-dialog.png)
 
 To manage a group, click **Manage** on the group row. The side panel lets you add or remove members and grant or revoke workspace access.
 
-![Group management panel](../_static/screenshots/admin/user-management/group-management-panel.png)
+![Group management panel](../../../_static/screenshots/admin/user-management/group-management-panel.png)
 
 Granting workspace access adds the corresponding `pk:<workspace-name>` role to the group. All group members receive access to that workspace.
 

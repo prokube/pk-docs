@@ -234,7 +234,7 @@ Open **Hparam Search** in the prokube UI.
 
 The experiment list shows experiments in the selected workspace. Use **Refresh** if the list does not update immediately. Open `random-mnist` to inspect:
 
-![Running Hparam Search experiment in the experiment list](../_static/screenshots/mlops/hparam-search/experiment-list.png)
+![Running Hparam Search experiment in the experiment list](../../../_static/screenshots/mlops/hparam-search/experiment-list.png)
 
 | Tab | Content |
 |---|---|
@@ -247,7 +247,7 @@ Open a trial from the trials table to inspect trial details, logs, and collected
 
 The experiment detail view also includes a parallel coordinates plot for comparing trial parameters against the objective metric. Use it to identify which parameter ranges produced better trials before narrowing the search space in a follow-up experiment.
 
-![Parallel coordinates plot for Hparam Search trials](../_static/screenshots/mlops/hparam-search/experiment-plot.png)
+![Parallel coordinates plot for Hparam Search trials](../../../_static/screenshots/mlops/hparam-search/experiment-plot.png)
 
 ### 6. Delete the Experiment
 

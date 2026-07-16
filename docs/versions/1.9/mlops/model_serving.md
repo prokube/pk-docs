@@ -59,11 +59,11 @@ Open the **Models** page, click **Deploy Model**, and use the **Form** tab:
 - **Framework** – select **Scikit-learn**.
 - **Storage URI** – pick the `models/iris` directory using **Browse S3** or type the exact path from the script output (`s3://<namespace>-data/models/iris`).
 
-![Deploy Model form](../_static/screenshots/mlops/model-serving/select-model-ui.png)
+![Deploy Model form](../../../_static/screenshots/mlops/model-serving/select-model-ui.png)
 
 Click **Deploy Model**. Once deployed, you will find a new entry in the model list. It will take a minute or two for the model to become ready.
 
-![Models list page](../_static/screenshots/mlops/model-serving/endpoint-list.png)
+![Models list page](../../../_static/screenshots/mlops/model-serving/endpoint-list.png)
 
 ### 3) Test the endpoint
 
@@ -77,7 +77,7 @@ Open the model detail page and switch to the **Test** tab. Select **V1** protoco
 
 The response shows the predicted class for each row.
 
-![Test tab with prediction response](../_static/screenshots/mlops/model-serving/request-results.png)
+![Test tab with prediction response](../../../_static/screenshots/mlops/model-serving/request-results.png)
 
 For more realistic examples that cover different frameworks, storage backends, and deployment patterns, use the [`prokube/examples`](https://github.com/prokube/examples) repository. It is cloned into managed Labs by default (under `~/examples/serving/`) and includes notebooks and scripts you can run directly.
 
@@ -162,7 +162,7 @@ The detail page shows the InferenceService status, endpoint URLs, configuration,
 | **Events** | Kubernetes events for the InferenceService |
 | **Conditions** | KServe condition status |
 
-![Model detail page overview](../_static/screenshots/mlops/model-serving/endpoint-overview.png)
+![Model detail page overview](../../../_static/screenshots/mlops/model-serving/endpoint-overview.png)
 
 From the detail page header you can **Edit**, **View YAML**, or **Delete** the model. The View YAML modal shows the live manifest and allows editing with an **Apply Changes** flow – the same YAML can be checked into version control and applied through `kubectl`.
 

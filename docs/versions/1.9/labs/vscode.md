@@ -30,13 +30,13 @@ Use [JupyterLab](jupyterlab.md) instead when the primary artifact is a notebook 
 
 Create a VS Code Lab from the Labs page. The launch dialog uses the same basic options as other Labs: name, image, compute resources, storage, configurations, and security options.
 
-![Launch VS Code Lab](../_static/screenshots/labs/vscode/vs-code-spawner.png)
+![Launch VS Code Lab](../../../_static/screenshots/labs/vscode/vs-code-spawner.png)
 
 For VS Code, the image choice mainly decides the IDE server, language stack, system tools, and preinstalled packages. Choose an image that is close to your workload instead of relying on ad-hoc system changes after startup.
 
 After the Lab starts, open it from the Labs table. The browser session connects to the VS Code server running inside the Lab pod.
 
-![VS Code Lab](../_static/screenshots/labs/vscode/vs-code-welcome.png)
+![VS Code Lab](../../../_static/screenshots/labs/vscode/vs-code-welcome.png)
 
 ### Browser Notes
 
@@ -44,7 +44,7 @@ Browser-based VS Code needs the browser to forward editor shortcuts and terminal
 
 In Firefox, disabling **Enhanced Tracking Protection** for the Lab page can help with terminal paste behavior and keyboard handling.
 
-<img class="pk-docs-small-screenshot" src="../_static/screenshots/labs/vscode/firefox-enhanced-tracing-prection.png" alt="Disable Firefox Enhanced Tracking Protection" />
+<img class="pk-docs-small-screenshot" src="../../../_static/screenshots/labs/vscode/firefox-enhanced-tracing-prection.png" alt="Disable Firefox Enhanced Tracking Protection" />
 
 Typical first steps:
 
@@ -91,7 +91,7 @@ Attach through the command palette:
 4. Select the main Lab container, not the sidecar container such as `istio-proxy`.
 5. Open the persistent home directory, usually `/home/jovyan`.
 
-![Attach local VS Code from the command palette](../_static/screenshots/labs/vscode/vscode-k8s-attach-palette.png)
+![Attach local VS Code from the command palette](../../../_static/screenshots/labs/vscode/vscode-k8s-attach-palette.png)
 
 Attach through the Kubernetes extension:
 
@@ -101,7 +101,7 @@ Attach through the Kubernetes extension:
 4. Select `Attach Visual Studio Code`.
 5. Open the persistent home directory, usually `/home/jovyan`.
 
-![Attach local VS Code from the Kubernetes extension](../_static/screenshots/labs/vscode/vscode-k8s-extension-attach.png)
+![Attach local VS Code from the Kubernetes extension](../../../_static/screenshots/labs/vscode/vscode-k8s-extension-attach.png)
 
 If the container restarts or becomes unstable after attaching, increase the memory assigned to the Lab. A local VS Code attachment can consume additional memory inside the container.
 

@@ -15,7 +15,7 @@ Use a custom notebook image when you need a controlled package stack, additional
 
 Custom Notebooks use the same technical foundation as other Labs: a [Kubeflow Notebook](https://www.kubeflow.org/docs/components/notebooks/) pod with configurable compute resources, persistent workspace storage, optional data volumes, and workspace-level configuration.
 
-![Launch a custom notebook image](../_static/screenshots/labs/custom-image/custom-image-spawner.png)
+![Launch a custom notebook image](../../../_static/screenshots/labs/custom-image/custom-image-spawner.png)
 
 At minimum, you need to:
 
@@ -36,7 +36,7 @@ If your custom image is stored in a private registry, the workspace needs an ima
 
 In the prokube UI, click your user icon in the top-right corner and open the registry credentials action. Use it to configure the registry server, username, and token or password for the workspace.
 
-![Registry credentials](../_static/screenshots/labs/custom-image/registry-credentials-ui.png)
+![Registry credentials](../../../_static/screenshots/labs/custom-image/registry-credentials-ui.png)
 
 Registry credentials are stored as Kubernetes `Secret`s in the workspace. Edit and view contributors of that workspace can read Kubernetes `Secret`s in the namespace, so use registry credentials intended for that workspace rather than personal or admin credentials.
 

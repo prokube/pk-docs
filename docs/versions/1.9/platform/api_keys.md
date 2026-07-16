@@ -12,7 +12,7 @@ Open **API Keys** from the sidebar under **Serving**. Select the workspace befor
 
 Regular users see only their own keys in the selected workspace. Administrators can see and manage all keys in the workspace.
 
-![API Keys list with filters and key metadata](../_static/screenshots/platform/api-keys/api-key-list.png)
+![API Keys list with filters and key metadata](../../../_static/screenshots/platform/api-keys/api-key-list.png)
 
 The table shows key metadata, not the full key value.
 
@@ -38,7 +38,7 @@ Click **Create Key** and fill in the form:
 - **Client Authentication**: choose how clients send the key.
 - **Select Services**: choose the services this key may access.
 
-![Create API Key dialog with client authentication and service selection](../_static/screenshots/platform/api-keys/create-key-ui.png)
+![Create API Key dialog with client authentication and service selection](../../../_static/screenshots/platform/api-keys/create-key-ui.png)
 
 The service list is built from services available in the selected workspace. It can include:
 
@@ -86,7 +86,7 @@ prokube shows the full key value only after creation or rotation. Copy it immedi
 
 If you close the dialog without copying the key, create a new key or rotate the existing key. The old full value cannot be recovered from the UI.
 
-![One-time API key display with copy action and client example](../_static/screenshots/platform/api-keys/api-key-shown-once.png)
+![One-time API key display with copy action and client example](../../../_static/screenshots/platform/api-keys/api-key-shown-once.png)
 
 ## Manage Existing Keys
 
@@ -101,7 +101,7 @@ Disable a key when you need temporary revocation or want to test whether a clien
 
 Rotating a key invalidates the old value immediately. Update every client or secret that uses the key before relying on the rotated value.
 
-<img src="../_static/screenshots/platform/api-keys/api-key-edit-disable-rotate-menu.png" alt="API key action menu with edit, disable, rotate, and delete actions" style="max-width: 360px; width: 100%; height: auto;">
+<img src="../../../_static/screenshots/platform/api-keys/api-key-edit-disable-rotate-menu.png" alt="API key action menu with edit, disable, rotate, and delete actions" style="max-width: 360px; width: 100%; height: auto;">
 
 ## Security Guidance
 

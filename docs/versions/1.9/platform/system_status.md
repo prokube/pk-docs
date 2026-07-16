@@ -8,7 +8,7 @@ Use this page to inspect pod quota pressure before starting new workloads, clean
 
 Open the user menu in the prokube UI and select **System Status**.
 
-![System Status in the user menu](../_static/screenshots/platform/system-status/system-status-user-menu.png)
+![System Status in the user menu](../../../_static/screenshots/platform/system-status/system-status-user-menu.png)
 
 The page may also be available directly at `/system-status`.
 
@@ -26,7 +26,7 @@ The top section shows pod quota usage across all workspaces you can access. Each
 - completed pipeline pod count;
 - warning or critical state when usage approaches or exceeds the quota.
 
-![Workspace pod quota overview](../_static/screenshots/platform/system-status/system-status-quota-overview.png)
+![Workspace pod quota overview](../../../_static/screenshots/platform/system-status/system-status-quota-overview.png)
 
 To keep the page responsive, quota details are not loaded for every workspace at once. The currently selected workspace is loaded automatically when it is in your accessible workspace list. If the selected workspace is not available, the first visible workspace card is loaded. Other workspace cards show **Load pod quota** until you load them manually.
 
@@ -40,7 +40,7 @@ This action deletes completed Argo Workflows / Kubeflow Pipelines pod resources 
 
 Use this when completed pipeline pods are consuming workspace pod quota and blocking new work.
 
-![Delete Completed Pipeline Pods dialog](../_static/screenshots/platform/system-status/system-status-cleanup-dialog.png)
+![Delete Completed Pipeline Pods dialog](../../../_static/screenshots/platform/system-status/system-status-cleanup-dialog.png)
 
 ## Admin Component Health
 
@@ -64,7 +64,7 @@ Possible states:
 
 The summary bar counts healthy, degraded, unhealthy, and disabled components.
 
-![Admin Component Health](../_static/screenshots/platform/system-status/system-status-admin-health.png)
+![Admin Component Health](../../../_static/screenshots/platform/system-status/system-status-admin-health.png)
 
 ## Admin Backend Info
 
@@ -72,7 +72,7 @@ Realm administrators also see **Backend Info**, including backend version and en
 
 Use this to confirm which backend version and modules are active in the current deployment before debugging feature behavior.
 
-![Backend Info](../_static/screenshots/platform/system-status/system-status-backend-info.png)
+![Backend Info](../../../_static/screenshots/platform/system-status/system-status-backend-info.png)
 
 ## Refresh Checks
 

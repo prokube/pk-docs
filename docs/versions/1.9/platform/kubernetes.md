@@ -22,7 +22,7 @@ The selected workspace determines which namespace is used by workspace-scoped UI
 
 Several Kubernetes-related actions are available from the prokube user menu: **Download Kubeconfig**, **Registry Credentials**, and **K8s Secrets**.
 
-<img class="pk-docs-small-screenshot" src="../_static/screenshots/platform/kubernetes/user-dropdown.png" alt="Kubernetes actions in the prokube user menu" />
+<img class="pk-docs-small-screenshot" src="../../../_static/screenshots/platform/kubernetes/user-dropdown.png" alt="Kubernetes actions in the prokube user menu" />
 
 ## Download Kubeconfig
 
@@ -30,7 +30,7 @@ Use **Download Kubeconfig** from the prokube user menu to download a kubeconfig 
 
 After the file has been created, the UI shows the download result and basic usage instructions.
 
-![Kubeconfig download dialog](../_static/screenshots/platform/kubernetes/kubeconfig-downloader-ui.png)
+![Kubeconfig download dialog](../../../_static/screenshots/platform/kubernetes/kubeconfig-downloader-ui.png)
 
 The kubeconfig can be used with tools such as `kubectl`, [k9s](https://k9scli.io/), and [OpenLens](https://github.com/MuhammedKalkan/OpenLens). Keep the file private. It authenticates as your user and is subject to your workspace permissions.
 
@@ -53,11 +53,11 @@ Large pipelines can approach this limit quickly because completed pipeline step 
 
 The prokube UI surfaces pod-quota pressure for the selected workspace next to the workspace selector. The System Status page shows detailed quota usage, including running pods, pending pods, and completed pipeline pods.
 
-<img class="pk-docs-small-screenshot" src="../_static/screenshots/platform/kubernetes/100-pods-warning.png" alt="Pod quota warning next to the workspace selector" />
+<img class="pk-docs-small-screenshot" src="../../../_static/screenshots/platform/kubernetes/100-pods-warning.png" alt="Pod quota warning next to the workspace selector" />
 
 When completed pipeline pods are present, the UI offers a cleanup action for them.
 
-<img class="pk-docs-small-screenshot" src="../_static/screenshots/platform/kubernetes/delete-completed-pods-ui.png" alt="Delete completed pipeline pods action" />
+<img class="pk-docs-small-screenshot" src="../../../_static/screenshots/platform/kubernetes/delete-completed-pods-ui.png" alt="Delete completed pipeline pods action" />
 
 Cleanup deletes only completed Argo Workflows / Kubeflow Pipelines pods in `Succeeded` or `Failed` state. Running, pending, and unrelated pods are not affected. Pipeline metadata, artifacts, and logs remain available through the usual pipeline and logging views.
 
@@ -67,7 +67,7 @@ If a workspace repeatedly reaches the pod quota, check for large fan-out pipelin
 
 Use **K8s Secrets** from the prokube user menu to create workspace-scoped [Kubernetes Secrets](https://kubernetes.io/docs/concepts/configuration/secret/).
 
-![K8s Secrets dialog](../_static/screenshots/platform/kubernetes/k8s-secrets-ui.png)
+![K8s Secrets dialog](../../../_static/screenshots/platform/kubernetes/k8s-secrets-ui.png)
 
 Secrets can be referenced by workloads without putting secret values into notebooks, pipeline code, component YAML, or container images.
 
@@ -77,7 +77,7 @@ Treat Kubernetes Secrets as workspace-scoped credentials. Users with sufficient 
 
 Use **Registry Credentials** from the prokube user menu when workloads in a workspace need to pull images from a private container registry.
 
-![Registry Credentials dialog](../_static/screenshots/platform/kubernetes/registry-creds-ui.png)
+![Registry Credentials dialog](../../../_static/screenshots/platform/kubernetes/registry-creds-ui.png)
 
 Registry credentials are stored as Kubernetes Secrets in the workspace namespace and used as image pull credentials by workloads such as Labs, pipelines, model-serving endpoints, MCP servers, or agents.
 

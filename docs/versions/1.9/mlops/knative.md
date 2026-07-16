@@ -73,15 +73,15 @@ Expected response: `Hello World!`
 
 The Knative Services list shows the `hello` service with a **Ready** status. Open its detail page to inspect the service further.
 
-![Knative Services list with hello service Ready](../_static/screenshots/mlops/knative/hello-serivce-in-list.png)
+![Knative Services list with hello service Ready](../../../_static/screenshots/mlops/knative/hello-serivce-in-list.png)
 
 The **Logs** tab streams pod logs for the service instance.
 
-![Knative Service logs tab](../_static/screenshots/mlops/knative/knative-logs.png)
+![Knative Service logs tab](../../../_static/screenshots/mlops/knative/knative-logs.png)
 
 The **Conditions** tab shows the Knative service readiness conditions.
 
-![Knative Service conditions tab](../_static/screenshots/mlops/knative/knative-conditions.png)
+![Knative Service conditions tab](../../../_static/screenshots/mlops/knative/knative-conditions.png)
 
 For your own services, build a container image that listens on the port declared by Knative's `PORT` environment variable (default `8080`). You can [build and push images from a Lab](../labs/index.md#building-container-images) – the prokube-maintained notebook images include Docker CLI and Buildx with a remote BuildKit service.
 

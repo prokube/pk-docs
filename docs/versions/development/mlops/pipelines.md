@@ -94,15 +94,15 @@ Once submitted, the prokube UI shows entries for the uploaded pipeline definitio
 
 The **Pipelines** page shows the uploaded `hello-world-pipeline-*` definition. Open it to inspect versions and start runs from the UI.
 
-![Hello World pipeline in the pipelines list](../_static/screenshots/mlops/pipelines/hello-world-entry-in-pipelines-list.png)
+![Hello World pipeline in the pipelines list](../../../_static/screenshots/mlops/pipelines/hello-world-entry-in-pipelines-list.png)
 
 The **Pipeline Runs** page shows the `hello-world-run-*` execution. Open the run to inspect the DAG and component logs; the example below shows the second step selected.
 
-![Running Hello World pipeline DAG](../_static/screenshots/mlops/pipelines/running-quckstart-pipeline-with-dag.png)
+![Running Hello World pipeline DAG](../../../_static/screenshots/mlops/pipelines/running-quckstart-pipeline-with-dag.png)
 
 The **Experiments** page shows the `hello-world` experiment used by the run. Use experiments to group related runs for comparison and navigation.
 
-![Hello World experiment entry](../_static/screenshots/mlops/pipelines/hello-world-entry-in-experiments.png)
+![Hello World experiment entry](../../../_static/screenshots/mlops/pipelines/hello-world-entry-in-experiments.png)
 
 ## Run the Examples
 
@@ -131,7 +131,7 @@ Relevant examples:
 
 Use recurring runs when the same pipeline should run automatically, for example for daily preprocessing, scheduled model evaluation, or regular batch scoring. A recurring run references a pipeline and version, then adds a schedule and concurrency settings.
 
-![Schedule the Hello World pipeline](../_static/screenshots/mlops/pipelines/hello-world-schedule.png)
+![Schedule the Hello World pipeline](../../../_static/screenshots/mlops/pipelines/hello-world-schedule.png)
 
 ## Storage and Artifacts
 
@@ -325,7 +325,7 @@ Start with the Pipeline Runs page. Open the run details and inspect failed steps
 
 Use the [Logs browser](../platform/observability.md#logs-browser) when the pipeline details page does not show the logs you need or when you want to search across pods by time range, pod name, container, or label.
 
-![Inspect a pipeline run graph and component logs](../_static/screenshots/mlops/pipelines/pipeline-run-dag-including-logs-viewer.png)
+![Inspect a pipeline run graph and component logs](../../../_static/screenshots/mlops/pipelines/pipeline-run-dag-including-logs-viewer.png)
 
 Common causes:
 

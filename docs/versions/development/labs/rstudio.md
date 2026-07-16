@@ -12,11 +12,11 @@ Use RStudio when your workflow is centered around R packages, statistical analys
 
 Create an RStudio Lab from the Labs page. The launch dialog uses the same basic options as other Labs: name, image, compute resources, storage, configurations, and security options.
 
-![Launch RStudio Lab](../_static/screenshots/labs/rstudio/r-studio-spawner.png)
+![Launch RStudio Lab](../../../_static/screenshots/labs/rstudio/r-studio-spawner.png)
 
 The selected image defines the R version, installed R packages, system libraries, and command-line tools available when the Lab starts.
 
-![RStudio Lab home screen](../_static/screenshots/labs/rstudio/r-studio-screen-home.png)
+![RStudio Lab home screen](../../../_static/screenshots/labs/rstudio/r-studio-screen-home.png)
 
 ## Common Uses
 

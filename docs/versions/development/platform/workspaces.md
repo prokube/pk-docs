@@ -55,7 +55,7 @@ Exact permissions can depend on platform configuration. When in doubt, check wit
 
 Some platform views are workspace-scoped. Select the active workspace before using services that create or inspect workload resources, such as Labs, Pipelines, MCP servers, agents, model-serving endpoints, or Kubernetes resources.
 
-<img class="pk-docs-small-screenshot" src="../_static/screenshots/platform/workspaces/workspace-selector.png" alt="Workspace selector in the prokube UI" />
+<img class="pk-docs-small-screenshot" src="../../../_static/screenshots/platform/workspaces/workspace-selector.png" alt="Workspace selector in the prokube UI" />
 
 The workspace selector controls which workspace-scoped resources are shown or created in those views.
 

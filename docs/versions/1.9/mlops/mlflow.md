@@ -25,7 +25,7 @@ prokube uses the open-source [`mlflow-oidc-auth`](https://github.com/mlflow-oidc
 
 After login, you can create and compare runs, inspect artifacts, and manage registered models.
 
-![Successful run in MLflow](../_static/screenshots/mlops/mlflow/successfull-run-in-mlflow.png)
+![Successful run in MLflow](../../../_static/screenshots/mlops/mlflow/successfull-run-in-mlflow.png)
 
 ## Use MLflow from a Lab
 
@@ -35,7 +35,7 @@ For programmatic access from a [JupyterLab](../labs/jupyterlab.md), [VS Code Lab
 
 In the MLflow UI, open the OIDC permissions page and create an access key. Copy the token immediately; it is shown only once.
 
-![Generate a personal access token in MLflow](../_static/screenshots/mlops/mlflow/generate-pat-ui.png)
+![Generate a personal access token in MLflow](../../../_static/screenshots/mlops/mlflow/generate-pat-ui.png)
 
 A user can have one active personal access token. Creating a new token invalidates the previous one.
 
