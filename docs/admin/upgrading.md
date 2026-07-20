@@ -48,7 +48,7 @@ Validate user-facing and admin paths:
 
 - login and workspace selection;
 - Labs start/stop and volume mounting;
-- object storage browser and S3 access;
+- file storage browser and S3 access;
 - Pipelines submission and run logs;
 - MLflow login, tracking, and artifact access;
 - Model Serving deployment and endpoint testing;

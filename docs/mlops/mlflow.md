@@ -87,7 +87,7 @@ Relevant examples:
 | [`mlflow/mlflow-kfp-example.ipynb`](https://github.com/prokube/examples/blob/main/mlflow/mlflow-kfp-example.ipynb) | You want to use MLflow tracking inside a Kubeflow Pipeline. |
 | [`mlflow/mobile-price-classification`](https://github.com/prokube/examples/tree/main/mlflow/mobile-price-classification) | You want a pipeline-oriented example that tracks a model and registers it in MLflow. |
 
-MLflow artifacts are stored through platform-managed object storage. For general object-storage browsing and S3-compatible client access, see [Object Storage](../platform/object_storage.md).
+MLflow artifacts are stored through platform-managed file storage. For general file browsing and S3-compatible client access, see [File Storage](../platform/file_storage.md).
 
 ## Permissions and Naming
 
@@ -162,7 +162,7 @@ For a complete pipeline example, see [`mlflow/mlflow-kfp-example.ipynb`](https:/
 
 prokube can deploy models tracked in MLflow through KServe using `mlflow://` storage URIs. In the prokube UI, open **Models**, click **Deploy Model**, and use **Import from MLflow** to select a model from the MLflow registry or a run artifact.
 
-The resulting KServe `InferenceService` uses the MLflow-aware storage initializer to download model artifacts through the MLflow API. This avoids exposing the underlying object-storage credentials to the workspace namespace.
+The resulting KServe `InferenceService` uses the MLflow-aware storage initializer to download model artifacts through the MLflow API. This avoids exposing the underlying file-storage credentials to the workspace namespace.
 
 For UI steps and KServe-specific details, see [Model Serving](model_serving.md#mlflow-model-registry).
 

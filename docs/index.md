@@ -53,9 +53,9 @@ prokube is a Kubernetes-native AI platform for teams that need to run AI workloa
     <span>Give agents an isolated execution environment with controlled resources and workspace boundaries.</span>
     <em>Learn more -></em>
   </a>
-  <a class="pk-docs-task-card" href="./labs/#persistence-and-package-installation">
-    <strong>Work with persistent storage</strong>
-    <span>Understand what survives Lab restarts and where to place code, notebooks, packages, and data.</span>
+  <a class="pk-docs-task-card" href="./platform/file_storage.html">
+    <strong>Work with file storage</strong>
+    <span>Use S3-backed file storage and PVC-backed volumes for datasets, artifacts, Lab files, and workload data.</span>
     <em>Learn more -></em>
   </a>
   <a class="pk-docs-task-card" href="./platform/api_keys.html">

@@ -110,7 +110,7 @@ Useful upstream OpenCode references:
 
 OpenCode permissions are configured in `opencode.json`. Defaults can be permissive depending on the tool and environment, so explicitly set sensitive tools to `ask` or `deny` when you want review before edits, shell commands, task delegation, or MCP tool calls. OpenCode also supports tool patterns and MCP-tool wildcards; use those to allow only the operations a project actually needs.
 
-For coding-agent workflows, prokube disables broad Kubernetes and object-storage access by default where possible, and recommends granting only the narrow permissions required for the task. Do not assume `kubectl` access or S3-compatible object storage credentials are available in an OpenCode Lab.
+For coding-agent workflows, prokube disables broad Kubernetes and file-storage access by default where possible, and recommends granting only the narrow permissions required for the task. Do not assume `kubectl` access or S3-compatible file-storage credentials are available in an OpenCode Lab.
 
 The OpenCode image is not intended for local container image builds and does not include the Docker/Buildx workflow used by some other Labs.
 
@@ -124,9 +124,9 @@ OpenCode Labs include an integrated terminal backed by the OpenCode PTY API. Use
 
 ![Integrated terminal](../_static/screenshots/labs/opencode/terminal-and-todo-ui.png)
 
-The terminal runs inside the same Lab pod as OpenCode. It is useful for explicit manual commands, but it is not a separate sandbox. If you need package installation patterns or object-storage access in a Lab where those permissions are intentionally enabled, use the shared Labs guidance:
+The terminal runs inside the same Lab pod as OpenCode. It is useful for explicit manual commands, but it is not a separate sandbox. If you need package installation patterns or file-storage access in a Lab where those permissions are intentionally enabled, use the shared Labs guidance:
 
-- [Object Storage](../platform/object_storage.md)
+- [File Storage](../platform/file_storage.md)
 - [Persistence and Package Installation](index.md#persistence-and-package-installation)
 
 ## Add MCP Servers

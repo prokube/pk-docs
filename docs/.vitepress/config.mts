@@ -79,7 +79,7 @@ export default defineConfig({
           { text: 'Overview', link: '/platform/' },
           { text: 'Workspaces', link: '/platform/workspaces.html' },
           { text: 'Kubernetes Resources', link: '/platform/kubernetes.html' },
-          { text: 'Object Storage', link: '/platform/object_storage.html' },
+          { text: 'File Storage', link: '/platform/file_storage.html' },
           { text: 'Platform Databases', link: '/platform/databases.html' },
           { text: 'Component Versions', link: '/platform/component_versions.html' },
           { text: 'Observability', link: '/platform/observability.html' },
