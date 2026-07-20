@@ -42,7 +42,7 @@ The examples in this section use the S3 configuration available in prokube-maint
 
 For more complete examples, see the [`prokube/examples/storage/s3`](https://github.com/prokube/examples/storage/s3) repository. Labs can use S3-backed file storage through UI extensions, Python libraries, command-line tools, and S3-compatible SDKs.
 
-:::tip 
+::: tip
 JupyterLab images can also include an S3 browser extension in the JupyterLab sidebar.
 See [JupyterLab](../labs/jupyterlab.md#file-storage-in-jupyterlab).
 :::
@@ -79,7 +79,7 @@ csv = pd.read_csv("s3://my-bucket/path/data.csv")
 ```
 
 
-### R 
+### R
 R clients can use S3-compatible libraries such as `aws.s3`. In a managed RStudio Lab, credentials are usually provided by the workspace configuration.
 
 ```r
