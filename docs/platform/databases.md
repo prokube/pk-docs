@@ -116,7 +116,13 @@ The examples use these standard port values:
 | MariaDB/MySQL | `3306` |
 | Microsoft SQL Server | `1433` |
 
-Use the port configured by the database administrator rather than assuming the example value. For Microsoft SQL Server, ask the database administrator for the port or inspect the server and connection configuration. Port `1433` is common for a default instance, but named instances and deployments using dynamic ports may differ.
+Use the port configured by the database administrator rather than assuming the example value. For staging Microsoft SQL Server hosts, use the following command from a Lab terminal to list SQL Server Browser-advertised instances and connection details when the port is not known:
+
+```bash
+tsql -L -H <server-domain>
+```
+
+If the staging host does not advertise its instances, ask the database administrator for the port. Port `1433` is common for a default instance, but named instances and deployments using dynamic ports may differ.
 
 ## Security and Access Control
 
@@ -171,7 +177,7 @@ Managed Labs normally include the `prokube/examples` repository under `~/example
 | Connection refused or timed out | Verify the hostname and port, confirm the database is running, and check namespace, network, and egress policy. |
 | Authentication fails | Confirm the database name, user, password, authentication method, and whether the user is allowed to connect from the Lab network. |
 | Driver or module is missing | Use a prokube-maintained notebook or RStudio image, or install the required package in the Lab environment. |
-| SQL Server connection fails | Confirm the server port and FreeTDS configuration. Ask the database administrator for the port when it is not included in the connection details. |
+| SQL Server connection fails | Confirm the server port and FreeTDS configuration. For staging hosts, run `tsql -L -H <server-domain>` to list advertised instances; ask the database administrator for the port if the host does not respond. |
 | Queries are slow | Inspect the query plan, indexes, connection pool, transaction duration, and database resource limits. |
 | Database or schema is not available | Confirm that the database exists, the user has the required grants, and the platform or external administrator has provided the correct connection scope. |
 
