@@ -89,7 +89,12 @@ library(readr)
 bucket <- "my-bucket"
 key <- "path/data.csv"
 
-obj <- get_object(object = key, bucket = bucket, region = "")
+obj <- get_object(
+  object = key,
+  bucket = bucket,
+  use_https = FALSE,
+  region = ""
+)
 df <- read_csv(rawToChar(obj))
 ```
 
