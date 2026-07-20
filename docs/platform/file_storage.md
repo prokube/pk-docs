@@ -18,7 +18,7 @@ The browser is intended for routine interactive file operations. Use it to brows
 
 If you are already working in a notebook, the [JupyterLab S3 browser](../labs/jupyterlab.md#file-storage-in-jupyterlab) provides similar access from the JupyterLab sidebar.
 
-![File Storage upload](../_static/screenshots/platform/object-storage/object-storage-upload.png)
+![File Storage upload](../_static/screenshots/platform/file-storage/object-storage-upload.png)
 
 ::: tip Large transfers
 For large transfers, repeatable commands, or automation, use a Lab terminal with `rclone` or another S3-compatible client.
@@ -34,7 +34,7 @@ s3://<bucket>/<path>/<object>
 
 Use these paths as stable references to data, independent of the tool that created or consumes it. Copy paths from the File Storage browser when possible. This avoids mistakes in bucket names, prefixes, and model artifact locations.
 
-![File Storage object actions](../_static/screenshots/platform/object-storage/object-storage-object-actions.png)
+![File Storage object actions](../_static/screenshots/platform/file-storage/object-storage-object-actions.png)
 
 ## Access S3-Backed Files
 
