@@ -92,7 +92,7 @@ key <- "path/data.csv"
 obj <- get_object(
   object = key,
   bucket = bucket,
-  use_https = FALSE,
+  use_https = FALSE, # Internal MinIO only; use TRUE for external endpoints.
   region = ""
 )
 df <- read_csv(rawToChar(obj))
