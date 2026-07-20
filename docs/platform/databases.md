@@ -160,7 +160,7 @@ For a starting point, see Crunchy Data's [PostgreSQL performance tuning guidance
 
 ### Which database should I use?
 
-Use PostgreSQL for general relational workloads and TimescaleDB for time-series workloads when those services are available in the deployment. Use MariaDB/MySQL or Microsoft SQL Server when the workload is hosted in an external database and your Lab can reach it.
+Use PostgreSQL for general relational workloads and TimescaleDB for time-series workloads when those services are available in the deployment. Use MariaDB when it is available as a platform-managed service, or MariaDB/MySQL when connecting to an external database. Use Microsoft SQL Server for an external database when your Lab can reach it.
 
 ### Who manages backups?
 
