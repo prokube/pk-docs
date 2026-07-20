@@ -40,7 +40,7 @@ Use these paths as stable references to data, independent of the tool that creat
 
 The examples in this section use the S3 configuration available in prokube-maintained Lab images. The same tools can be used outside Labs, but external clients may require explicit endpoint and credential configuration. See [External S3 Clients](#external-s3-clients).
 
-For more complete examples, see the [`prokube/examples/storage/s3`](https://github.com/prokube/examples/storage/s3) repository. Labs can use S3-backed file storage through UI extensions, Python libraries, command-line tools, and S3-compatible SDKs.
+For more complete examples, see the [`prokube/examples/storage/s3`](https://github.com/prokube/examples/tree/main/storage/s3) examples. Labs can use S3-backed file storage through UI extensions, Python libraries, command-line tools, and S3-compatible SDKs.
 
 ::: tip
 JupyterLab images can also include an S3 browser extension in the JupyterLab sidebar.

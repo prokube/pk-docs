@@ -48,12 +48,12 @@ The public [`prokube/examples`](https://github.com/prokube/examples) repository 
 git clone https://github.com/prokube/examples.git ~/examples
 ```
 
-See the `storage/database-access` examples directory for the complete set of database examples, or [browse it on GitHub](https://github.com/prokube/examples/tree/f57edf7ec3d9a46f9451f4b3ddbe1239f94cbd78/storage/database-access).
+See the `storage/database-access` examples directory for the complete set of database examples, or [browse it on GitHub](https://github.com/prokube/examples/tree/main/storage/database-access).
 
 ::: details GitHub example paths
-- PostgreSQL: [Python notebook](https://github.com/prokube/examples/blob/f57edf7ec3d9a46f9451f4b3ddbe1239f94cbd78/storage/database-access/python/postgresql.ipynb) or [R script](https://github.com/prokube/examples/blob/f57edf7ec3d9a46f9451f4b3ddbe1239f94cbd78/storage/database-access/r/postgresql.R)
-- MariaDB/MySQL: [Python notebook](https://github.com/prokube/examples/blob/f57edf7ec3d9a46f9451f4b3ddbe1239f94cbd78/storage/database-access/python/mariadb.ipynb) or [R script](https://github.com/prokube/examples/blob/f57edf7ec3d9a46f9451f4b3ddbe1239f94cbd78/storage/database-access/r/mariadb.R)
-- Microsoft SQL Server: [Python notebook](https://github.com/prokube/examples/blob/f57edf7ec3d9a46f9451f4b3ddbe1239f94cbd78/storage/database-access/python/sqlserver.ipynb) or [R script](https://github.com/prokube/examples/blob/f57edf7ec3d9a46f9451f4b3ddbe1239f94cbd78/storage/database-access/r/sqlserver.R)
+- PostgreSQL: [Python notebook](https://github.com/prokube/examples/blob/main/storage/database-access/python/postgresql.ipynb) or [R script](https://github.com/prokube/examples/blob/main/storage/database-access/r/postgresql.R)
+- MariaDB/MySQL: [Python notebook](https://github.com/prokube/examples/blob/main/storage/database-access/python/mariadb.ipynb) or [R script](https://github.com/prokube/examples/blob/main/storage/database-access/r/mariadb.R)
+- Microsoft SQL Server: [Python notebook](https://github.com/prokube/examples/blob/main/storage/database-access/python/sqlserver.ipynb) or [R script](https://github.com/prokube/examples/blob/main/storage/database-access/r/sqlserver.R)
 :::
 
 The examples use the Iris dataset, create a table named `iris_example`, write the data, read a few rows back, and close the connection. Edit the connection values at the top of the example and enter the password when prompted:
