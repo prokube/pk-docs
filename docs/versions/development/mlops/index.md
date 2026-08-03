@@ -11,7 +11,7 @@ Use [Labs](../labs/index.md) for interactive work, then move repeatable or share
 | [Pipelines](pipelines.md) | Run reproducible, inspectable workflows with Kubeflow Pipelines. Use this when notebook work should become a cluster-executed workflow. |
 | [Hparam Search](hyperparameter_tuning.md) | Run Katib experiments to compare parameter combinations and parallelize trials on cluster compute. |
 | [MLflow](mlflow.md) | Track experiments, log artifacts, manage model registry entries, and issue credentials for notebooks, pipelines, and serving. |
-| [Model Serving](model_serving.md) | Deploy trained models as KServe inference endpoints, including models from object storage or MLflow. |
+| [Model Serving](model_serving.md) | Deploy trained models as KServe inference endpoints, including models from S3-compatible file storage or MLflow. |
 | [Model Serving Autoscaling](model_serving_autoscaling.md) | Tune KServe autoscaling with KPA, HPA, and KEDA, including vLLM token-throughput metrics. |
 | [Serverless](knative.md) | Run generic HTTP containers with Knative Serving when the workload is not a model-specific KServe deployment. |
 

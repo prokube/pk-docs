@@ -26,7 +26,7 @@ At minimum, you need to:
 
 For custom web applications, the container should expose the expected notebook port and handle being served behind the platform's notebook proxy path.
 
-Use [Using Labs](index.md) for the shared workspace, persistence, object-storage, and image-building behavior. Use custom images when user-space package installation is not enough or when a team needs the same environment repeatedly.
+Use [Using Labs](index.md) for the shared workspace, persistence, file-storage, and image-building behavior. Use custom images when user-space package installation is not enough or when a team needs the same environment repeatedly.
 
 The [`prokube/examples` Streamlit example](https://github.com/prokube/examples/tree/main/images/streamlit-example) shows a custom image that can run as a Kubeflow Notebook and serve a Streamlit app behind the notebook proxy path.
 

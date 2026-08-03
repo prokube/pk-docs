@@ -1,7 +1,7 @@
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import defineVersionedConfig from 'vitepress-versioning-plugin'
-import { latestReleasedVersion, visibleVersions } from './versions'
+import { developmentVersion, latestReleasedVersion, visibleVersions } from './versions'
 
 const base = process.env.VITEPRESS_BASE ?? '/docs/'
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -89,10 +89,16 @@ const baseSidebar: SidebarItem[] = [
 function sidebarFor(version: string): SidebarItem[] {
   return baseSidebar.map((section) => ({
     ...section,
-    items: section.items?.map((item) => ({
-      ...item,
-      link: item.link ? `/${version}${item.link}` : item.link
-    }))
+    items: section.items?.map((item) => {
+      const versionedItem = version === developmentVersion && item.link === '/platform/object_storage.html'
+        ? { ...item, text: 'File Storage', link: '/platform/file_storage.html' }
+        : item
+
+      return {
+        ...versionedItem,
+        link: versionedItem.link ? `/${version}${versionedItem.link}` : versionedItem.link
+      }
+    })
   }))
 }
 
