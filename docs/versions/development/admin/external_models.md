@@ -10,11 +10,7 @@ Use this workflow when you need to:
 
 For OpenAI, Anthropic, or Gemini, workspace users can instead create their own Model Configuration backed by a workspace Kubernetes Secret. See [Agents](../agentops/agents.html#_2-choose-or-create-a-model-configuration).
 
-Screenshot placeholder:
-
-```text
-docs/_static/screenshots/admin/external-models/ai-gateway-overview.png
-```
+![AI Gateway page with provider catalog and platform-wide usage summary](../../../_static/screenshots/admin/external-models/ai-gateway-overview.png)
 
 ## Provider Options
 
@@ -60,11 +56,9 @@ Select **Grant Workspace Access**, then choose:
 
 The grant creates a Model Configuration in the target workspace. It appears automatically on the workspace's **Agents** page, tagged **AI Gateway** as its origin. Users can select it when creating an agent without creating their own provider Secret.
 
-Screenshot placeholder:
+![Workspace Access table with an external model grant](../../../_static/screenshots/admin/external-models/grant-workspace-access.png)
 
-```text
-docs/_static/screenshots/admin/external-models/grant-workspace-access.png
-```
+![Granted external model shown as an AI Gateway Model Configuration](../../../_static/screenshots/admin/external-models/grant-workspace-access-agents-tab.png)
 
 The central provider credential is not exposed to the workspace. Revoke the grant from **Workspace Access** when the workspace should no longer use the model.
 

@@ -18,24 +18,12 @@ If you only need OpenAI, Anthropic, or Gemini, create a Model Configuration dire
 
 Open **LLM Serving** in the sidebar. The page lists deployed models for the selected workspace, filterable by type (**All / Text Generation / Embedding / Reranking**), with columns for name, status, model ID, type, runtime, and age.
 
-Screenshot placeholder:
-
-```text
-docs/_static/screenshots/agentops/llm-serving/llm-serving-list.png
-```
-
 Click **Deploy Model** and choose a preset, or select **Deploy Custom Model** to configure the deployment from scratch. Presets provide curated defaults and can be searched or filtered by GPU count, task type, and verification status. Both paths open the same form:
 
 - **Deployment Name**: unique name in the workspace.
 - **Model Type**: Text Generation, Embedding, Reranking, Text to Speech, or Speech to Text. Typing a HuggingFace-style model ID (`org/model`) auto-detects the type.
 - **Model ID**: a HuggingFace model ID, for example `meta-llama/Llama-2-7b-chat-hf`. HuggingFace is the only model source available in the form; use the YAML editor for other storage URIs.
 - **Runtime**: filtered to runtimes that support the selected type. Options include HuggingFace (recommended for text generation and embeddings), TEI (CPU-optimized embeddings), vLLM, vLLM Omni (audio models), and faster-whisper (CPU speech-to-text). vLLM requires a custom ClusterServingRuntime.
-
-Screenshot placeholder:
-
-```text
-docs/_static/screenshots/agentops/llm-serving/deploy-model-form.png
-```
 
 If the model is gated on HuggingFace, the form warns you before deploying: accept the license on huggingface.co, create an access token, and store it as a Kubernetes Secret named `storage-config` with key `HF_TOKEN` in the workspace (see [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets)). Deployment fails without it.
 
@@ -69,11 +57,7 @@ If you plan to attach MCP tools to a kagent agent that uses this model (an **Int
 | DeepSeek V3 | DeepSeek V3 format |
 | DeepSeek V3.1 | DeepSeek V3.1 format |
 
-Screenshot placeholder:
-
-```text
-docs/_static/screenshots/agentops/llm-serving/automatic-tool-calling.png
-```
+![LLM deployment form with automatic tool calling and parser selection](../../../_static/screenshots/agentops/llm-serving/automatic-tool-calling.png)
 
 This list matches the parsers built into the platform's currently deployed vLLM runtime and may change as that runtime is upgraded; use YAML editing for a parser or chat template not listed here. Without a matching parser, an agent's tool calls against this model will not work reliably even though the Model Configuration and deployment are otherwise valid.
 

@@ -109,11 +109,7 @@ Rotating a key invalidates the old value immediately. Update every client or sec
 
 Switch to the **Usage** tab on the API Keys page to see how keys in the selected workspace are being used. The dashboard covers requests that Agent Gateway authenticated with a key; it does not cover internal in-mesh traffic (see [Agent Gateway: Public vs. Internal Traffic](../agentops/agent_gateway.html#public-vs-internal-traffic)).
 
-Screenshot placeholder:
-
-```text
-docs/_static/screenshots/platform/api-keys/api-key-usage-tab.png
-```
+![API key usage dashboard with request trend, estimated LLM usage, and per-key activity](../../../_static/screenshots/platform/api-keys/api-key-usage-tab.png)
 
 ### Time Window and Cohorts
 
@@ -150,12 +146,6 @@ The **Usage by key** table lists per-key activity for the window:
 | Last Active | Approximate time since the key's last recorded request, bounded by the selected window and its sampling granularity — not an exact last-used timestamp. |
 
 Regular users see **Keys owned by you**; administrators see **All workspace keys**. Keys with no recorded activity in the window are omitted, except historical (deleted) keys that administrators can still see for auditing.
-
-Screenshot placeholder:
-
-```text
-docs/_static/screenshots/platform/api-keys/api-key-usage-by-key-table.png
-```
 
 ### Reading the Numbers Correctly
 
