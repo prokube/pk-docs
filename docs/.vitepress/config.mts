@@ -56,7 +56,8 @@ export default defineConfig({
           { text: 'Agent Sandboxes', link: '/agentops/sandboxes.html' },
           { text: 'MCP Servers', link: '/agentops/mcp_servers.html' },
           { text: 'Memory Stores', link: '/agentops/memory_stores.html' },
-          { text: 'Agents', link: '/agentops/agents.html' }
+          { text: 'Agents', link: '/agentops/agents.html' },
+          { text: 'LLM Serving', link: '/agentops/llm_serving.html' }
         ]
       },
       {
