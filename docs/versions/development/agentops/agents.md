@@ -34,6 +34,12 @@ Otherwise, for an **external** provider (OpenAI, Anthropic, Gemini), create a Ku
 
 Check **Model Configurations** on the **Agents** page first. An administrator may already have granted the workspace access to an external model through AI Gateway. These configurations appear automatically with **AI Gateway** as their origin and can be selected when creating an agent.
 
+Screenshot placeholder:
+
+```text
+docs/_static/screenshots/agentops/agents/model-configurations.png
+```
+
 If no suitable configuration exists, select **Create ModelConfig**. The **Provider** field selects how kagent reaches the backend:
 
 | Provider | Type | Needs a Secret? |
@@ -68,6 +74,12 @@ For a declarative agent, attach tools:
 
 MCP tools come from **Tools** on the same Agents page — connect an MCP endpoint there first if the tool you need isn't listed yet. See [MCP Servers](mcp_servers.html) for details. If the agent uses [Agent Sandboxes](sandboxes.html)-backed skills, attach the Tool that points at `sandbox-mcp`.
 
+Screenshot placeholder:
+
+```text
+docs/_static/screenshots/agentops/agents/create-agent-tools.png
+```
+
 ### 4. Test the Agent
 
 Open the agent from the Agents list. The detail page's **Chat** tab is available once the agent is `Ready`, and shows:
@@ -77,6 +89,12 @@ Open the agent from the Agents list. The detail page's **Chat** tab is available
 - A **Connected Tools** panel listing attached tools and their readiness.
 
 Each response that used a tool shows a **Tool Activity** entry with the tool's arguments and result, so you can verify what the agent actually called and with what inputs — useful for debugging both prompt and tool wiring before relying on the agent elsewhere.
+
+Screenshot placeholder:
+
+```text
+docs/_static/screenshots/agentops/agents/chat-tool-activity.png
+```
 
 For programmatic access instead of the chat UI, the agent's Overview tab lists its A2A endpoint. External callers need an API key scoped to the agent (`a2a`) — see [API Keys](../platform/api_keys.html). Callers inside the same workspace can reach the agent over the internal A2A path without a key.
 

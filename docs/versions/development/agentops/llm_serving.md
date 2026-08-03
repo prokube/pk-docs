@@ -69,6 +69,12 @@ If you plan to attach MCP tools to a kagent agent that uses this model (an **Int
 | DeepSeek V3 | DeepSeek V3 format |
 | DeepSeek V3.1 | DeepSeek V3.1 format |
 
+Screenshot placeholder:
+
+```text
+docs/_static/screenshots/agentops/llm-serving/automatic-tool-calling.png
+```
+
 This list matches the parsers built into the platform's currently deployed vLLM runtime and may change as that runtime is upgraded; use YAML editing for a parser or chat template not listed here. Without a matching parser, an agent's tool calls against this model will not work reliably even though the Model Configuration and deployment are otherwise valid.
 
 ## Test a Deployed Model
