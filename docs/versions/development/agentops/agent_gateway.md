@@ -47,6 +47,21 @@ See [API Keys](../platform/api_keys.html) for the full create/edit/rotate/disabl
 
 The API Keys page also has a **Usage** tab showing request volume, LLM token/cost estimates, and per-key activity for the selected workspace. See [Usage Dashboard](../platform/api_keys.html#usage-dashboard) for details.
 
+## External Models
+
+Agents can use external models through two different paths:
+
+| | User-created Model Configuration | Admin-managed external model |
+|---|---|---|
+| Providers | OpenAI, Anthropic, Gemini | Anthropic, OpenAI, Mistral AI, Azure OpenAI, GitHub Models, or a custom OpenAI-compatible endpoint |
+| Credential | API key stored in a workspace Kubernetes Secret | Provider credential managed centrally by an administrator |
+| Availability | Available only through that workspace's Model Configuration | Granted to selected workspaces and shown there as an **AI Gateway** Model Configuration |
+| Routing | Agent connects to the provider through the Model Configuration | Model traffic is routed through Agent Gateway |
+
+Use a user-created Model Configuration for a workspace-specific provider credential. Use the admin-managed path when credentials should be shared centrally, when workspaces need explicit model grants, or when the provider is not available in the self-service list.
+
+Workspace users select either type from the same Model Configurations list when creating an agent. Administrators configure providers, models, and workspace grants under [External Models](../admin/external_models.html).
+
 ## Related Pages
 
 - [API Keys](../platform/api_keys.html)
