@@ -12,7 +12,7 @@ LLM Serving is an AgentOps capability. For classic (non-LLM) model serving — s
 - Provide an in-cluster model for a kagent [Agent](agents.html) via an **Internal** Model Configuration, with or without tool calling.
 - Keep model traffic and data inside the cluster instead of sending it to an external provider.
 
-If you only need OpenAI, Anthropic, or Gemini, create a Model Configuration directly instead — see [Agents: Create a Model Configuration](agents.html#_2-create-a-model-configuration).
+If you only need OpenAI, Anthropic, or Gemini, create a Model Configuration directly instead. See [Agents: Choose or Create a Model Configuration](agents.html#_2-choose-or-create-a-model-configuration).
 
 ## Deploy a Model
 
@@ -82,9 +82,9 @@ From the model list or detail page, **Edit** lets you change Model Type, Quantiz
 
 ## External Access
 
-Endpoints shown on the model's detail/API tabs are the workspace-internal serving URL, useful for testing from inside the platform. For external clients (SDKs, CI jobs, applications outside the cluster), call the model through [Agent Gateway](agent_gateway.html) instead, using the `/ai/<workspace>/models/<route-id>/v1/...` path family and an API key scoped to the model — see [API Keys](../platform/api_keys.html). This is the same path family used by models granted through the admin AI Gateway; see [Agent Gateway: External Model Providers](agent_gateway.html#external-model-providers-administrators).
+Endpoints shown on the model's detail/API tabs are the workspace-internal serving URL, useful for testing from inside the platform. For external clients (SDKs, CI jobs, applications outside the cluster), call the model through [Agent Gateway](agent_gateway.html) instead, using the `/ai/<workspace>/models/<route-id>/v1/...` path family and an API key scoped to the model. See [API Keys](../platform/api_keys.html). This is the same path family used by models granted through [External Models](../admin/external_models.html).
 
-To use a deployed model from a kagent agent instead of an external client, create an **Internal - OpenAI-compatible** Model Configuration and pick this model from the **LLM Serving model** dropdown — see [Agents](agents.html#_2-create-a-model-configuration).
+To use a deployed model from a kagent agent instead of an external client, create an **Internal - OpenAI-compatible** Model Configuration and pick this model from the **LLM Serving model** dropdown. See [Agents](agents.html#_2-choose-or-create-a-model-configuration).
 
 ## Related Pages
 

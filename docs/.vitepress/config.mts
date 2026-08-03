@@ -82,6 +82,7 @@ const baseSidebar: SidebarItem[] = [
       { text: 'Network Policies', link: '/admin/network_policies.html' },
       { text: 'Application Networking', link: '/admin/application_networking.html' },
       { text: 'Application Authentication', link: '/admin/application_authentication.html' },
+      { text: 'External Models', link: '/admin/external_models.html', versions: [developmentVersion] },
       { text: 'Storage', link: '/admin/storage.html' },
       { text: 'GPU Administration', link: '/admin/gpu.html' },
       { text: 'Backup and Restore', link: '/admin/backup_restore.html' },

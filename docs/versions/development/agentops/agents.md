@@ -19,20 +19,22 @@ Use the Agents page when you need a conversational or task-driven agent that cal
 
 Building a working agent is a short chain of dependent resources:
 
-1. Store the model provider's API key as a Kubernetes Secret (external providers only).
-2. Create a **Model Configuration** that points at a provider or an in-cluster model.
+1. If needed, store an external provider API key as a Kubernetes Secret.
+2. Choose an available **Model Configuration**, or create one for an external provider or in-cluster model.
 3. Create an **Agent**, attach the Model Configuration, and select MCP tools.
 4. Test the agent in the built-in chat.
 
 ### 1. Store the Provider API Key
 
-For an **external** provider (OpenAI, Anthropic, Gemini), create a Kubernetes Secret first: open the user menu (top right) → **K8s Secrets** → **Add Secret**, and store the provider API key as a key/value pair in the workspace. See [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets) for the full flow.
+Skip this step if you will use an admin-provided Model Configuration or an **Internal** (in-cluster) model. Admin-provided configurations use a centrally managed credential; internal models authenticate over mesh identity.
 
-**Internal** (in-cluster) models do not need a Secret — they authenticate over mesh identity.
+Otherwise, for an **external** provider (OpenAI, Anthropic, Gemini), create a Kubernetes Secret first: open the user menu (top right) → **K8s Secrets** → **Add Secret**, and store the provider API key as a key/value pair in the workspace. See [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets) for the full flow.
 
-### 2. Create a Model Configuration
+### 2. Choose or Create a Model Configuration
 
-On the **Agents** page, open **Model Configurations** → **Create ModelConfig**. The **Provider** field selects how kagent reaches the backend:
+Check **Model Configurations** on the **Agents** page first. An administrator may already have granted the workspace access to an external model through AI Gateway. These configurations appear automatically with **AI Gateway** as their origin and can be selected when creating an agent.
+
+If no suitable configuration exists, select **Create ModelConfig**. The **Provider** field selects how kagent reaches the backend:
 
 | Provider | Type | Needs a Secret? |
 |---|---|---|
@@ -46,10 +48,10 @@ On the **Agents** page, open **Model Configurations** → **Create ModelConfig**
 - For **Internal - OpenAI-compatible**, either pick a **Ready** model deployed through [LLM Serving](llm_serving.html) in the workspace, or enter a custom in-cluster OpenAI-compatible base URL and model name manually.
 - For **Internal - Ollama**, enter the in-cluster Ollama host, for example `http://ollama.<workspace>.svc.cluster.local:11434`.
 
-If you want a provider that is not in this list (for example Azure OpenAI, Mistral, or another OpenAI-compatible endpoint), that requires an administrator — see [Additional Providers (Administrators)](#additional-providers-administrators) below.
+If you want a provider that is not in this list (for example Azure OpenAI, Mistral, or another OpenAI-compatible endpoint), that requires an administrator. See [Additional Providers (Administrators)](#additional-providers-administrators) below.
 
 ::: info Tool calling with internal models
-Not every self-hosted model runtime supports OpenAI-style tool calling. If an agent will attach MCP tools to an **Internal** Model Configuration, deploy the underlying model through [LLM Serving](llm_serving.html) with **Enable automatic tool calling** turned on (in the deploy form's Advanced Configuration) and a tool-call parser that matches the model. This option is only available for the vLLM and HuggingFace runtimes with a Text Generation model. Without it, the agent's tool calls will not work reliably even though the Model Configuration itself is valid.
+For a self-hosted text-generation model used with MCP tools, enable **automatic tool calling** in [LLM Serving](llm_serving.html) and select the parser that matches the model. This option is available for the vLLM and HuggingFace runtimes.
 :::
 
 ### 3. Create an Agent
@@ -80,7 +82,17 @@ For programmatic access instead of the chat UI, the agent's Overview tab lists i
 
 ## Additional Providers (Administrators)
 
-Model Configurations only offer OpenAI, Anthropic, and Gemini as external providers. Administrators can connect additional providers — Mistral AI, Azure OpenAI, GitHub Models, or any custom OpenAI-compatible endpoint — through the platform **AI Gateway** page and grant specific workspaces access to a model from that provider. A granted model then appears automatically as a normal, selectable Model Configuration in the workspace (tagged **AI Gateway** as its origin) — no per-user Secret required. See [Agent Gateway: External Model Providers](agent_gateway.html#external-model-providers-administrators) for the admin-side workflow.
+Users can create Model Configurations for:
+
+- OpenAI, Anthropic, and Gemini using a workspace Secret;
+- internal OpenAI-compatible and Ollama models without a provider Secret.
+
+Administrators can:
+
+- connect Mistral AI, Azure OpenAI, GitHub Models, or a custom OpenAI-compatible endpoint;
+- grant selected workspaces access to individual models from those providers.
+
+An admin-granted model appears automatically as a selectable Model Configuration, tagged **AI Gateway** as its origin. Users do not need their own provider Secret. See [External Models](../admin/external_models.html) for the administrator workflow.
 
 ## Related Pages
 
@@ -89,5 +101,6 @@ Model Configurations only offer OpenAI, Anthropic, and Gemini as external provid
 - [MCP Servers](mcp_servers.html)
 - [Agent Sandboxes](sandboxes.html)
 - [Memory Stores](memory_stores.html)
+- [External Models](../admin/external_models.html)
 - [API Keys](../platform/api_keys.html)
 - [Kubernetes Resources](../platform/kubernetes.html)
