@@ -1,0 +1,1 @@
+const s="/docs/assets/network-policies-page.c0dH0Lag.png",e="/docs/assets/create-egress-profile-dialog.C8bZsuMd.png",o="/docs/assets/egress-profile-no-internet.B19LloQC.png",t="/docs/assets/egress-profile-destination-rules.CDxhyIBL.png",r="/docs/assets/delete-egress-profile-dialog.BTzddERM.png";export{s as _,e as a,o as b,t as c,r as d};

@@ -1,0 +1,1 @@
+const s="/docs/assets/user-dropdown.BJ6jnyWS.png",o="/docs/assets/kubeconfig-downloader-ui.CYYe6V-X.png",t="/docs/assets/100-pods-warning.D3Cp-O1y.png",e="/docs/assets/delete-completed-pods-ui.Ddumw9nX.png",n="/docs/assets/k8s-secrets-ui.CsN0uyJh.png",p="/docs/assets/registry-creds-ui.DQR0mrO0.png";export{s as _,o as a,t as b,e as c,n as d,p as e};

@@ -1,0 +1,1 @@
+const s="/docs/assets/vs-code-spawner.BvPt6SoY.png",t="/docs/assets/vs-code-welcome.DlpGtGdq.png",o="/docs/assets/firefox-enhanced-tracing-prection.CWQk6JGB.png",c="/docs/assets/vscode-k8s-attach-palette.r109YMXm.png",e="/docs/assets/vscode-k8s-extension-attach.DmyRyzLI.png";export{s as _,t as a,o as b,c,e as d};
