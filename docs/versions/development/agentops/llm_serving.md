@@ -1,8 +1,8 @@
 # LLM Serving
 
-LLM Serving deploys self-hosted models — text generation, embedding, reranking, text-to-speech, and speech-to-text — as OpenAI-compatible inference endpoints on KServe. It is the in-cluster counterpart to connecting an external provider: use it when you want to host the model yourself instead of calling OpenAI, Anthropic, or Gemini.
+LLM Serving deploys self-hosted models as OpenAI-compatible inference endpoints on KServe. It supports text generation, embedding, reranking, text-to-speech, and speech-to-text models. Use it when you want to host a model in the cluster instead of calling an external provider such as OpenAI, Anthropic, or Gemini.
 
-LLM Serving is an AgentOps capability. For classic (non-LLM) model serving — scikit-learn, PyTorch, and similar predictors — see [Model Serving](../mlops/model_serving.html) instead; the two use the same KServe foundation but different deployment forms and endpoints.
+LLM Serving is an AgentOps capability. For classic model serving with scikit-learn, PyTorch, and similar predictors, see [Model Serving](../mlops/model_serving.html). Both features use KServe, but they provide different deployment forms and endpoints.
 
 ## When to Use LLM Serving
 
@@ -24,12 +24,12 @@ Screenshot placeholder:
 docs/_static/screenshots/agentops/llm-serving/llm-serving-list.png
 ```
 
-Click **Deploy Model** to deploy from a **preset** (a curated, pre-filled configuration — searchable and filterable by GPU count, task type, and verification status) or **Deploy Custom Model** to configure from scratch. Both open the same form:
+Click **Deploy Model** and choose a preset, or select **Deploy Custom Model** to configure the deployment from scratch. Presets provide curated defaults and can be searched or filtered by GPU count, task type, and verification status. Both paths open the same form:
 
 - **Deployment Name**: unique name in the workspace.
 - **Model Type**: Text Generation, Embedding, Reranking, Text to Speech, or Speech to Text. Typing a HuggingFace-style model ID (`org/model`) auto-detects the type.
 - **Model ID**: a HuggingFace model ID, for example `meta-llama/Llama-2-7b-chat-hf`. HuggingFace is the only model source available in the form; use the YAML editor for other storage URIs.
-- **Runtime**: filtered to runtimes that support the selected type — HuggingFace (recommended, covers text generation and embeddings), TEI (CPU-optimized embeddings), vLLM (requires a custom ClusterServingRuntime), vLLM Omni (audio models), or faster-whisper (CPU speech-to-text).
+- **Runtime**: filtered to runtimes that support the selected type. Options include HuggingFace (recommended for text generation and embeddings), TEI (CPU-optimized embeddings), vLLM, vLLM Omni (audio models), and faster-whisper (CPU speech-to-text). vLLM requires a custom ClusterServingRuntime.
 
 Screenshot placeholder:
 
@@ -39,22 +39,23 @@ docs/_static/screenshots/agentops/llm-serving/deploy-model-form.png
 
 If the model is gated on HuggingFace, the form warns you before deploying: accept the license on huggingface.co, create an access token, and store it as a Kubernetes Secret named `storage-config` with key `HF_TOKEN` in the workspace (see [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets)). Deployment fails without it.
 
-A **"Or edit YAML manifest directly"** link is available if the form doesn't cover a setting you need (custom storage URI, extra container args, and so on).
+Select **Or edit YAML manifest directly** if the form does not cover a setting you need, such as a custom storage URI or extra container arguments.
 
 ## Advanced Configuration
 
-The **Advanced Configuration** section (collapsed by default) covers:
+The **Advanced Configuration** section is collapsed by default. It covers:
 
-- **Deployment Mode**: **Serverless (Knative)** (default, supports scale-to-zero) or **Raw Deployment** (a plain Kubernetes Deployment, for clusters without Knative or when using KEDA; minimum replicas is forced to 1).
-- **Quantization** and **Data Type (dtype)** — vLLM-only (HuggingFace runtime runs on vLLM internally, so this also applies to it): AWQ, GPTQ, FP8, BitsAndBytes, SqueezeLLM, Marlin, GGUF for quantization; Float16, BFloat16, or Float32 for dtype.
-- **Automatic tool calling** — see [Enable Tool Calling for Agents](#enable-tool-calling-for-agents) below.
-- **Resource Requests**: CPU, memory, and GPU count/type (GPU options are discovered from the cluster). Optional separate resource limits; if left blank, CPU limit defaults to 2× the request and memory limit matches the request.
-- **Auto-Scaling**: min/max replicas (1–10). Set min replicas to 0 for scale-to-zero — only available in Serverless mode.
-- **Autoscaler Mode** (Raw Deployment only): **HPA** for CPU/memory-based scaling, or **KEDA** for custom Prometheus-metric scaling (for example vLLM token throughput). KEDA mode requires a PromQL query and a scale threshold that you calibrate against observed traffic — see [Serving Autoscaling](../mlops/model_serving_autoscaling.html) for the general KEDA pattern in prokube.
+- **Deployment Mode**: **Serverless (Knative)** is the default and supports scale-to-zero. **Raw Deployment** creates a plain Kubernetes Deployment for clusters without Knative or for KEDA autoscaling. Raw deployments require at least one replica.
+- **Runtime settings**: vLLM-based runtimes support quantization options such as AWQ, GPTQ, and FP8, and data types such as Float16, BFloat16, and Float32. The HuggingFace runtime uses vLLM internally, so these settings also apply to it.
+- **Resource Requests**: configure CPU, memory, and GPU count and type. GPU options come from the cluster inventory. If limits are left blank, the CPU limit defaults to twice the request and the memory limit matches the request.
+- **Auto-Scaling**: configure minimum and maximum replicas, with a maximum of 10. Serverless mode allows a minimum of 0 for scale-to-zero; Raw Deployment requires at least one replica.
+- **Automatic tool calling**: configure support for agents that use MCP tools. See [Enable Tool Calling for Agents](#enable-tool-calling-for-agents).
+
+Raw deployments can use **HPA** for CPU or memory-based scaling, or **KEDA** for custom Prometheus metrics such as vLLM token throughput. KEDA requires a PromQL query and a scale threshold calibrated against observed traffic. See [Serving Autoscaling](../mlops/model_serving_autoscaling.html) for the general KEDA pattern in prokube.
 
 ## Enable Tool Calling for Agents
 
-Not every runtime supports OpenAI-style tool calling. The **"Enable automatic tool calling"** option only appears for the **vLLM** and **HuggingFace** runtimes, and only when Model Type is **Text Generation** — it is not available for TEI, vLLM Omni, faster-whisper, or non-text-generation tasks.
+Not every runtime supports OpenAI-style tool calling. The **Enable automatic tool calling** option appears only for **vLLM** and **HuggingFace** text-generation models. It is not available for TEI, vLLM Omni, faster-whisper, or other model types.
 
 If you plan to attach MCP tools to a kagent agent that uses this model (an **Internal** Model Configuration), turn this on and select a **Tool-call parser** matching the model's tool-call format:
 
@@ -72,13 +73,13 @@ This list matches the parsers built into the platform's currently deployed vLLM 
 
 ## Test a Deployed Model
 
-Open a **Ready** model from the list. Text-generation models get a **Chat** tab — a built-in streaming chat tester. Embedding, reranking, and audio models get an **API** tab (or **Test** for text-to-speech/speech-to-text) showing the endpoint path and a ready-to-run `curl` example for each supported operation (chat completions, completions, embeddings, rerank, speech, or transcription).
+Open a **Ready** model from the list. Text-generation models have a **Chat** tab with a built-in streaming chat tester. Embedding and reranking models have an **API** tab. Audio models have an **API** or **Test** tab, depending on the task. These tabs show the endpoint path and a ready-to-run `curl` example for the supported operation.
 
 The Configuration tab also shows Basic Information, Resources, Scaling, and API Endpoints for the model, alongside Metrics, Logs, and Conditions tabs for troubleshooting. While model weights are downloading, a storage panel shows progress (queued, preparing, downloading, or failed) instead of the usual tabs.
 
 ## Edit a Model
 
-From the model list or detail page, **Edit** lets you change Model Type, Quantization, Data Type, tool-calling settings, resource requests/limits, and auto-scaling. Model ID, runtime, and deployment mode are fixed after creation — change them by deleting and redeploying, or through the **YAML** tab.
+From the model list or detail page, select **Edit** to change Model Type, Quantization, Data Type, tool-calling settings, resource requests and limits, or auto-scaling. Model ID, runtime, and deployment mode are fixed after creation. To change them, delete and redeploy the model or use the **YAML** tab.
 
 ## External Access
 
