@@ -2,7 +2,7 @@
 
 Agent Gateway is the shared routing and policy layer for external API traffic in prokube. It gives SDKs, automation, CI jobs, and agent clients a single, API-key-authenticated way to reach model, tool, agent, and sandbox endpoints running in a workspace — without a browser session and without exposing each service through its own ad hoc ingress.
 
-Agent Gateway is not an agent-only feature. The same routing and policy model fronts classic model-serving endpoints, Knative services, MCP servers, memory stores, kagent A2A agents, and Agent Sandboxes.
+Agent Gateway is not an agent-only feature. The same routing and policy model fronts classic model-serving endpoints, Knative services, MCP servers, memory stores, kagent A2A agents, and Agent Sandboxes. This page provides an overview of the features enabled by Agent Gateway and explains when it is used.
 
 ## When to Use Agent Gateway
 
