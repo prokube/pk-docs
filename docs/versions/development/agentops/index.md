@@ -15,6 +15,7 @@ It combines governed model access, tool access, memory, isolated code execution,
 - **MCP Servers** for exposing tools, skills, and internal APIs as governed capabilities.
 - **Memory Stores** for agent state and retrieval-backed workflows.
 - **Agents** for managed agent runtimes, skills, tools, and agent-to-agent patterns.
+- **LLM Serving** for self-hosted, OpenAI-compatible model endpoints.
 
 ## Shared Platform Services
 

@@ -23,7 +23,7 @@ Use KServe InferenceServices when a trained model should be available as an API 
 
 Use [Labs](../labs/index.md) or [Pipelines](pipelines.md) for training and exporting models. Move to Model Serving when the model should become a reachable endpoint.
 
-This page covers classic KServe model serving: deploying sklearn, PyTorch, MLflow, and similar models as inference endpoints. For LLM-focused serving (vLLM, TGI, OpenAI-compatible APIs), see the [AgentOps documentation](../agentops/index.md) – large language models follow a different operational pattern and are documented separately there.
+This page covers classic KServe model serving: deploying sklearn, PyTorch, MLflow, and similar models as inference endpoints. For LLM-focused serving (vLLM, HuggingFace, TGI runtimes with OpenAI-compatible APIs), see [LLM Serving](../agentops/llm_serving.html) – large language models follow a different operational pattern and are documented separately there.
 
 ## Get Started
 
