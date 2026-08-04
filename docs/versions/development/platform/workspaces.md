@@ -12,7 +12,7 @@ The selected workspace affects which resources you can see and create across the
 - pipeline runs, experiments, and related Kubernetes resources
 - model-serving endpoints and serverless workloads
 - workspace-scoped secrets and registry credentials
-- object-storage buckets and access credentials
+- file-storage buckets and access credentials
 - AgentOps resources such as sandboxes, MCP servers, and memory stores where enabled
 
 Each workspace has its own Kubernetes namespace. That namespace is one part of the workspace boundary; the workspace also includes platform-level access rules, storage configuration, UI scope, and integrations with other services.
@@ -27,7 +27,7 @@ Personal workspaces are tied to user lifecycle. Administrators manage them throu
 
 ### Shared Workspaces
 
-Shared workspaces are for teams that work together on cluster resources such as pipelines, models, agents, Labs, object-storage buckets, and workspace-scoped credentials.
+Shared workspaces are for teams that work together on cluster resources such as pipelines, models, agents, Labs, file-storage buckets, and workspace-scoped credentials.
 
 Use a shared workspace when multiple users need to collaborate on the same resources.
 
@@ -61,7 +61,7 @@ The workspace selector controls which workspace-scoped resources are shown or cr
 
 As a rule of thumb, workspace selection matters for services that schedule workloads or create workspace-scoped Kubernetes resources.
 
-Other services handle access through their own integration with prokube. For example, object-storage browsers, MLflow, or similar integrated tools can use OIDC-based user and workspace permissions configured by the platform backend. In those cases, the active workspace selector is not necessarily the control that determines which buckets, experiments, models, or artifacts the current user can access.
+Other services handle access through their own integration with prokube. For example, file-storage browsers, MLflow, or similar integrated tools can use OIDC-based user and workspace permissions configured by the platform backend. In those cases, the active workspace selector is not necessarily the control that determines which buckets, experiments, models, or artifacts the current user can access.
 
 ## Manage Your Own Workspace
 
@@ -85,7 +85,7 @@ Egress profiles are managed under **User Management** > **Network Policies**. Se
 
 ## Security Implications
 
-Workspace access affects more than UI pages. It can also affect Kubernetes resources, mounted storage, object-storage credentials, registry credentials, and workload configuration.
+Workspace access affects more than UI pages. It can also affect Kubernetes resources, mounted storage, file-storage credentials, registry credentials, and workload configuration.
 
 Users with sufficient workspace access may be able to read [Kubernetes Secrets](https://kubernetes.io/docs/concepts/configuration/secret/) in the workspace namespace. Store only credentials that are intended for that workspace and workload.
 

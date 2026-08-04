@@ -1,6 +1,6 @@
 # Storage Administration
 
-prokube uses Kubernetes storage for workspace volumes, notebook homes, databases, object-storage tenants, pipeline artifacts, and model-serving data. Storage behavior is deployment-specific and depends on the installed StorageClasses and CSI drivers.
+prokube uses Kubernetes storage for workspace volumes, notebook homes, databases, S3-compatible file-storage tenants, pipeline artifacts, and model-serving data. Storage behavior is deployment-specific and depends on the installed StorageClasses and CSI drivers.
 
 ## StorageClasses
 
@@ -34,7 +34,7 @@ Mayastor/OpenEBS replicated storage can provide synchronous replicas across node
 
 Replication improves availability for node or disk failure, but it is not backup. Replication also adds capacity and performance tradeoffs because each replica consumes storage and network bandwidth.
 
-Use replicated storage for stateful components that need higher availability, such as databases or object-storage volumes, when the cluster has enough nodes and disks to support the replica count.
+Use replicated storage for stateful components that need higher availability, such as databases or S3-compatible file-storage volumes, when the cluster has enough nodes and disks to support the replica count.
 
 ## Component Usage
 
@@ -43,11 +43,11 @@ Typical storage choices:
 | Component | Storage considerations |
 |---|---|
 | Labs | Persistent home volumes are convenient for interactive work but can be constrained by `ReadWriteOnce` attachment. |
-| Pipelines | Prefer object storage for artifacts and datasets instead of relying on Lab volumes. |
+| Pipelines | Prefer S3-compatible file storage for artifacts and datasets instead of relying on Lab volumes. |
 | MLflow | Metadata and artifacts need backup; artifact storage can grow quickly. |
 | MinIO | Tenant volumes require deliberate sizing, backup, and migration planning. |
 | Databases | Use storage with snapshot/backup support and predictable latency. |
-| Model Serving | Large models should live in object storage or MLflow, with optional cache support where configured. |
+| Model Serving | Large models should live in S3-compatible file storage or MLflow, with optional cache support where configured. |
 
 ## Troubleshooting PVCs
 
@@ -76,4 +76,4 @@ Before any disk wipe:
 
 - [Backup and Restore](backup_restore.md)
 - [Operations Runbooks](operations_runbooks.md)
-- [Object Storage](../platform/object_storage.md)
+- [File Storage](../platform/file_storage.md)

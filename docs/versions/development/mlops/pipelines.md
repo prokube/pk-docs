@@ -34,7 +34,7 @@ Kubeflow Pipelines uses a few recurring concepts:
 - **Runs** are concrete executions of a pipeline.
 - **Experiments** group related runs so you can compare results and navigate history.
 - **Recurring runs** start pipeline runs on a schedule.
-- **Artifacts** are files, models, metrics, or other outputs produced by components, usually stored in object storage.
+- **Artifacts** are files, models, metrics, or other outputs produced by components, usually stored in S3-compatible file storage.
 - **Parameters** are small typed values passed into pipelines or between components; use artifacts or explicit `s3://` paths for larger data.
 
 The examples in these docs use current KFP SDK patterns. Avoid starting new work with legacy KFP v1 DSL examples unless your administrator confirms that compatibility is required for your deployment.
@@ -135,16 +135,16 @@ Use recurring runs when the same pipeline should run automatically, for example 
 
 ## Storage and Artifacts
 
-Pipeline components commonly exchange artifacts through object storage. prokube workspaces are configured with S3-compatible object storage, and Labs can use the same storage for datasets, intermediate files, and model artifacts.
+Pipeline components commonly exchange artifacts through S3-compatible file storage. prokube workspaces are configured with S3-backed storage, and Labs can use the same storage for datasets, intermediate files, and model artifacts.
 
 Practical rules:
 
-- use object storage for datasets, model files, and pipeline artifacts;
+- use S3-compatible file storage for datasets, model files, and pipeline artifacts;
 - avoid relying on a Lab's persistent volume for pipeline runtime data;
 - pass explicit S3 object paths into pipelines when an example expects them;
-- use the **Object Storage** page in the prokube UI to see which buckets are available to your workspace.
+- use the **File Storage** page in the prokube UI to see which buckets are available to your workspace.
 
-For object-storage access from Labs, external clients, and storage security notes, see [Object Storage](../platform/object_storage.md).
+For file-storage access from Labs, external clients, and storage security notes, see [File Storage](../platform/file_storage.md).
 
 ## Component Images
 
@@ -330,7 +330,7 @@ Use the [Logs browser](../platform/observability.md#logs-browser) when the pipel
 Common causes:
 
 - **Image pull errors**: verify the component image reference and registry credentials.
-- **Missing input data**: check S3 paths, bucket names, and object-storage credentials.
+- **Missing input data**: check S3 paths, bucket names, and file-storage credentials.
 - **Import errors in components**: move dependencies into the component image or declare them explicitly for lightweight components.
 - **Permission errors**: confirm that the selected workspace has access to the required secrets, buckets, and Kubernetes resources.
 - **Slow startup**: avoid installing large dependencies at component runtime; use a custom image instead.

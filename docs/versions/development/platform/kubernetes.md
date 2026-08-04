@@ -105,7 +105,7 @@ Common pod states:
 
 If a container fails with `exec format error`, the image or binary is likely built for the wrong CPU architecture. This commonly happens when an image built on an ARM laptop is used on `amd64` cluster nodes. Rebuild the image for the target platform, for example with `docker buildx build --platform linux/amd64 --push ...`.
 
-For platform log views and retained workload logs, see [Observability](observability.md). For workspace bucket access and S3-compatible storage, see [Object Storage](object_storage.md).
+For platform log views and retained workload logs, see [Observability](observability.md). For workspace bucket access and S3-compatible storage, see [File Storage](file_storage.md).
 
 ## Port Forward Services
 
@@ -142,7 +142,7 @@ If you use tools such as OpenLens and cannot list cluster namespaces, add the na
 ## Related Pages
 
 - [Workspaces](workspaces.md)
-- [Object Storage](object_storage.md)
+- [File Storage](file_storage.md)
 - [Observability](observability.md)
 - [System Status](system_status.md)
 - [Using Labs](../labs/index.md)
