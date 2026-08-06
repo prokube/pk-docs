@@ -14,6 +14,7 @@ Use [Labs](../labs/index.md) for interactive work, then move repeatable or share
 | [Model Serving](model_serving.md) | Deploy trained models as KServe inference endpoints, including models from object storage or MLflow. |
 | [Model Serving Autoscaling](model_serving_autoscaling.md) | Tune KServe autoscaling with KPA, HPA, and KEDA, including vLLM token-throughput metrics. |
 | [Serverless](knative.md) | Run generic HTTP containers with Knative Serving when the workload is not a model-specific KServe deployment. |
+| [Feast](feast.md) | Provision a private feature store in your workspace for training and real-time inference features. Opt-in component. |
 
 ## Typical Flow
 
