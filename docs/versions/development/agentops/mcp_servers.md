@@ -5,7 +5,7 @@ For MCP and ToolHive concepts that are not specific to prokube, use the upstream
 
 - [Model Context Protocol documentation](https://modelcontextprotocol.io/)
 - [ToolHive documentation](https://docs.stacklok.com/toolhive/)
-- [ToolHive MCPServer API reference](https://docs.stacklok.com/toolhive/reference/mcpserver/)
+- [ToolHive Kubernetes CRD reference](https://docs.stacklok.com/toolhive/reference/crds/)
 :::
 
 MCP servers expose tools, data sources, and internal APIs to AI assistants through the Model Context Protocol. In prokube, MCP servers run as Kubernetes workloads managed by ToolHive instead of local processes on a developer machine.
@@ -16,12 +16,14 @@ Use MCP servers when an agent or MCP-capable client needs governed access to a t
 
 Open **MCP** from the prokube UI sidebar under **AgentOps**. Select the workspace before deploying or inspecting servers.
 
-An MCP server is deployed into the selected workspace namespace as a [ToolHive `MCPServer`](https://docs.stacklok.com/toolhive/reference/mcpserver/) resource. prokube provides the UI, workspace authorization, registry integration, logs, events, metrics, and optional gateway access. ToolHive handles the MCP server runtime and proxying inside the cluster.
+An MCP server is deployed into the selected workspace namespace as a [ToolHive `MCPServer`](https://docs.stacklok.com/toolhive/reference/crds/) resource. prokube provides the UI, workspace authorization, registry integration, logs, events, metrics, and optional Agent Gateway access. ToolHive handles the server runtime and local MCP proxy for that resource.
 
 The MCP page contains two main sections:
 
 - **Deployed Servers**: MCP servers currently running in the selected workspace.
 - **Server Catalog**: registry entries that can be deployed with preconfigured images, tools, metadata, and required configuration fields.
+
+![MCP Servers page with deployed servers and server catalog](../../../_static/screenshots/agentops/mcp/landing-page-with-server-list-and-catalogue.png)
 
 ## Deploy from the Catalog
 
@@ -43,7 +45,21 @@ Click a catalog card to deploy it. The deploy dialog shows:
 - **Resource Limits**: optional CPU and memory requests and limits.
 - **Technical Details**: image, transport, and provided tools.
 
+![Deploy dialog for a catalog MCP server](../../../_static/screenshots/agentops/mcp/playwright-launch-dialog.png)
+
 Environment variables can be entered directly or read from a Kubernetes Secret in the workspace. Use Secrets for tokens, passwords, API keys, and other sensitive values. See [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets).
+
+### Catalog Source and Trust
+
+prokube uses the upstream [ToolHive Catalog](https://github.com/stacklok/toolhive-catalog), a community-curated registry of MCP servers and skills. The catalog gives you a better starting point than searching for arbitrary container images: entries are described in a common format, reviewed through the ToolHive project, and include metadata such as the publisher, repository, required configuration, tools, and maintenance tier.
+
+Treat the catalog as a curated trust signal, not as a blanket approval for every environment:
+
+- **Official** entries are maintained by the MCP team, the upstream project, or platform owners.
+- **Community** entries are contributed and maintained by the community.
+- **prokube.ai Only** narrows the list to entries published or curated by prokube.ai where available.
+
+Before giving an MCP server credentials or access to internal systems, still review what it connects to, who maintains it, which tools it exposes, and whether it needs broad permissions. Prefer Official or internally maintained servers for production workflows.
 
 ## Deploy a Custom Server
 
@@ -68,19 +84,25 @@ Optional fields:
 
 Prefer custom images that run as non-root and work with a read-only root filesystem. Images that require root or write access are harder to run in restricted workspaces and have a larger security footprint.
 
-## Review YAML Before Deploying
+## Use YAML for Advanced Configuration
 
-The deploy dialog can generate a ToolHive `MCPServer` manifest before creating the resource. Use the YAML preview when you need to inspect or adjust the generated manifest.
+As with other Kubernetes-backed resources in prokube, you can use YAML when the form does not expose a setting you need.
 
-You can also submit an `MCPServer` manifest through the UI for advanced cases. The namespace is set by prokube to the selected workspace namespace. Custom YAML must still be a ToolHive `MCPServer` resource using a supported `toolhive.stacklok.dev` API version.
+The deploy dialog can generate a ToolHive `MCPServer` manifest from the form fields. Use it to inspect the resource before deployment, adjust advanced fields, or submit a reviewed manifest directly through the UI.
+
+The namespace is set by prokube to the selected workspace namespace. Custom YAML must still be a ToolHive `MCPServer` resource using a supported `toolhive.stacklok.dev` API version.
 
 ## Connect Clients
 
-The **Deployed Servers** table shows each server's status, image, transport, proxy port, and URL when available. Copy the URL from the table or details page and configure your MCP client or agent tool to use it.
+The **Deployed Servers** table shows each server's status, image, transport, proxy port, and URL when available. Deploying an MCP server also registers it with the workspace's federated MCP endpoint in Agent Gateway.
 
-For external clients, create an [API key](../platform/api_keys.html) scoped to the MCP server. Use the authentication format expected by the client. Existing MCP and non-OpenAI-style examples commonly use `x-api-key`.
+![MCP server overview with external and internal connection details](../../../_static/screenshots/agentops/mcp/playwright-overview.png)
 
-To use the server from a kagent agent, open **Agents**, create a Tool for the MCP endpoint if it is not already listed, and select the discovered MCP tools when creating or editing the agent. This is an in-workspace tool attachment flow; API keys are only needed for external clients calling the `/mcp` Agent Gateway route.
+For external clients, create an [API key](../platform/api_keys.html) scoped to the MCP server. Use the authentication format expected by the client.
+
+For kagent agents, open **Agents** and select the discovered MCP tools when creating or editing the agent. Tools from workspace MCP servers appear through the managed `gateway-mcp` endpoint; create a separate Tool only when you need to connect an additional external MCP endpoint.
+
+OpenCode and other MCP-capable clients can use the endpoint URL shown in prokube. In OpenCode Labs, add it through the OpenCode MCP manager and configure the required headers or OAuth settings there. See [OpenCode: Add MCP Servers](../labs/opencode.html#add-mcp-servers).
 
 ## Sandbox MCP
 
@@ -107,12 +129,16 @@ For these servers, the details page can show:
 - **Logs** and **Events** for debugging startup and runtime issues;
 - **Metrics** for runtime monitoring.
 
+![Live browser view for a browser automation MCP server](../../../_static/screenshots/agentops/mcp/playwright-live-browser-viewer.png)
+
+![MCP server metrics for a browser automation server](../../../_static/screenshots/agentops/mcp/playwright-details-metrics.png)
+
 Live view is only available for servers that declare live-view support in the catalog or custom configuration.
 
 ## Security and Operations
 
 - Deploy servers only in workspaces where the intended users should have access to the exposed tools.
-- Store sensitive configuration in Kubernetes Secrets instead of direct environment variable values.
+- Store sensitive configuration in [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets) instead of direct environment variable values.
 - Prefer **Official** or internally maintained catalog entries for production use.
 - Review third-party images before granting access to internal data or network destinations.
 - Avoid root and writable-root-filesystem options unless the image requires them.
@@ -130,6 +156,8 @@ Live view is only available for servers that declare live-view support in the ca
 | Required configuration is missing | Check the catalog entry's required environment variables and provide direct values or Secret references. |
 | Client cannot connect | Confirm the server is `Running`, copy the current URL, and verify the API key is scoped to the MCP server. |
 | Tool calls fail after connecting | Check server logs, required upstream credentials, workspace network policy, and whether the tool depends on an external service. |
+
+![MCP server logs for a browser automation server](../../../_static/screenshots/agentops/mcp/playwright-details-logs.png)
 
 ## Related Pages
 
