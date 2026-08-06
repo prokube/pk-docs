@@ -183,7 +183,6 @@ Feast resources, Redis, and PVCs are scoped to your workspace namespace. Workspa
 | `FeatureStore` resource not found | Ask an administrator to enable the Feast extra app. |
 | `FeatureStore` is not `Ready` | Check `feast-operator-system` logs and the `feast-redis-config` secret format. |
 | PVC write error | Set `spec.services.securityContext.runAsUser: 0`. |
-| Registry gRPC protocol error | The operator's registry service currently needs an Istio-specific workaround. Use the local registry, or contact platform support before enabling the remote registry server. |
 
 ## Related Pages
 
