@@ -1,37 +1,32 @@
 # Feast Feature Store
 
-Feast is an open-source feature store for ML pipelines. prokube deploys the Feast operator; each user provisions their own private feature store inside their workspace namespace — no shared feature store, no per-workspace admin action.
+Feast manages reusable ML features for training and online inference. In prokube, each workspace provisions its own `FeatureStore`, Redis online store, and persistent volumes.
 
-::: info Feast references
+::: info References
 - [Feast documentation](https://docs.feast.dev/)
-- [Feast registries](https://docs.feast.dev/reference/registries)
-- [Feast online stores](https://docs.feast.dev/reference/online-stores)
-- [Feast offline stores](https://docs.feast.dev/reference/offline-stores)
+- [Feature stores](https://docs.feast.dev/reference/feature-repository)
+- [Online stores](https://docs.feast.dev/reference/online-stores)
 :::
 
 ::: info Optional component
-Feast must be enabled by your administrator (`--extra-apps feast`, alongside `redis` for an online store). If the `FeatureStore` custom resource is not available on your cluster, ask your admin to enable it.
+An administrator must enable Feast. If `FeatureStore` is unavailable in your workspace, ask them to deploy `--extra-apps feast,redis`.
 :::
 
-## How a Feast store is put together
+## Storage
 
-A Feast feature store has three storage concerns, each with its own recommended backend on prokube:
+| Store | prokube default |
+|---|---|
+| Registry | SQLite on an operator-created PVC |
+| Online store | Redis in your workspace |
+| Offline store | Parquet files on an operator-created PVC |
 
-| Store | Backend | Why |
-|---|---|---|
-| Registry | SQLite on PVC, auto-created | Feature definitions; written only on `feast apply`. No realistic write contention in a single-workspace deployment. |
-| Online store | Redis, user-deployed | On the critical path for real-time inference. Multi-replica safe, sub-millisecond latency. |
-| Offline store | Parquet on PVC, user-populated | Historical data for training; batch workload, not on the serving path. |
+The registry contains feature definitions and is written by `feast apply`. The offline store contains historical data for training; you supply its Parquet files. Redis stores the latest materialized feature values for low-latency reads.
 
-The operator creates the registry and offline-store PVCs automatically from the `FeatureStore` spec, but you populate the offline-store parquet files yourself. SQL registries and BigQuery/Snowflake/Redshift offline stores are also supported upstream if your data already lives there — see the reference links above.
+## Create a FeatureStore
 
-## Set up your feature store
+Run these commands from a [JupyterLab](../labs/jupyterlab.md) session or another workload with `kubectl` access to the workspace namespace.
 
-You perform all three steps yourself; the admin's only role is keeping the operators running. The recommended workflow is to run all of these from a [JupyterLab](../labs/jupyterlab.md) session using `kubectl`.
-
-### 1. Deploy a Redis instance
-
-Skip this step if your cluster already has Redis available elsewhere — use that connection string in step 2 instead.
+### 1. Create Redis
 
 ```bash
 kubectl create secret generic redis-feast \
@@ -52,12 +47,6 @@ spec:
     redisSecret:
       name: redis-feast
       key: password
-    resources:
-      requests: { cpu: 100m, memory: 128Mi }
-      limits: { cpu: 200m, memory: 256Mi }
-  podSecurityContext:
-    fsGroup: 1000
-    runAsUser: 1000
   storage:
     volumeClaimTemplate:
       spec:
@@ -68,14 +57,12 @@ spec:
 
 ```bash
 kubectl apply -f redis.yaml
-kubectl get redis -n <your-workspace> -w   # wait until Running
+kubectl get redis -n <your-workspace> -w
 ```
 
-The Redis service becomes reachable at `redis-feast.<your-workspace>.svc.cluster.local:6379`.
+Use an existing reachable Redis service instead if your workspace already has one.
 
-### 2. Create the Feast Redis secret
-
-The operator reads the online-store connection string from a secret named `feast-redis-config`. The key must be `redis`, and its value a YAML map with `connection_string` — not a `redis://` URI:
+### 2. Create the Redis connection secret
 
 ```bash
 NAMESPACE=<your-workspace>
@@ -90,7 +77,9 @@ kubectl create secret generic feast-redis-config \
 rm /tmp/redis-config.yaml
 ```
 
-### 3. Deploy a FeatureStore
+The secret key must be `redis`. Its value is YAML containing `connection_string`, not a `redis://` URI.
+
+### 3. Apply the FeatureStore resource
 
 ```yaml
 # featurestore.yaml
@@ -131,180 +120,74 @@ spec:
 
 ```bash
 kubectl apply -f featurestore.yaml
-kubectl get featurestore -n <your-workspace> -w   # wait until Ready
+kubectl get featurestore -n <your-workspace> -w
 ```
 
-The operator creates the registry and offline-store PVCs and a Feast server `Deployment` automatically. `securityContext.runAsUser: 0` is required for PVC write access on prokube's storage backend.
+The operator creates the Feast server and PVCs. `runAsUser: 0` is required for PVC write access.
 
-## Use Feast from a notebook
+## Use Feast
 
-Feast is not preinstalled in prokube notebook images — install it first: `!pip install feast`.
+Install the client in your notebook if it is not present: `!pip install feast`.
 
-Build a `feature_store.yaml` from your namespace credentials (the notebook SDK reads this file automatically):
+Create `feature_store.yaml` with the same project and Redis connection details as the resource above:
 
-```python
-import base64, subprocess, yaml
-
-def get_namespace():
-    with open("/var/run/secrets/kubernetes.io/serviceaccount/namespace") as f:
-        return f.read().strip()
-
-def get_redis_connection_string(namespace):
-    result = subprocess.run(
-        ["kubectl", "get", "secret", "feast-redis-config",
-         "-n", namespace, "-o", "jsonpath={.data.redis}"],
-        capture_output=True, text=True, check=True,
-    )
-    return yaml.safe_load(base64.b64decode(result.stdout).decode())["connection_string"]
-
-NAMESPACE = get_namespace()
-REDIS = get_redis_connection_string(NAMESPACE)
-FEAST_PROJECT = "my_features"  # must match spec.feastProject in your FeatureStore CR
-
-with open("feature_store.yaml", "w") as f:
-    f.write(f"""project: {FEAST_PROJECT}
+```yaml
+project: my_features
 provider: local
 offline_store:
-    type: file
+  type: file
 online_store:
-    type: redis
-    connection_string: "{REDIS}"
+  type: redis
+  connection_string: "redis-feast.<your-workspace>.svc.cluster.local:6379,password=<password>"
 registry:
-    registry_type: file
-    path: /tmp/registry.db
+  registry_type: file
+  path: /tmp/registry.db
 auth:
-    type: no_auth
+  type: no_auth
 entity_key_serialization_version: 3
-""")
 ```
 
-`/tmp/registry.db` is local to the notebook pod — re-run `feast apply` at the start of each session. The Redis online store persists across sessions regardless.
-
-Define and register features, then use them for training and serving:
-
-```python
-# features.py
-from datetime import timedelta
-from feast import Entity, FeatureView, Field, FileSource
-from feast.types import Float32, Int64
-
-driver = Entity(name="driver_id")
-source = FileSource(path="data/driver_stats.parquet", timestamp_field="event_timestamp")
-
-driver_stats = FeatureView(
-    name="driver_hourly_stats",
-    entities=[driver],
-    ttl=timedelta(days=1),
-    schema=[
-        Field(name="conv_rate", dtype=Float32),
-        Field(name="acc_rate", dtype=Float32),
-        Field(name="avg_daily_trips", dtype=Int64),
-    ],
-    source=source,
-    online=True,
-)
-```
+Define features according to the [Feast quickstart](https://docs.feast.dev/getting-started/quickstart), then register and materialize them:
 
 ```bash
 feast apply
+feast materialize-incremental $(date -u +"%Y-%m-%dT%H:%M:%S")
 ```
+
+Use the SDK for historical training data and online retrieval:
 
 ```python
 from feast import FeatureStore
 import pandas as pd
 
 store = FeatureStore(repo_path=".")
-
-# Historical features for training
-entity_df = pd.DataFrame({"driver_id": [1001, 1002, 1003]})
 training_df = store.get_historical_features(
-    entity_df=entity_df,
-    features=["driver_hourly_stats:conv_rate", "driver_hourly_stats:acc_rate"],
+    entity_df=pd.DataFrame({"driver_id": [1001, 1002]}),
+    features=["driver_hourly_stats:conv_rate"],
 ).to_df()
-```
 
-```bash
-# Materialize to the online store
-feast materialize-incremental $(date -u +"%Y-%m-%dT%H:%M:%S")
-```
-
-```python
-# Online feature retrieval for inference
-features = store.get_online_features(
-    features=["driver_hourly_stats:conv_rate", "driver_hourly_stats:acc_rate"],
+online_features = store.get_online_features(
+    features=["driver_hourly_stats:conv_rate"],
     entity_rows=[{"driver_id": 1001}],
 ).to_dict()
 ```
 
-## Optional: persistent shared registry
+## Access and lifecycle
 
-By default, the notebook example above writes to `/tmp/registry.db` — ephemeral, wiped on pod restart. To use the operator-managed registry PVC instead (so definitions persist and are visible to every client in the namespace), enable the registry gRPC server:
-
-```yaml
-spec:
-  services:
-    registry:
-      local:
-        server: {}   # exposes gRPC on port 6570
-        persistence:
-          file:
-            pvc: { mountPath: /data/registry, create: { resources: { requests: { storage: 1Gi } } } }
-    podAnnotations:
-      traffic.sidecar.istio.io/excludeInboundPorts: "6570"
-```
-
-::: warning Istio sidecar workaround required
-The operator's registry `Service` has no `appProtocol` set, so both client- and server-side Istio sidecars misclassify the gRPC traffic as HTTP/1.1 and it fails. Until the operator sets `appProtocol: grpc` upstream, apply this workaround alongside the `excludeInboundPorts` annotation above (replace `<name>`/`<namespace>`):
-
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: feast-<name>-registry-grpc
-  namespace: <namespace>
-spec:
-  selector: { app: feast-<name> }
-  ports:
-    - { name: grpc, port: 80, targetPort: 6570, appProtocol: grpc }
----
-apiVersion: networking.istio.io/v1beta1
-kind: DestinationRule
-metadata:
-  name: feast-<name>-registry-grpc
-  namespace: <namespace>
-spec:
-  host: feast-<name>-registry-grpc.<namespace>.svc.cluster.local
-  trafficPolicy:
-    tls: { mode: DISABLE }
-```
-
-Then point your client at the alt-service instead of the default one:
-
-```yaml
-registry:
-  registry_type: remote
-  path: grpc://feast-<name>-registry-grpc.<namespace>.svc.cluster.local:80
-```
-:::
-
-## Isolation
-
-Each user's Feast deployment is fully isolated to their workspace namespace: the Redis instance, `FeatureStore` CR, and all PVCs live there, Kubeflow RBAC prevents other users from creating resources in your namespace, and Istio `AuthorizationPolicy` restricts inbound traffic to same-namespace sources. Deleting a workspace cascade-deletes the Redis instance, `FeatureStore` CR, PVCs, and all Feast data — this is irreversible, so confirm no pipeline or model still depends on the features first.
+Feast resources, Redis, and PVCs are scoped to your workspace namespace. Workspace contributors can access them according to the workspace's Kubernetes RBAC. Deleting a workspace deletes its Feast resources and data.
 
 ## Troubleshooting
 
 | Symptom | Check |
 |---|---|
-| `FeatureStore` resource not found | Feast is an opt-in platform component — ask your administrator to enable it. |
-| `FeatureStore` stuck, not `Ready` | Check operator logs in `feast-operator-system`. Confirm `feast-redis-config` exists with a `redis` key formatted as `connection_string: "host:port,password=..."`, not a `redis://` URI. |
-| PVC write errors from the Feast server pod | Confirm `spec.services.securityContext.runAsUser: 0` is set on the `FeatureStore` CR. |
-| gRPC registry calls fail with a protocol error | Apply the Istio sidecar workaround above; confirm `excludeInboundPorts: "6570"` is set on the `FeatureStore` CR's pod annotations. |
-| On-demand feature views hang when using a remote registry | Known issue in Feast ≤ 0.63: `PandasTransformation.from_proto()` deserializes UDFs via `dill.loads()`, which triggers a runaway typeguard AST traversal. Monkey-patch `from_proto` to inject the live function object by name instead of deserializing it, or avoid on-demand feature views with a remote registry until upstream fixes this. |
-| Can't share a `FeatureStore` with teammates | Not supported directly — anyone with contributor access to your workspace namespace can already reach your Feast services from within the cluster. |
+| `FeatureStore` resource not found | Ask an administrator to enable the Feast extra app. |
+| `FeatureStore` is not `Ready` | Check `feast-operator-system` logs and the `feast-redis-config` secret format. |
+| PVC write error | Set `spec.services.securityContext.runAsUser: 0`. |
+| Registry gRPC protocol error | The operator's registry service currently needs an Istio-specific workaround. Use the local registry, or contact platform support before enabling the remote registry server. |
 
 ## Related Pages
 
-- [MLflow](mlflow.md) — track training runs that feed feature engineering
-- [Pipelines](pipelines.md) — run `feast apply`/`materialize` as reproducible pipeline steps
-- [Workspaces](../platform/workspaces.md) — namespace isolation model that Feast relies on
-- [Kubernetes Resources](../platform/kubernetes.md#kubernetes-secrets) — creating and managing the `feast-redis-config` secret
+- [Pipelines](pipelines.md)
+- [MLflow](mlflow.md)
+- [Workspaces](../platform/workspaces.md)
+- [Kubernetes Resources](../platform/kubernetes.md#kubernetes-secrets)
