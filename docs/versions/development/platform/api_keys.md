@@ -107,13 +107,13 @@ Rotating a key invalidates the old value immediately. Update every client or sec
 
 ## Usage Dashboard
 
-Switch to the **Usage** tab on the API Keys page to see how keys in the selected workspace are being used. The dashboard covers requests that Agent Gateway authenticated with a key; it does not cover internal in-mesh traffic (see [Agent Gateway: Public vs. Internal Traffic](agent_gateway.html#public-vs-internal-traffic)).
+Switch to the **Usage** tab on the API Keys page to see how keys in the selected workspace are being used. The dashboard covers requests that Agent Gateway authenticated with a key. It does not cover internal in-mesh traffic (see [Agent Gateway: Public vs. Internal Traffic](agent_gateway.html#public-vs-internal-traffic)).
 
 ![API key usage dashboard with request trend, estimated LLM usage, and per-key activity](../../../_static/screenshots/platform/api-keys/api-key-usage-tab.png)
 
 ### Time Window and Cohorts
 
-Pick a **time window** — Last hour, Last 24 hours (default), Last 7 days, or Last 30 days — to control both the summary numbers and the request trend chart below them.
+Choose a **time window** to control both the summary numbers and the request trend chart below them. Options are Last hour, Last 24 hours (default), Last 7 days, and Last 30 days.
 
 The dashboard shows up to three cohort cards, split by how a request was attributed:
 
@@ -143,14 +143,14 @@ The **Usage by key** table lists per-key activity for the window:
 | Failed | Requests that failed (non-2xx/3xx) in the window. |
 | LLM tokens | Input + output tokens, for `/ai` traffic only. |
 | Estimated cost | Estimated cost for the key's LLM traffic in the window. |
-| Last Active | Approximate time since the key's last recorded request, bounded by the selected window and its sampling granularity — not an exact last-used timestamp. |
+| Last Active | Approximate time since the key's last recorded request, bounded by the selected window and its sampling granularity, not an exact last-used timestamp. |
 
-Regular users see **Keys owned by you**; administrators see **All workspace keys**. Keys with no recorded activity in the window are omitted, except historical (deleted) keys that administrators can still see for auditing.
+Regular users see **Keys owned by you**. Administrators see **All workspace keys**. Keys with no recorded activity in the window are omitted, except historical (deleted) keys that administrators can still see for auditing.
 
 ### Reading the Numbers Correctly
 
 - Request counts, tokens, and cost are estimates for observability, not billing records.
-- Prometheus retention limits how far back the dashboard can report; older activity outside the retention window will not appear even if the key was used.
+- Prometheus retention limits how far back the dashboard can report. Older activity outside the retention window will not appear even if the key was used.
 - If usage telemetry is not configured for the cluster, the dashboard shows a notice instead of numbers. Contact your administrator if you expect usage data and see this notice.
 
 ## Security Guidance

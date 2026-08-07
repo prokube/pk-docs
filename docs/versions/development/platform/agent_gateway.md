@@ -7,7 +7,7 @@ Agent Gateway is the shared routing and policy layer for external API traffic in
 - [agentgateway on Kubernetes](https://agentgateway.dev/docs/kubernetes/latest)
 :::
 
-Agent Gateway is not an agent-only feature. The same routing and policy model fronts classic model-serving endpoints, Knative services, MCP servers, memory stores, kagent A2A agents, and Agent Sandboxes. It's a Foundation-level concept used by [MLOps](../mlops/model_serving.html), [AgentOps](../agentops/agent_gateway.html), and [Labs](../labs/opencode.html) alike. This page covers the shared routing model; for the AgentOps-specific view (how it moves traffic between agents, tools, and models), see [Agent Gateway for AgentOps](../agentops/agent_gateway.html).
+Agent Gateway is not an agent-only feature. The same routing and policy model fronts classic model-serving endpoints, Knative services, MCP servers, memory stores, kagent A2A agents, and Agent Sandboxes. It's a Foundation-level concept used by [MLOps](../mlops/model_serving.html), [AgentOps](../agentops/agent_gateway.html), and [Labs](../labs/opencode.html) alike. This page covers the shared routing model. For the AgentOps-specific view (how it moves traffic between agents, tools, and models), see [Agent Gateway for AgentOps](../agentops/agent_gateway.html).
 
 ## When to Use Agent Gateway
 
@@ -28,7 +28,7 @@ Agent Gateway exposes one public path family per service type. Each path is work
 | Family | Path pattern | Backed by |
 |---|---|---|
 | `/ai` | `/ai/<workspace>/models/<route-id>/v1/...` | OpenAI-compatible LLM traffic (chat completions, embeddings, rerank): self-hosted models deployed through [LLM Serving](../agentops/llm_serving.html), and [external models](../admin/external_models.html) granted by an administrator. Classic (non-LLM) KServe models never use this family. |
-| `/serving` | `/serving/<workspace>/<name>` | Classic KServe InferenceServices (V1/V2 predict protocol) and Knative Services. Both share this one path family; `<name>` resolves against whichever resource matches. |
+| `/serving` | `/serving/<workspace>/<name>` | Classic KServe InferenceServices (V1/V2 predict protocol) and Knative Services. Both share this one path family: `<name>` resolves against whichever resource matches. |
 | `/mcp` | `/mcp/<workspace>/<server>` | MCP servers and MCP-compatible memory stores |
 | `/a2a` | `/a2a/<workspace>/<agent>` | kagent agent-to-agent access |
 | `/sandbox` | `/sandbox/<workspace>/...` | Agent Sandbox API |
@@ -52,7 +52,7 @@ See [API Keys](api_keys.html) for the full create/edit/rotate/disable workflow, 
 
 ## Usage Dashboard
 
-The API Keys page also has a **Usage** tab showing request volume, LLM token/cost estimates, and per-key activity for the selected workspace. Any workspace member can see this; administrators additionally see aggregate-only traffic that isn't tied to a specific key. See [Usage Dashboard](api_keys.html#usage-dashboard) for details.
+The API Keys page also has a **Usage** tab showing request volume, LLM token/cost estimates, and per-key activity for the selected workspace. Any workspace member can see this. Administrators additionally see aggregate-only traffic that isn't tied to a specific key. See [Usage Dashboard](api_keys.html#usage-dashboard) for details.
 
 ## Related Pages
 

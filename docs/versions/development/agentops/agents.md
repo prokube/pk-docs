@@ -26,7 +26,7 @@ Building a working agent is a short chain of dependent resources:
 
 ### 1. Store the Provider API Key
 
-Skip this step if you will use an admin-provided Model Configuration or an **Internal** (in-cluster) model. Admin-provided configurations use a credential the administrator already manages centrally. Internal models don't need a stored credential at all — the platform authenticates them automatically as in-cluster workloads.
+Skip this step if you will use an admin-provided Model Configuration or an **Internal** (in-cluster) model. Admin-provided configurations use a credential the administrator already manages centrally. Internal models don't need a stored credential at all: the platform authenticates them automatically as in-cluster workloads.
 
 Otherwise, for an **external** provider (OpenAI, Anthropic, Gemini), create a Kubernetes Secret first: open the user menu (top right) → **K8s Secrets** → **Add Secret**, and store the provider API key as a key/value pair in the workspace, for example `ANTHROPIC_API_KEY: sk-ant-...` or `OPENAI_API_KEY: sk-...`. See [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets) for the full flow.
 
@@ -50,7 +50,7 @@ If no suitable configuration exists, select **Create ModelConfig**. The **Provid
 - For **Internal - OpenAI-compatible**, either pick a **Ready** model deployed through [LLM Serving](llm_serving.html) in the workspace, or enter a custom in-cluster OpenAI-compatible base URL and model name manually.
 - For **Internal - Ollama**, enter the in-cluster Ollama host, for example `http://ollama.<workspace>.svc.cluster.local:11434`.
 
-Azure OpenAI, Mistral AI, GitHub Models, and other OpenAI-compatible endpoints are not in this self-service list, even if you hold your own API key for them. Connecting one of these requires an administrator to configure the provider centrally; a workspace only gets a Model Configuration for it once an administrator grants access. See [Additional Providers (Administrators)](#additional-providers-administrators) below.
+Azure OpenAI, Mistral AI, GitHub Models, and other OpenAI-compatible endpoints are not in this self-service list, even if you hold your own API key for them. Connecting one of these requires an administrator to configure the provider centrally. A workspace only gets a Model Configuration for it once an administrator grants access. See [Additional Providers (Administrators)](#additional-providers-administrators) below.
 
 ::: info Tool calling with internal models
 For a self-hosted text-generation model used with MCP tools, enable **automatic tool calling** in [LLM Serving: Enable Tool Calling for Agents](llm_serving.html#enable-tool-calling-for-agents) and select the parser that matches the model. This option is available for the vLLM and HuggingFace runtimes.
@@ -68,7 +68,7 @@ For a declarative agent, attach tools:
 - **MCP tools**: a searchable, filterable table of every tool discovered from MCP servers (Tools) available to the workspace. Check individual tools, or use **"Use all current and future tools from `<server>`"** per server to keep the agent in sync with a tool server automatically instead of a fixed snapshot.
 - **Agent tools**: let this agent call other agents in the same workspace as tools.
 
-MCP tools come from **Tools** on the same Agents page — connect an MCP endpoint there first if the tool you need isn't listed yet. See [MCP Servers](mcp_servers.html) for details. If the agent uses [Agent Sandboxes](sandboxes.html)-backed skills, attach the Tool that points at `sandbox-mcp`.
+MCP tools come from **Tools** on the same Agents page. Connect an MCP endpoint there first if the tool you need isn't listed yet. See [MCP Servers](mcp_servers.html) for details. If the agent uses [Agent Sandboxes](sandboxes.html)-backed skills, attach the Tool that points at `sandbox-mcp`.
 
 ### 4. Test the Agent
 
@@ -78,11 +78,11 @@ Open the agent from the Agents list. The detail page's **Chat** tab is available
 - The chat itself.
 - A **Connected Tools** panel listing attached tools and their readiness.
 
-Each response that used a tool shows a **Tool Activity** entry with the tool's arguments and result, so you can verify what the agent actually called and with what inputs — useful for debugging both prompt and tool wiring before relying on the agent elsewhere.
+Each response that used a tool shows a **Tool Activity** entry with the tool's arguments and result, so you can verify what the agent actually called and with what inputs. This is useful for debugging both prompt and tool wiring before relying on the agent elsewhere.
 
 ![Agent chat showing connected tools and tool activity](../../../_static/screenshots/agentops/agents/chat-tool-activity.png)
 
-For programmatic access instead of the chat UI, the agent's Overview tab lists its A2A endpoint. External callers need an API key scoped to the agent (`a2a`) — see [API Keys](../platform/api_keys.html). Callers inside the same workspace can reach the agent over the internal A2A path without a key.
+For programmatic access instead of the chat UI, the agent's Overview tab lists its A2A endpoint. External callers need an API key scoped to the agent (`a2a`). See [API Keys](../platform/api_keys.html). Callers inside the same workspace can reach the agent over the internal A2A path without a key.
 
 ## Additional Providers (Administrators)
 

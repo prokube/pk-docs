@@ -6,7 +6,7 @@ This page covers the AgentOps-specific angle: how Agent Gateway moves traffic be
 
 ## How Agent Gateway Moves Agent Traffic
 
-![Diagram: external callers reach Agent Gateway, which routes to kagent agents, MCP servers, models, and Agent Sandboxes; agents, tools, and models inside the same workspace call each other directly over mesh identity instead](../../../_static/diagrams/agentops/agent-gateway-flow.svg)
+![Diagram: external callers reach Agent Gateway, which routes to kagent agents, MCP servers, models, and Agent Sandboxes. Agents, tools, and models inside the same workspace call each other directly over mesh identity instead.](../../../_static/diagrams/agentops/agent-gateway-flow.svg)
 
 An external caller (an SDK, a CI job, or another agent outside the workspace) authenticates with an API key scoped to one of the `/a2a`, `/mcp`, `/ai`, or `/sandbox` paths. Agent Gateway checks the key's scope and workspace, then forwards the request to:
 

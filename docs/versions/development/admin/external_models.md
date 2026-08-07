@@ -44,7 +44,7 @@ Open a provider and switch to its **Models** tab. Models can be added in two way
 - **Discover models** queries the provider and lets you select one or more returned model IDs.
 - **Add manually** registers a model ID directly.
 
-The main **Models** table shows each model's provider, API protocol, workspace-access count, and base URL. A model cannot be deleted while a workspace grant still references it; revoke those grants first.
+The main **Models** table shows each model's provider, API protocol, workspace-access count, and base URL. A model cannot be deleted while a workspace grant still references it. Revoke those grants first.
 
 ## Grant Workspace Access
 
