@@ -1,6 +1,6 @@
 # Agent Gateway
 
-Agent Gateway is prokube's shared routing and policy layer for external API traffic — the same layer that fronts classic model-serving endpoints and Knative services in MLOps. See [Agent Gateway](../platform/agent_gateway.html) in Foundation for the platform-wide routing model: path families, public vs. internal traffic, API keys, and the upstream [agentgateway](https://agentgateway.dev/) project it's built on.
+Agent Gateway is prokube's shared routing and policy layer for external API traffic, the same layer that fronts classic model-serving endpoints and Knative services in MLOps. See [Agent Gateway](../platform/agent_gateway.html) in Foundation for the platform-wide routing model: path families, public vs. internal traffic, API keys, and the upstream [agentgateway](https://agentgateway.dev/) project it's built on.
 
 This page covers the AgentOps-specific angle: how Agent Gateway moves traffic between agents, tools, and models, and how agents reach external LLM providers.
 
@@ -8,7 +8,7 @@ This page covers the AgentOps-specific angle: how Agent Gateway moves traffic be
 
 ![Diagram: external callers reach Agent Gateway, which routes to kagent agents, MCP servers, models, and Agent Sandboxes; agents, tools, and models inside the same workspace call each other directly over mesh identity instead](../../../_static/diagrams/agentops/agent-gateway-flow.svg)
 
-An external caller — an SDK, a CI job, or another agent outside the workspace — authenticates with an API key scoped to one of the `/a2a`, `/mcp`, `/ai`, or `/sandbox` paths. Agent Gateway checks the key's scope and workspace, then forwards the request to:
+An external caller (an SDK, a CI job, or another agent outside the workspace) authenticates with an API key scoped to one of the `/a2a`, `/mcp`, `/ai`, or `/sandbox` paths. Agent Gateway checks the key's scope and workspace, then forwards the request to:
 
 - a **kagent agent**, over agent-to-agent (A2A);
 - an **MCP server or memory store**, for tool and retrieval access;
@@ -24,7 +24,7 @@ Inside the same workspace, none of this needs an API key: an agent calling anoth
 - Give an agent access to a sandbox API without handing it browser credentials.
 - Call a self-hosted or externally granted model from an external application, script, or CI job.
 
-For interactive work in the prokube UI, use your normal user session instead — Agent Gateway is for programmatic clients. For the general routing/API-key mechanics behind all of this, see [Agent Gateway](../platform/agent_gateway.html) in Foundation.
+For interactive work in the prokube UI, use your normal user session instead. Agent Gateway is for programmatic clients. For the general routing/API-key mechanics behind all of this, see [Agent Gateway](../platform/agent_gateway.html) in Foundation.
 
 ## External Models
 
