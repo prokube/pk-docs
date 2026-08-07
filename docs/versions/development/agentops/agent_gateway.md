@@ -1,6 +1,6 @@
 # Agent Gateway
 
-Agent Gateway is the shared routing and policy layer for external API traffic in prokube, built on [agentgateway](https://agentgateway.dev/), an AI-native Gateway API implementation. It gives SDKs, automation, CI jobs, and agent clients a single, API-key-authenticated way to reach model, tool, agent, and sandbox endpoints running in a workspace — without a browser session and without exposing each service through its own ad hoc ingress.
+Agent Gateway is the shared routing and policy layer for external API traffic in prokube, built on [agentgateway](https://agentgateway.dev/), an AI-native Gateway API implementation. It gives SDKs, automation, CI jobs, and agent clients a single, API-key-authenticated way to reach model, tool, agent, and sandbox endpoints running in a workspace. Without a browser session and without exposing each service through its own ad hoc ingress.
 
 ::: info Upstream references
 - [agentgateway documentation](https://agentgateway.dev/docs/)
@@ -52,7 +52,7 @@ See [API Keys](../platform/api_keys.html) for the full create/edit/rotate/disabl
 
 ## Usage Dashboard
 
-The API Keys page also has a **Usage** tab showing request volume, LLM token/cost estimates, and per-key activity for the selected workspace. Any workspace member can see this; administrators additionally see aggregate-only traffic that isn't tied to a specific key. See [Usage Dashboard](../platform/api_keys.html#usage-dashboard) for details.
+The API Keys page also has a **Usage** tab showing request volume, LLM token/cost estimates, and per-key activity for the selected workspace. Any workspace member can see this. Administrators additionally see aggregate-only traffic that isn't tied to a specific key. See [Usage Dashboard](../platform/api_keys.html#usage-dashboard) for details.
 
 ## External Models
 

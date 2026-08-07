@@ -42,7 +42,7 @@ Select **Or edit YAML manifest directly** if the form does not cover a setting y
 
 The **Advanced Configuration** section is collapsed by default. It covers:
 
-- **Deployment Mode**: **Serverless (Knative)** is the default and supports scale-to-zero. **Raw Deployment** creates a plain [Kubernetes Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) for clusters without Knative or for [KEDA](https://keda.sh/docs/latest/concepts/scaling-deployments/) autoscaling. Raw deployments require at least one replica.
+- [**Deployment Mode**](https://kserve.github.io/website/docs/concepts/architecture/control-plane): **Serverless (Knative)** is the default and supports scale-to-zero. **Raw (also called Standard in newer KServe versions) Deployment** creates a plain Kubernetes Deployment for clusters without Knative or for [KEDA](https://keda.sh/docs/latest/concepts/scaling-deployments/) autoscaling. Raw deployments require at least one replica.
 - **Runtime settings**: vLLM-based runtimes support quantization options such as AWQ, GPTQ, and FP8, and data types such as Float16, BFloat16, and Float32. The HuggingFace runtime uses vLLM internally, so these settings also apply to it.
 - **Resource Requests**: configure CPU, memory, and GPU count and type. GPU options come from the cluster inventory. If limits are left blank, the CPU limit defaults to twice the request and the memory limit matches the request.
 - **Auto-Scaling**: configure minimum and maximum replicas, with a maximum of 10. Serverless mode allows a minimum of 0 for scale-to-zero; Raw Deployment requires at least one replica.

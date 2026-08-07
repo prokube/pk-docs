@@ -20,7 +20,7 @@ Use the Agents page when you need a conversational or task-driven agent that cal
 Building a working agent is a short chain of dependent resources:
 
 1. If needed, store an external provider API key as a Kubernetes Secret.
-2. Choose an available **Model Configuration**, or create one for an external provider or in-cluster model. If an administrator already granted the workspace access to an external model, skip straight to this step — see [Additional Providers (Administrators)](#additional-providers-administrators).
+2. Choose an available **Model Configuration**, or create one for an external provider or in-cluster model. Some models might already be available, if pre-configured by an administrator.
 3. Create an **Agent**, attach the Model Configuration, and select MCP tools.
 4. Test the agent in the built-in chat.
 
