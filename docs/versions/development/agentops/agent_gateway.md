@@ -1,10 +1,17 @@
 # Agent Gateway
 
-Agent Gateway is the shared routing and policy layer for external API traffic in prokube. It gives SDKs, automation, CI jobs, and agent clients a single, API-key-authenticated way to reach model, tool, agent, and sandbox endpoints running in a workspace — without a browser session and without exposing each service through its own ad hoc ingress.
+Agent Gateway is the shared routing and policy layer for external API traffic in prokube, built on [agentgateway](https://agentgateway.dev/), an AI-native Gateway API implementation. It gives SDKs, automation, CI jobs, and agent clients a single, API-key-authenticated way to reach model, tool, agent, and sandbox endpoints running in a workspace — without a browser session and without exposing each service through its own ad hoc ingress.
+
+::: info Upstream references
+- [agentgateway documentation](https://agentgateway.dev/docs/)
+- [agentgateway on Kubernetes](https://agentgateway.dev/docs/kubernetes/latest)
+:::
 
 Agent Gateway is not an agent-only feature. The same routing and policy model fronts classic model-serving endpoints, Knative services, MCP servers, memory stores, kagent A2A agents, and Agent Sandboxes. This page provides an overview of the features enabled by Agent Gateway and explains when it is used.
 
 ## When to Use Agent Gateway
+
+This list is not exhaustive — any external, API-key-authenticated call to a workspace service goes through Agent Gateway. Common cases:
 
 - Call model-serving endpoints from an external application, script, or CI job.
 - Give an agent access to a sandbox API without handing it browser credentials.
@@ -45,7 +52,7 @@ See [API Keys](../platform/api_keys.html) for the full create/edit/rotate/disabl
 
 ## Usage Dashboard
 
-The API Keys page also has a **Usage** tab showing request volume, LLM token/cost estimates, and per-key activity for the selected workspace. See [Usage Dashboard](../platform/api_keys.html#usage-dashboard) for details.
+The API Keys page also has a **Usage** tab showing request volume, LLM token/cost estimates, and per-key activity for the selected workspace. Any workspace member can see this; administrators additionally see aggregate-only traffic that isn't tied to a specific key. See [Usage Dashboard](../platform/api_keys.html#usage-dashboard) for details.
 
 ## External Models
 

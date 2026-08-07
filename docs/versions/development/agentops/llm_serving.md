@@ -2,6 +2,15 @@
 
 LLM Serving deploys self-hosted models as OpenAI-compatible inference endpoints on KServe. It supports text generation, embedding, reranking, text-to-speech, and speech-to-text models. Use it when you want to host a model in the cluster instead of calling an external provider such as OpenAI, Anthropic, or Gemini.
 
+::: info Upstream references
+LLM Serving builds on:
+
+- [KServe](https://kserve.github.io/website/) for the serving control plane and OpenAI-compatible protocol
+- [vLLM](https://docs.vllm.ai/) and [KServe's HuggingFace runtime](https://kserve.github.io/website/latest/modelserving/v1beta1/llm/huggingface/) for text generation and embeddings
+- [Hugging Face Text Embeddings Inference (TEI)](https://huggingface.co/docs/text-embeddings-inference) for CPU-optimized embeddings
+- [faster-whisper](https://github.com/SYSTRAN/faster-whisper) for CPU speech-to-text
+:::
+
 LLM Serving is an AgentOps capability. For classic model serving with scikit-learn, PyTorch, and similar predictors, see [Model Serving](../mlops/model_serving.html). Both features use KServe, but they provide different deployment forms and endpoints.
 
 ## When to Use LLM Serving
@@ -33,13 +42,13 @@ Select **Or edit YAML manifest directly** if the form does not cover a setting y
 
 The **Advanced Configuration** section is collapsed by default. It covers:
 
-- **Deployment Mode**: **Serverless (Knative)** is the default and supports scale-to-zero. **Raw Deployment** creates a plain Kubernetes Deployment for clusters without Knative or for KEDA autoscaling. Raw deployments require at least one replica.
+- **Deployment Mode**: **Serverless (Knative)** is the default and supports scale-to-zero. **Raw Deployment** creates a plain [Kubernetes Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) for clusters without Knative or for [KEDA](https://keda.sh/docs/latest/concepts/scaling-deployments/) autoscaling. Raw deployments require at least one replica.
 - **Runtime settings**: vLLM-based runtimes support quantization options such as AWQ, GPTQ, and FP8, and data types such as Float16, BFloat16, and Float32. The HuggingFace runtime uses vLLM internally, so these settings also apply to it.
 - **Resource Requests**: configure CPU, memory, and GPU count and type. GPU options come from the cluster inventory. If limits are left blank, the CPU limit defaults to twice the request and the memory limit matches the request.
 - **Auto-Scaling**: configure minimum and maximum replicas, with a maximum of 10. Serverless mode allows a minimum of 0 for scale-to-zero; Raw Deployment requires at least one replica.
 - **Automatic tool calling**: configure support for agents that use MCP tools. See [Enable Tool Calling for Agents](#enable-tool-calling-for-agents).
 
-Raw deployments can use **HPA** for CPU or memory-based scaling, or **KEDA** for custom Prometheus metrics such as vLLM token throughput. KEDA requires a PromQL query and a scale threshold calibrated against observed traffic. See [Serving Autoscaling](../mlops/model_serving_autoscaling.html) for the general KEDA pattern in prokube.
+Raw deployments can use [HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) for CPU or memory-based scaling, or [KEDA](https://keda.sh/docs/latest/concepts/scaling-deployments/) for custom Prometheus metrics such as vLLM token throughput. KEDA requires a PromQL query and a scale threshold calibrated against observed traffic. See [Serving Autoscaling](../mlops/model_serving_autoscaling.html) for the general KEDA pattern in prokube.
 
 ## Enable Tool Calling for Agents
 
@@ -73,7 +82,7 @@ From the model list or detail page, select **Edit** to change Model Type, Quanti
 
 ## External Access
 
-Endpoints shown on the model's detail/API tabs are the workspace-internal serving URL, useful for testing from inside the platform. For external clients (SDKs, CI jobs, applications outside the cluster), call the model through [Agent Gateway](agent_gateway.html) instead, using the `/ai/<workspace>/models/<route-id>/v1/...` path family and an API key scoped to the model. See [API Keys](../platform/api_keys.html). This is the same path family used by models granted through [External Models](../admin/external_models.html).
+Endpoints shown on the model's detail/API tabs are the workspace-internal serving URL, useful for testing from inside the platform. For external clients (SDKs, CI jobs, applications outside the cluster), call the model through [Agent Gateway](agent_gateway.html) instead, using a URL of the form `/ai/<workspace>/models/<route-id>/v1/...` and an API key scoped to the model. See [API Keys](../platform/api_keys.html). Models granted through [External Models](../admin/external_models.html) are reachable through this same URL pattern.
 
 To use a deployed model from a kagent agent instead of an external client, create an **Internal - OpenAI-compatible** Model Configuration and pick this model from the **LLM Serving model** dropdown. See [Agents](agents.html#_2-choose-or-create-a-model-configuration).
 

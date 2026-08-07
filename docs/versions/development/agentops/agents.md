@@ -13,22 +13,22 @@ This page covers the prokube-specific workflow for wiring a model, tools, and an
 
 ## When to Use Agents
 
-Use the Agents page when you need a conversational or task-driven agent that calls an LLM and, optionally, tools exposed through MCP servers or other agents. Use it instead of a standalone script when you want the agent's configuration versioned as Kubernetes resources, observable through pkui, and reachable by other workloads over A2A.
+Use the Agents page when you need a conversational or task-driven agent that calls an LLM and tools exposed through MCP servers or other agents. Use it when you want the agent to run on the platform: its configuration versioned as Kubernetes resources, observable through pkui, and reachable by other workloads over A2A.
 
 ## Typical Workflow
 
 Building a working agent is a short chain of dependent resources:
 
 1. If needed, store an external provider API key as a Kubernetes Secret.
-2. Choose an available **Model Configuration**, or create one for an external provider or in-cluster model.
+2. Choose an available **Model Configuration**, or create one for an external provider or in-cluster model. If an administrator already granted the workspace access to an external model, skip straight to this step — see [Additional Providers (Administrators)](#additional-providers-administrators).
 3. Create an **Agent**, attach the Model Configuration, and select MCP tools.
 4. Test the agent in the built-in chat.
 
 ### 1. Store the Provider API Key
 
-Skip this step if you will use an admin-provided Model Configuration or an **Internal** (in-cluster) model. Admin-provided configurations use a centrally managed credential; internal models authenticate over mesh identity.
+Skip this step if you will use an admin-provided Model Configuration or an **Internal** (in-cluster) model. Admin-provided configurations use a credential the administrator already manages centrally. Internal models don't need a stored credential at all — the platform authenticates them automatically as in-cluster workloads.
 
-Otherwise, for an **external** provider (OpenAI, Anthropic, Gemini), create a Kubernetes Secret first: open the user menu (top right) → **K8s Secrets** → **Add Secret**, and store the provider API key as a key/value pair in the workspace. See [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets) for the full flow.
+Otherwise, for an **external** provider (OpenAI, Anthropic, Gemini), create a Kubernetes Secret first: open the user menu (top right) → **K8s Secrets** → **Add Secret**, and store the provider API key as a key/value pair in the workspace, for example `ANTHROPIC_API_KEY: sk-ant-...` or `OPENAI_API_KEY: sk-...`. See [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets) for the full flow.
 
 ### 2. Choose or Create a Model Configuration
 
@@ -50,10 +50,10 @@ If no suitable configuration exists, select **Create ModelConfig**. The **Provid
 - For **Internal - OpenAI-compatible**, either pick a **Ready** model deployed through [LLM Serving](llm_serving.html) in the workspace, or enter a custom in-cluster OpenAI-compatible base URL and model name manually.
 - For **Internal - Ollama**, enter the in-cluster Ollama host, for example `http://ollama.<workspace>.svc.cluster.local:11434`.
 
-If you want a provider that is not in this list (for example Azure OpenAI, Mistral, or another OpenAI-compatible endpoint), that requires an administrator. See [Additional Providers (Administrators)](#additional-providers-administrators) below.
+Azure OpenAI, Mistral AI, GitHub Models, and other OpenAI-compatible endpoints are not in this self-service list, even if you hold your own API key for them. Connecting one of these requires an administrator to configure the provider centrally; a workspace only gets a Model Configuration for it once an administrator grants access. See [Additional Providers (Administrators)](#additional-providers-administrators) below.
 
 ::: info Tool calling with internal models
-For a self-hosted text-generation model used with MCP tools, enable **automatic tool calling** in [LLM Serving](llm_serving.html) and select the parser that matches the model. This option is available for the vLLM and HuggingFace runtimes.
+For a self-hosted text-generation model used with MCP tools, enable **automatic tool calling** in [LLM Serving: Enable Tool Calling for Agents](llm_serving.html#enable-tool-calling-for-agents) and select the parser that matches the model. This option is available for the vLLM and HuggingFace runtimes.
 :::
 
 ### 3. Create an Agent
