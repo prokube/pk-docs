@@ -68,6 +68,7 @@ const baseSidebar: SidebarItem[] = [
       { text: 'Component Versions', link: '/platform/component_versions.html' },
       { text: 'Observability', link: '/platform/observability.html' },
       { text: 'System Status', link: '/platform/system_status.html' },
+      { text: 'Agent Gateway', link: '/platform/agent_gateway.html', versions: [developmentVersion] },
       { text: 'API Keys', link: '/platform/api_keys.html' }
     ]
   },

@@ -4,7 +4,7 @@ API keys provide scoped programmatic access to selected prokube services without
 
 Each key can be scoped to specific services/workloads instead of the whole workspace, sent with either of two client authentication headers, and given an optional expiration date.
 
-A key belongs to the workspace that was selected when it was created. prokube routes public API traffic through [Agent Gateway](../agentops/agent_gateway.html), the shared routing and policy layer for API clients, but you do not need to configure Agent Gateway to create a key.
+A key belongs to the workspace that was selected when it was created. prokube routes public API traffic through [Agent Gateway](agent_gateway.html), the shared routing and policy layer for API clients, but you do not need to configure Agent Gateway to create a key.
 
 Use API keys when a workload or external client needs repeatable access without an interactive login. For browser-based work in the prokube UI, use your normal user session instead.
 
@@ -107,7 +107,7 @@ Rotating a key invalidates the old value immediately. Update every client or sec
 
 ## Usage Dashboard
 
-Switch to the **Usage** tab on the API Keys page to see how keys in the selected workspace are being used. The dashboard covers requests that Agent Gateway authenticated with a key; it does not cover internal in-mesh traffic (see [Agent Gateway: Public vs. Internal Traffic](../agentops/agent_gateway.html#public-vs-internal-traffic)).
+Switch to the **Usage** tab on the API Keys page to see how keys in the selected workspace are being used. The dashboard covers requests that Agent Gateway authenticated with a key; it does not cover internal in-mesh traffic (see [Agent Gateway: Public vs. Internal Traffic](agent_gateway.html#public-vs-internal-traffic)).
 
 ![API key usage dashboard with request trend, estimated LLM usage, and per-key activity](../../../_static/screenshots/platform/api-keys/api-key-usage-tab.png)
 
@@ -174,6 +174,7 @@ Regular users see **Keys owned by you**; administrators see **All workspace keys
 
 ## Related Pages
 
+- [Agent Gateway](agent_gateway.html)
 - [Sandboxes](../agentops/sandboxes.html)
 - [MCP Servers](../agentops/mcp_servers.html)
 - [Model Serving](../mlops/model_serving.html)

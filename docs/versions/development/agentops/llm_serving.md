@@ -82,7 +82,7 @@ From the model list or detail page, select **Edit** to change Model Type, Quanti
 
 ## External Access
 
-Endpoints shown on the model's detail/API tabs are the workspace-internal serving URL, useful for testing from inside the platform. For external clients (SDKs, CI jobs, applications outside the cluster), call the model through [Agent Gateway](agent_gateway.html) instead, using a URL of the form `/ai/<workspace>/models/<route-id>/v1/...` and an API key scoped to the model. See [API Keys](../platform/api_keys.html). Models granted through [External Models](../admin/external_models.html) are reachable through this same URL pattern.
+Endpoints shown on the model's detail/API tabs are the workspace-internal serving URL, useful for testing from inside the platform. For external clients (SDKs, CI jobs, applications outside the cluster), call the model through [Agent Gateway](../platform/agent_gateway.html) instead, using a URL of the form `/ai/<workspace>/models/<route-id>/v1/...` and an API key scoped to the model. See [API Keys](../platform/api_keys.html). Models granted through [External Models](../admin/external_models.html) are reachable through this same URL pattern.
 
 To use a deployed model from a kagent agent instead of an external client, create an **Internal - OpenAI-compatible** Model Configuration and pick this model from the **LLM Serving model** dropdown. See [Agents](agents.html#_2-choose-or-create-a-model-configuration).
 

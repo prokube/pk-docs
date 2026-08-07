@@ -125,7 +125,7 @@ Replace `<cluster-domain>` and `<namespace>` with your values. After applying, t
 
 ## Access Notes
 
-Inside the cluster, call the Knative service directly through its internal URL (`<service-name>.<namespace>.svc.cluster.local`). From outside, requests to `/serving/*` require an API key. See [API Keys](../platform/api_keys.md) for details.
+Inside the cluster, call the Knative service directly through its internal URL (`<service-name>.<namespace>.svc.cluster.local`). From outside, requests to `/serving/*` go through [Agent Gateway](../platform/agent_gateway.html) and require an API key. See [API Keys](../platform/api_keys.md) for details.
 
 From a Lab terminal, test the `hello` service with:
 
