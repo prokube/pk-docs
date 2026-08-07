@@ -24,10 +24,10 @@
 
   <text x="590" y="26" text-anchor="middle" font-size="13" font-weight="800" fill="#535965" letter-spacing="0.06em">EXTERNAL, API-KEY-AUTHENTICATED CALLERS</text>
 
-  <!-- Arrows: callers -> gateway -->
-  <path d="M230,104 C230,130 470,140 585,158" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
+  <!-- Arrows: callers -> gateway (short straight tail before the tip keeps the arrowhead clean) -->
+  <path d="M230,104 C230,126 585,130 585,142 L585,158" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
   <path d="M590,104 L590,158" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
-  <path d="M950,104 C950,130 710,140 595,158" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
+  <path d="M950,104 C950,126 595,130 595,142 L595,158" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
 
   <!-- Gateway -->
   <rect x="380" y="160" width="420" height="112" rx="20" fill="#ebebff" stroke="#645ade" stroke-width="2" />
@@ -35,11 +35,11 @@
   <text x="590" y="230" text-anchor="middle" font-size="14" font-weight="600" fill="#535965">Checks API key scope + workspace, then routes</text>
   <text x="590" y="252" text-anchor="middle" font-size="12" font-weight="700" fill="#645ade" letter-spacing="0.03em">built on agentgateway</text>
 
-  <!-- Arrows: gateway -> row 3 -->
-  <path d="M590,272 C590,300 170,300 170,338" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
-  <path d="M590,272 C590,295 450,300 450,338" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
-  <path d="M590,272 C590,295 730,300 730,338" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
-  <path d="M590,272 C590,300 1010,300 1010,338" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
+  <!-- Arrows: gateway -> row 3 (short straight tail before the tip keeps the arrowhead clean) -->
+  <path d="M590,272 C590,298 170,298 170,318 L170,338" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
+  <path d="M590,272 C590,292 450,294 450,318 L450,338" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
+  <path d="M590,272 C590,292 730,294 730,318 L730,338" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
+  <path d="M590,272 C590,298 1010,298 1010,318 L1010,338" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
 
   <!-- Row 3: backends -->
   <g>
