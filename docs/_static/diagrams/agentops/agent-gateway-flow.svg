@@ -24,10 +24,10 @@
 
   <text x="590" y="26" text-anchor="middle" font-size="13" font-weight="800" fill="#535965" letter-spacing="0.06em">EXTERNAL, API-KEY-AUTHENTICATED CALLERS</text>
 
-  <!-- Arrows: callers -> gateway (short straight tail before the tip keeps the arrowhead clean) -->
-  <path d="M230,104 C230,126 585,130 585,142 L585,158" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
+  <!-- Arrows: callers -> gateway -->
+  <path d="M230,104 C230,130 470,140 585,158" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
   <path d="M590,104 L590,158" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
-  <path d="M950,104 C950,126 595,130 595,142 L595,158" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
+  <path d="M950,104 C950,130 710,140 595,158" fill="none" stroke="#958dff" stroke-width="2.5" marker-end="url(#arrow)" />
 
   <!-- Gateway -->
   <rect x="380" y="160" width="420" height="112" rx="20" fill="#ebebff" stroke="#645ade" stroke-width="2" />
@@ -59,9 +59,16 @@
     <text x="1010" y="382" text-anchor="middle" font-size="16" font-weight="700" fill="#111827">Agent Sandboxes</text>
   </g>
 
-  <!-- Internal / mesh traffic: peer-to-peer arcs between backends, bypassing the gateway -->
-  <path d="M170,440 C170,464 450,464 450,440" fill="none" stroke="#a1a8b3" stroke-width="2" stroke-dasharray="4 4" marker-start="url(#arrow-muted)" marker-end="url(#arrow-muted)" />
-  <path d="M730,440 C730,464 1010,464 1010,440" fill="none" stroke="#a1a8b3" stroke-width="2" stroke-dasharray="4 4" marker-start="url(#arrow-muted)" marker-end="url(#arrow-muted)" />
+  <!-- Internal / mesh traffic: a shared mesh "bus" connects all four backends directly, bypassing the gateway -->
+  <line x1="170" y1="458" x2="1010" y2="458" stroke="#a1a8b3" stroke-width="2" stroke-dasharray="4 4" />
+  <circle cx="170" cy="458" r="3.5" fill="#a1a8b3" />
+  <circle cx="450" cy="458" r="3.5" fill="#a1a8b3" />
+  <circle cx="730" cy="458" r="3.5" fill="#a1a8b3" />
+  <circle cx="1010" cy="458" r="3.5" fill="#a1a8b3" />
+  <path d="M170,458 L170,440" fill="none" stroke="#a1a8b3" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrow-muted)" />
+  <path d="M450,458 L450,440" fill="none" stroke="#a1a8b3" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrow-muted)" />
+  <path d="M730,458 L730,440" fill="none" stroke="#a1a8b3" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrow-muted)" />
+  <path d="M1010,458 L1010,440" fill="none" stroke="#a1a8b3" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrow-muted)" />
 
   <rect x="40" y="480" width="1100" height="108" rx="18" fill="#faf9fb" stroke="#c7c2ff" stroke-width="1.5" stroke-dasharray="7 6" />
 
