@@ -1,55 +1,80 @@
 # Agent Gateway
 
-Agent Gateway is prokube's shared routing and policy layer for external API traffic, the same layer that fronts classic model-serving endpoints and Knative services in MLOps. See [Agent Gateway](../platform/agent_gateway.html) in Foundation for the platform-wide routing model: path families, public vs. internal traffic, API keys, and the upstream [agentgateway](https://agentgateway.dev/) project it's built on.
+Agent Gateway is the shared data plane for model, MCP, and agent traffic in prokube. It connects agent runtimes to configured models and workspace tools, and exposes selected services to other applications. prokube builds this layer on [agentgateway](https://agentgateway.dev/) and the Kubernetes Gateway API.
 
-This page covers the AgentOps-specific angle: how Agent Gateway moves traffic between agents, tools, and models, and how agents reach external LLM providers.
+::: info Upstream references
+- [Agentgateway overview](https://agentgateway.dev/docs/kubernetes/latest/about/overview/)
+- [LLM consumption](https://agentgateway.dev/docs/kubernetes/latest/llm/about/)
+- [MCP connectivity](https://agentgateway.dev/docs/kubernetes/latest/mcp/about/)
+- [Virtual MCP](https://agentgateway.dev/docs/kubernetes/latest/mcp/virtual/)
+- [Kagent integration](https://agentgateway.dev/docs/kubernetes/latest/integrations/web-uis/kagent/)
+- [Agentgateway observability](https://agentgateway.dev/docs/kubernetes/latest/observability/otel-stack/)
+:::
 
-## How Agent Gateway Moves Agent Traffic
+This page explains how prokube uses Agent Gateway for agent workloads. For public paths, API-key scopes, and client authentication, see [Agent Gateway](../platform/agent_gateway.html) in Foundation and [API Keys](../platform/api_keys.html).
 
-![Diagram: external callers reach Agent Gateway, which routes to kagent agents, MCP servers, models, and Agent Sandboxes. Agents, tools, and models inside the same workspace call each other directly over mesh identity instead.](../../../_static/diagrams/agentops/agent-gateway-flow.svg)
+## Controlled Agent Traffic
 
-An external caller (an SDK, a CI job, or another agent outside the workspace) authenticates with an API key scoped to one of the `/a2a`, `/mcp`, `/ai`, or `/sandbox` paths. Agent Gateway checks the key's scope and workspace, then forwards the request to:
+<ControlledFlowsDiagram />
 
-- a **kagent agent**, over agent-to-agent (A2A);
-- an **MCP server or memory store**, for tool and retrieval access;
-- a **model**, self-hosted through [LLM Serving](llm_serving.html) or granted through [External Models](../admin/external_models.html);
-- an **Agent Sandbox**, for isolated code execution.
+Agent Gateway provides common routing between the main parts of an agent workload:
 
-Inside the same workspace, none of this needs an API key: an agent calling another agent, an MCP tool, or a model authenticates automatically over Kubernetes/mesh identity. You only reach for Agent Gateway, and an API key, when the caller is outside the workspace.
+- **Agent to model:** a kagent Agent uses its selected Model Configuration to reach a self-hosted or administrator-managed model.
+- **Agent to tool:** workspace MCP endpoints are federated behind Agent Gateway and exposed to kagent through a `RemoteMCPServer`.
+- **Agent to agent:** kagent agents are reachable over Agent2Agent (A2A) routes.
+- **Application to service:** internal applications and authenticated external clients can call models, MCP servers, agents, and sandbox APIs through stable workspace routes.
 
-## When to Use Agent Gateway for Agents
+prokube creates and maintains the required gateway backends, routes, workspace isolation policies, and kagent references when supported resources are created through pkui.
 
-- Reach kagent agents through agent-to-agent (A2A) calls from outside the cluster.
-- Expose MCP servers or memory stores to external agent clients.
-- Give an agent access to a sandbox API without handing it browser credentials.
-- Call a self-hosted or externally granted model from an external application, script, or CI job.
+## Model Access
 
-For interactive work in the prokube UI, use your normal user session instead. Agent Gateway is for programmatic clients. For the general routing/API-key mechanics behind all of this, see [Agent Gateway](../platform/agent_gateway.html) in Foundation.
+Every declarative agent references a kagent `ModelConfig`. How its traffic reaches the model depends on the configuration's origin:
 
-## External Models
+| Model path | How it is connected |
+|---|---|
+| Model deployed through [LLM Serving](llm_serving.html) | prokube creates an OpenAI-compatible route to the in-cluster model. |
+| Administrator-managed external model | The `ModelConfig` points to an internal Agent Gateway provider route. Provider credentials remain centrally managed, and access is granted per workspace and model. |
+| User-created external `ModelConfig` | The agent uses the provider credential stored in the workspace Secret and connects through that configuration. This path is not automatically routed through the centrally managed provider gateway. |
 
-Agents can use external models through two different paths:
+Workspace users select an available Model Configuration when creating an [Agent](agents.html). Administrators manage centralized providers and workspace model grants under [External Models](../admin/external_models.html).
 
-| | User-created Model Configuration | Admin-managed external model |
-|---|---|---|
-| Providers | OpenAI, Anthropic, Gemini | Anthropic, OpenAI, Mistral AI, Azure OpenAI, GitHub Models, or a custom OpenAI-compatible endpoint |
-| Credential | API key stored in a workspace Kubernetes Secret | Provider credential managed centrally by an administrator |
-| Availability | Available only through that workspace's Model Configuration | Granted to selected workspaces and shown there as an **AI Gateway** Model Configuration |
-| Routing | Agent connects to the provider through the Model Configuration | Model traffic is routed through Agent Gateway |
+## MCP Federation and Tool Selection
 
-Use a user-created Model Configuration for a workspace-specific provider credential. Use the admin-managed path when credentials should be shared centrally, when workspaces need explicit model grants, or when the provider is not available in the self-service list.
+prokube combines the MCP endpoints available in a workspace into a federated Agent Gateway backend. kagent discovers that backend through the workspace `RemoteMCPServer` named `gateway-mcp`. This gives agents one stable MCP connection even when the set of workspace MCP servers changes.
 
-Workspace users select either type from the same Model Configurations list when creating an agent. Administrators configure providers, models, and workspace grants under [External Models](../admin/external_models.html).
+When configuring an Agent, you can either:
+
+- select individual discovered tools, which stores their names in the Agent's `mcpServer.toolNames` field; or
+- attach the complete `RemoteMCPServer` without `toolNames`, which makes all current and future tools from that connection available to the Agent.
+
+Tool selection controls which tools kagent presents to that Agent. Do not treat it as an independent network-security boundary: prokube does not currently materialize a separate Agent Gateway authorization policy for each Agent and selected tool. Use workspace separation and narrowly scoped MCP servers when a capability requires stronger isolation.
+
+See [Agents](agents.html) for the UI workflow and [MCP Servers](mcp_servers.html) for deploying and operating tool servers.
+
+## Agent-to-Agent Routes
+
+prokube creates an A2A route for each supported kagent Agent. Other workloads can use that route to invoke the Agent without depending on its backing Pod or Service address.
+
+Workloads in the same workspace can use the internal route with their workload identity and do not need an API key. Calls from other workspace or cluster namespaces are denied. External clients use the public `/a2a/<workspace>/<agent>` path and an API key scoped to that Agent.
+
+## External Clients
+
+Agent Gateway also exposes workspace services to SDKs, automation, CI jobs, and agents outside the platform. Public routes are grouped by service type, including `/ai`, `/mcp`, `/a2a`, and `/sandbox`.
+
+External access is configured through service-scoped API keys, not on this page. See [API Keys](../platform/api_keys.html) for creating, rotating, and restricting keys and [Agent Gateway](../platform/agent_gateway.html) for the public routing model.
+
+## Observability
+
+Traffic routed through Agent Gateway provides a common collection point for request metrics, logs, and traces. The currently documented user-facing view is the [API Key Usage Dashboard](../platform/api_keys.html#usage-dashboard), which covers requests authenticated with an API key and does not represent all internal agent traffic.
+
+For workload logs, Kubernetes events, metrics, and currently available tracing workflows, see [Observability](../platform/observability.html). The underlying agentgateway data plane supports OpenTelemetry-based metrics and tracing integrations.
 
 ## Related Pages
 
-- [Agent Gateway](../platform/agent_gateway.html) (Foundation: path families, API keys, public vs. internal traffic)
-- [API Keys](../platform/api_keys.html)
 - [Agents](agents.html)
-- [LLM Serving](llm_serving.html)
-- [Agent Sandboxes](sandboxes.html)
 - [MCP Servers](mcp_servers.html)
-- [Memory Stores](memory_stores.html)
+- [LLM Serving](llm_serving.html)
+- [Agent Gateway](../platform/agent_gateway.html)
+- [API Keys](../platform/api_keys.html)
 - [External Models](../admin/external_models.html)
-- [Model Serving](../mlops/model_serving.html)
-- [Serverless](../mlops/knative.html)
+- [Observability](../platform/observability.html)

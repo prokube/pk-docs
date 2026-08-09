@@ -18,11 +18,10 @@ Use [Labs](../labs/index.md) for interactive development and debugging. Use Agen
 ## Typical Flow
 
 1. Choose a model path: use an administrator-granted external model, create a workspace Model Configuration, or deploy an in-cluster model with [LLM Serving](llm_serving.md).
-2. Add tools when the agent needs capabilities beyond model inference: deploy [MCP Servers](mcp_servers.md), attach sandbox-backed tools, or connect another agent.
+2. Prepare any tools the agent needs: deploy [MCP Servers](mcp_servers.md), connect another agent, or use [Agent Sandboxes](sandboxes.md) for isolated code execution, file operations, package installation, and long-running task state.
 3. Create an [Agent](agents.md), attach the Model Configuration, select the MCP or agent tools it may call, and test it in the built-in chat.
-4. Use [Agent Sandboxes](sandboxes.md) when the workflow needs isolated code execution, file operations, package installation, or long-running task state.
-5. Expose programmatic access through [Agent Gateway](agent_gateway.md) only when external clients, SDKs, CI jobs, or other integrations need to call the service without a browser session.
-6. Use logs, events, metrics, traces, and API-key usage data to debug behavior and review operational impact.
+4. Expose programmatic access through [Agent Gateway](agent_gateway.md) only when external clients, SDKs, CI jobs, or other integrations need to call the service without a browser session.
+5. Use logs, events, metrics, traces, and API-key usage data to debug behavior and review operational impact.
 
 ## Access Model
 
