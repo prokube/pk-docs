@@ -6,7 +6,7 @@ Run these procedures only when you understand the deployment topology, GitOps se
 
 ## MinIO Administration
 
-For MinIO concepts and API details, use the upstream [MinIO documentation](https://docs.min.io/community/minio-object-store/). In prokube, user-facing object operations normally happen through the [Object Storage](../platform/object_storage.md) page. Use the MinIO Console for administration tasks that the prokube UI does not expose.
+For MinIO concepts and API details, use the upstream [MinIO documentation](https://docs.min.io/community/minio-object-store/). In prokube, user-facing file operations normally happen through the [File Storage](../platform/file_storage.md) page. Use the MinIO Console for administration tasks that the prokube UI does not expose.
 
 The MinIO Console is commonly exposed under:
 
@@ -556,7 +556,7 @@ After rollout, verify that the suggestion pod stays running and that experiments
 
 - [Admin Overview](index.md)
 - [User Management](user_management.md)
-- [Object Storage](../platform/object_storage.md)
+- [File Storage](../platform/file_storage.md)
 - [Platform Databases](../platform/databases.md)
 - [Observability](../platform/observability.md)
 - [Model Serving Autoscaling](../mlops/model_serving_autoscaling.md)

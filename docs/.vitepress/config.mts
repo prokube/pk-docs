@@ -98,10 +98,16 @@ function sidebarFor(version: string): SidebarItem[] {
     ...section,
     items: section.items
       ?.filter((item) => !item.versions || item.versions.includes(version))
-      .map((item) => ({
-        ...item,
-        link: item.link ? `/${version}${item.link}` : item.link
-      }))
+      .map((item) => {
+        const versionedItem = version === developmentVersion && item.link === '/platform/object_storage.html'
+          ? { ...item, text: 'File Storage', link: '/platform/file_storage.html' }
+          : item
+
+        return {
+          ...versionedItem,
+          link: versionedItem.link ? `/${version}${versionedItem.link}` : versionedItem.link
+        }
+      })
   }))
 }
 
