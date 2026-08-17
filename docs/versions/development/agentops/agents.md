@@ -50,7 +50,9 @@ If no suitable configuration exists, select **Create ModelConfig**. The **Provid
 - For **Internal - OpenAI-compatible**, either pick a **Ready** model deployed through [LLM Serving](llm_serving.html) in the workspace, or enter a custom in-cluster OpenAI-compatible base URL and model name manually.
 - For **Internal - Ollama**, enter the in-cluster Ollama host, for example `http://ollama.<workspace>.svc.cluster.local:11434`.
 
-Azure OpenAI, Mistral AI, GitHub Models, and other OpenAI-compatible endpoints are not in this self-service list, even if you hold your own API key for them. Connecting one of these requires an administrator to configure the provider centrally. A workspace only gets a Model Configuration for it once an administrator grants access. See [Additional Providers (Administrators)](#additional-providers-administrators) below.
+The structured form covers the common presets above. For another kagent-supported provider, open the Model Configuration YAML editor and define its provider-specific fields. OpenAI-compatible services can use the `OpenAI` provider with an `openAI.baseUrl` and a workspace Secret containing the API key; Azure OpenAI uses its dedicated kagent provider configuration. This keeps the endpoint and credential within the workspace configuration.
+
+When provider credentials and model access are managed centrally, administrators can configure Azure OpenAI, Mistral AI, GitHub Models, or another OpenAI-compatible endpoint through Agent Gateway. Granted models then appear in the workspace as **AI Gateway** Model Configurations. See [External Models](../admin/external_models.html) for the administrator workflow.
 
 ::: info Tool calling with internal models
 For a self-hosted text-generation model used with MCP tools, enable **automatic tool calling** in [LLM Serving: Enable Tool Calling for Agents](llm_serving.html#enable-tool-calling-for-agents) and select the parser that matches the model. This option is available for the vLLM and HuggingFace runtimes.
@@ -83,20 +85,6 @@ Each response that used a tool shows a **Tool Activity** entry with the tool's a
 ![Agent chat showing connected tools and tool activity](../../../_static/screenshots/agentops/agents/chat-tool-activity.png)
 
 For programmatic access instead of the chat UI, the agent's Overview tab lists its A2A endpoint. External callers need an API key scoped to the agent (`a2a`). See [API Keys](../platform/api_keys.html). Callers inside the same workspace can reach the agent over the internal A2A path without a key.
-
-## Additional Providers (Administrators)
-
-Users can create Model Configurations for:
-
-- OpenAI, Anthropic, and Gemini using a workspace Secret;
-- internal OpenAI-compatible and Ollama models without a provider Secret.
-
-Administrators can:
-
-- connect Mistral AI, Azure OpenAI, GitHub Models, or a custom OpenAI-compatible endpoint;
-- grant selected workspaces access to individual models from those providers.
-
-An admin-granted model appears automatically as a selectable Model Configuration, tagged **AI Gateway** as its origin. Users do not need their own provider Secret. See [External Models](../admin/external_models.html) for the administrator workflow.
 
 ## Related Pages
 
