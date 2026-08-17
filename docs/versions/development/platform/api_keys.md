@@ -2,7 +2,9 @@
 
 API keys provide scoped programmatic access to selected prokube services without a browser session. Use them for SDKs, automation, CI jobs, serving clients, sandbox clients, MCP clients, and external integrations.
 
-A key belongs to the workspace that was selected when it was created. prokube routes public API traffic through [Agent Gateway](../agentops/agent_gateway.html), the shared routing and policy layer for API clients, but you do not need to configure Agent Gateway to create a key.
+Each key can be scoped to specific services/workloads instead of the whole workspace, sent with either of two client authentication headers, and given an optional expiration date.
+
+A key belongs to the workspace that was selected when it was created. prokube routes public API traffic through [Agent Gateway](agent_gateway.html), the shared routing and policy layer for API clients, but you do not need to configure Agent Gateway to create a key.
 
 Use API keys when a workload or external client needs repeatable access without an interactive login. For browser-based work in the prokube UI, use your normal user session instead.
 
@@ -103,6 +105,54 @@ Rotating a key invalidates the old value immediately. Update every client or sec
 
 <img src="../../../_static/screenshots/platform/api-keys/api-key-edit-disable-rotate-menu.png" alt="API key action menu with edit, disable, rotate, and delete actions" style="max-width: 360px; width: 100%; height: auto;">
 
+## Usage Dashboard
+
+Switch to the **Usage** tab on the API Keys page to see how keys in the selected workspace are being used. The dashboard covers requests that Agent Gateway authenticated with a key. It does not cover internal in-mesh traffic (see [Agent Gateway: Public vs. Internal Traffic](agent_gateway.html#public-vs-internal-traffic)).
+
+![API key usage dashboard with request trend, estimated LLM usage, and per-key activity](../../../_static/screenshots/platform/api-keys/api-key-usage-tab.png)
+
+### Time Window and Cohorts
+
+Choose a **time window** to control both the summary numbers and the request trend chart below them. Options are Last hour, Last 24 hours (default), Last 7 days, and Last 30 days.
+
+The dashboard shows up to three cohort cards, split by how a request was attributed:
+
+- **External attributed**: requests attributed to an authenticated key. This is the only cohort regular users see.
+- **Internal aggregate** and **Unattributed public**: aggregate-only counts, visible to administrators. These are never distributed across individual keys, so they cannot be used to identify which key or workload generated a given request.
+
+The **request trend** chart plots request volume per time bucket for the selected window. If Prometheus retained only part of the window, the dashboard shows a note that the trend is truncated rather than silently showing partial data as complete.
+
+### Token and Cost Estimate
+
+The **Estimated LLM usage** panel shows input tokens, output tokens, and an estimated cost for LLM traffic in the window. Estimated cost is derived from a model pricing catalog:
+
+- If pricing is missing for some models in the window, the panel notes that the estimate excludes those models.
+- If no pricing data is available at all, the panel says catalog pricing is unavailable rather than showing a misleading total.
+
+Token and cost figures apply only to LLM (`/ai`) traffic. Other path families report request counts but not tokens or cost.
+
+### Usage by Key
+
+The **Usage by key** table lists per-key activity for the window:
+
+| Column | Meaning |
+|---|---|
+| Key | Key name. A deleted key that still has recorded usage shows as **Historical** rather than disappearing from the table. |
+| Owner | The user who created the key. |
+| Requests | Total requests attributed to the key in the window. |
+| Failed | Requests that failed (non-2xx/3xx) in the window. |
+| LLM tokens | Input + output tokens, for `/ai` traffic only. |
+| Estimated cost | Estimated cost for the key's LLM traffic in the window. |
+| Last Active | Approximate time since the key's last recorded request, bounded by the selected window and its sampling granularity, not an exact last-used timestamp. |
+
+Regular users see **Keys owned by you**. Administrators see **All workspace keys**. Keys with no recorded activity in the window are omitted, except historical (deleted) keys that administrators can still see for auditing.
+
+### Reading the Numbers Correctly
+
+- Request counts, tokens, and cost are estimates for observability, not billing records.
+- Prometheus retention limits how far back the dashboard can report. Older activity outside the retention window will not appear even if the key was used.
+- If usage telemetry is not configured for the cluster, the dashboard shows a notice instead of numbers. Contact your administrator if you expect usage data and see this notice.
+
 ## Security Guidance
 
 - Prefer service-specific keys over broad workspace access.
@@ -124,6 +174,7 @@ Rotating a key invalidates the old value immediately. Update every client or sec
 
 ## Related Pages
 
+- [Agent Gateway](agent_gateway.html)
 - [Sandboxes](../agentops/sandboxes.html)
 - [MCP Servers](../agentops/mcp_servers.html)
 - [Model Serving](../mlops/model_serving.html)

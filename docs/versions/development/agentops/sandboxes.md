@@ -4,6 +4,25 @@ Agent Sandboxes are isolated Linux environments for AI agents and automation wor
 
 Sandboxes are part of the AgentOps track, but they use the same shared platform foundation as the rest of prokube: workspaces, RBAC, secrets, observability, storage, and Agent Gateway for external API access.
 
+::: info Upstream references
+- [Kubernetes SIG Apps Agent Sandbox](https://agent-sandbox.sigs.k8s.io/docs/)
+- [OpenSandbox `execd`](https://github.com/opensandbox-group/OpenSandbox/tree/main/components/execd)
+- [Kata Containers documentation](https://kata-containers.github.io/kata-containers/)
+:::
+
+## How the Components Fit Together
+
+prokube combines upstream sandbox components with platform-specific lifecycle, access, and persistence behavior:
+
+| Component | Role in prokube |
+|---|---|
+| Kubernetes SIG Apps [Agent Sandbox](https://github.com/kubernetes-sigs/agent-sandbox) | Provides the Kubernetes `Sandbox`, `SandboxTemplate`, `SandboxClaim`, and `SandboxWarmPool` APIs and their controllers. These resources manage stable sandbox identity, Pods, claims, and pre-warmed capacity. |
+| OpenSandbox [`execd`](https://github.com/opensandbox-group/OpenSandbox/tree/main/components/execd) | Runs inside the standard sandbox image and provides the execution service used for commands and file operations. prokube does not use the complete OpenSandbox control plane. |
+| [Kata Containers](https://katacontainers.io/) | Can provide VM-backed workload isolation through a Kubernetes `RuntimeClass`. The configured runtime is a deployment choice. |
+| prokube sandbox services | Add workspace-aware UI and APIs, SDK and MCP access, Agent Gateway routing, managed egress, persistence integration, runtime images, and platform lifecycle behavior. |
+
+Pause and resume in prokube build on the sandbox lifecycle primitives but add prokube-specific persistence and restore behavior. In particular, prokube defines which filesystem paths survive a pause and how the environment is prepared again on resume.
+
 ## When to Use Sandboxes
 
 Use a sandbox when an agent needs an actual execution environment instead of a predefined tool call:
@@ -25,11 +44,7 @@ The page contains three main areas:
 - **Warm Pools**: pre-created sandboxes that can be claimed quickly.
 - **Active Sandboxes**: direct or pool-backed sandboxes that currently exist in the workspace.
 
-Screenshot placeholder:
-
-```text
-docs/docs/_static/screenshots/sandboxes/sandbox-overview.png
-```
+![Agent Sandboxes page with the usage timeline, ready WarmPools, and Active Sandboxes section](../../../_static/screenshots/agentops/sandboxes/overview.webp)
 
 ## Warm Pools
 
@@ -44,12 +59,6 @@ From the **Warm Pools** section, users can:
 - claim a sandbox from a ready pool
 
 Only ready pools with available pods can be used by **Claim from Pool**.
-
-Screenshot placeholder:
-
-```text
-docs/docs/_static/screenshots/sandboxes/warm-pools.png
-```
 
 ## Create a Direct Sandbox
 
@@ -68,12 +77,6 @@ The UI currently supports:
 
 The sandbox name must use lowercase letters, numbers, and hyphens.
 
-Screenshot placeholder:
-
-```text
-docs/docs/_static/screenshots/sandboxes/create-sandbox.png
-```
-
 ## Claim a Sandbox from a Pool
 
 Use **Claim from Pool** when you want fast provisioning from an existing WarmPool.
@@ -86,12 +89,6 @@ The claim dialog lets users:
 - set an optional per-claim auto-idle timeout
 
 If no auto-idle timeout is set on the claim, the sandbox inherits the pool default. If the pool has no default, the platform default applies.
-
-Screenshot placeholder:
-
-```text
-docs/docs/_static/screenshots/sandboxes/claim-from-pool.png
-```
 
 ## Manage Active Sandboxes
 
@@ -111,11 +108,9 @@ The table shows the sandbox name, service, status, and creation time. Pool-backe
 
 Pause/resume is currently exposed for direct sandboxes. Pool-backed sandboxes are usually treated as claimed disposable capacity and are deleted when no longer needed.
 
-Screenshot placeholder:
+Open a sandbox to use its terminal, run code, inspect connection examples, or review logs and events.
 
-```text
-docs/docs/_static/screenshots/sandboxes/active-sandboxes.png
-```
+![Sandbox detail page with the connected web terminal](../../../_static/screenshots/agentops/sandboxes/terminal.webp)
 
 ## Pause and Resume Behavior
 
@@ -143,6 +138,10 @@ Do not use direct backend service URLs from external clients.
 API keys are managed on the platform **API Keys** page. See [API Keys](../platform/api_keys.md) for key handling and scope guidance.
 
 Current SDK note: the Python and TypeScript SDKs send keys as `x-api-key`. Bearer-style keys are not the SDK default right now.
+
+The sandbox detail page's **Connect** tab provides ready-to-adapt Python SDK and `curl` examples for the selected sandbox.
+
+![Sandbox Connect tab with Python SDK and curl examples](../../../_static/screenshots/agentops/sandboxes/connect.webp)
 
 ## API Surface
 
@@ -217,8 +216,6 @@ curl \
   -H "x-api-key: ${PROKUBE_API_KEY}" \
   "https://<cluster-domain>/sandbox/<workspace>/sandboxes"
 ```
-
-For a complete reference, we should eventually generate or maintain a separate Sandbox API Reference page from the backend OpenAPI schema and SDK type definitions. This page is intended as the practical integration guide.
 
 ## Python SDK
 
@@ -339,25 +336,10 @@ The MCP client still needs the same platform information:
 
 See [API Keys](../platform/api_keys.md) for key handling and scope guidance.
 
-## Recommended Screenshots
+In OpenCode, connect the sandbox MCP server from the MCP Servers dialog:
 
-Please add these screenshots when available:
+![OpenCode MCP Servers dialog with the sandboxes server connected](../../../_static/screenshots/agentops/sandboxes/opencode-mcp-connection.webp)
 
-- `docs/docs/_static/screenshots/sandboxes/sandbox-overview.png`: full Sandbox page with timeline, WarmPools, and Active Sandboxes visible
-- `docs/docs/_static/screenshots/sandboxes/warm-pools.png`: WarmPools section with at least one ready pool and available pods
-- `docs/docs/_static/screenshots/sandboxes/create-sandbox.png`: Create Sandbox modal showing image/resources and optional sections
-- `docs/docs/_static/screenshots/sandboxes/claim-from-pool.png`: Claim Sandbox modal with pool info
-- `docs/docs/_static/screenshots/sandboxes/active-sandboxes.png`: Active Sandboxes table with search/filter controls and mixed direct/pool examples
-- `docs/docs/_static/screenshots/sandboxes/sandbox-details.png`: optional detail/connect page if we want to document per-sandbox usage snippets later
+The agent can then claim a sandbox and execute code through MCP tools without leaving the chat:
 
-## Notes for Operators
-
-Sandbox deployments typically require:
-
-- Agent Sandbox controller and CRDs
-- a sandbox runtime such as gVisor
-- pkui Sandbox module
-- Agent Gateway for external API access
-- workspace and RBAC foundation from the common platform
-
-The exact installer profile for Sandbox-focused deployments is still being defined.
+![OpenCode session using sandbox claim and code execution tools](../../../_static/screenshots/agentops/sandboxes/opencode-sandbox-tools.webp)

@@ -19,11 +19,11 @@ Use KServe InferenceServices when a trained model should be available as an API 
 - scale inference replicas automatically based on request concurrency, QPS, or custom metrics;
 - test model behaviour interactively before integrating into production;
 - use the v2 inference protocol for framework-agnostic model access;
-- expose endpoints for external applications through the Agent Gateway with API key authentication.
+- expose endpoints for external applications through [Agent Gateway](../platform/agent_gateway.html) with API key authentication.
 
 Use [Labs](../labs/index.md) or [Pipelines](pipelines.md) for training and exporting models. Move to Model Serving when the model should become a reachable endpoint.
 
-This page covers classic KServe model serving: deploying sklearn, PyTorch, MLflow, and similar models as inference endpoints. For LLM-focused serving (vLLM, TGI, OpenAI-compatible APIs), see the [AgentOps documentation](../agentops/index.md) – large language models follow a different operational pattern and are documented separately there.
+This page covers classic KServe model serving: deploying sklearn, PyTorch, MLflow, and similar models as inference endpoints. For LLM-focused serving (vLLM, HuggingFace, TGI runtimes with OpenAI-compatible APIs), see [LLM Serving](../agentops/llm_serving.html) – large language models follow a different operational pattern and are documented separately there.
 
 ## Get Started
 
@@ -226,7 +226,7 @@ A custom [`mlflow-storage-initializer`](https://github.com/prokube/prokube-image
 
 ## External Access
 
-To call a model endpoint from outside the cluster, you need a workspace-scoped API key. Create one on the **API Keys** page under AI Gateway — keys can be scoped to a specific workspace or to individual services. See [API Keys](../platform/api_keys.md) for details.
+To call a model endpoint from outside the cluster, you need a workspace-scoped API key. Create one on the **API Keys** page under AI Gateway — keys can be scoped to a specific workspace or to individual services. See [API Keys](../platform/api_keys.md) for details. This external path is served by [Agent Gateway](../platform/agent_gateway.html), the same routing layer used across MLOps and AgentOps.
 
 Include the key in requests:
 
