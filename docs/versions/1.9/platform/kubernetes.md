@@ -51,7 +51,7 @@ prokube protects clusters with workspace pod quotas. The default limit is 100 po
 
 Large pipelines can approach this limit quickly because completed pipeline step pods remain in the workspace namespace for a while after the run finishes.
 
-The prokube UI surfaces pod-quota pressure for the selected workspace next to the workspace selector. The System Status page shows detailed quota usage, including running pods, pending pods, and completed pipeline pods.
+The prokube UI surfaces critical pod-quota pressure for the selected workspace next to the workspace selector when usage reaches 90% of the configured quota. With the default quota, this alert appears at 90 pods. The System Status page shows detailed quota usage, including running pods, pending pods, and completed pipeline pods.
 
 <img class="pk-docs-small-screenshot" src="../../../_static/screenshots/platform/kubernetes/100-pods-warning.png" alt="Pod quota warning next to the workspace selector" />
 
