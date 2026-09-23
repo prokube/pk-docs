@@ -154,6 +154,58 @@ The [`lightweight-python-package`](https://github.com/prokube/examples/tree/main
 
 You can build and push images from supported Labs using the remote BuildKit setup. You also need a container registry that accepts pushes from your Lab, and the workspace must be able to pull the resulting images. Ask your administrator which registry to use. For private registries, add pull credentials from the prokube user menu under **Registry Credentials**; they are attached to the workspace namespace so pipeline pods can pull private images. See [Building Container Images](../labs/index.md#building-container-images) and [Registry Credentials](../platform/kubernetes.md#registry-credentials).
 
+## Submitting Pipeline Runs from Outside of the Cluster
+
+You can submit a pipeline run from outside the Kubernetes cluster, for example
+from your own laptop. To authenticate, open the user menu in the prokube UI,
+select **Session JWT**, and copy the token.
+
+Define the platform URL (`PLATFORM_URL`), target namespace (`KFP_NAMESPACE`),
+and JWT (`TOKEN`). The following example reads them from environment variables.
+
+::: warning Protect your Session JWT
+The Session JWT is a short-lived bearer credential and does not refresh itself.
+Anyone who obtains it can act with your permissions until it expires. Do not
+commit it, write it to a script, include it in logs, or share it.
+:::
+
+```python
+import os
+
+from kfp import dsl
+from kfp.client import Client
+
+
+@dsl.component()
+def say_hello():
+    print("hello from an external KFP client")
+
+
+@dsl.pipeline(name="external-jwt-run")
+def pipeline():
+    say_hello()
+
+
+platform_url = os.environ["PLATFORM_URL"].rstrip("/")
+namespace = os.environ["KFP_NAMESPACE"]
+token = os.environ["TOKEN"]
+
+client = Client(
+    host=f"{platform_url}/pipeline",
+    existing_token=token,
+    namespace=namespace,
+)
+
+run = client.create_run_from_pipeline_func(
+    pipeline,
+    arguments={},
+    experiment_name="external-jwt-experiment",
+    namespace=namespace,
+)
+
+print(f"Submitted run {run.run_id}")
+```
+
 ## Common Patterns
 
 ### Use Secrets in Components
