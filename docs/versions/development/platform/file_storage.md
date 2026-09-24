@@ -4,11 +4,11 @@ File storage covers persistent files used by Labs, pipelines, model serving, and
 
 Use S3-compatible storage for data that moves between tools. Use PVC-backed storage when a workload needs a mounted filesystem path.
 
-::: info MinIO documentation
-For MinIO concepts and client reference that are not specific to prokube, use the upstream documentation.
+:::: info SeaweedFS documentation
+prokube's S3-compatible storage is backed by SeaweedFS. For S3 client reference and store internals that are not specific to prokube, use the upstream documentation.
 
-- [MinIO documentation](https://docs.min.io/community/minio-object-store/)
-:::
+- [SeaweedFS wiki](https://github.com/seaweedfs/seaweedfs/wiki)
+::::
 
 ## File Storage Browser
 
@@ -92,7 +92,7 @@ key <- "path/data.csv"
 obj <- get_object(
   object = key,
   bucket = bucket,
-  use_https = FALSE, # Internal MinIO only; use TRUE for external endpoints.
+  use_https = FALSE, # Internal cluster endpoint only; use TRUE for external endpoints.
   region = ""
 )
 df <- read_csv(rawToChar(obj))
@@ -102,10 +102,10 @@ df <- read_csv(rawToChar(obj))
 
 ## External S3 Clients
 
-Some workflows need access from outside the cluster, for example from a local development machine or external automation. The exact endpoint depends on your deployment and is usually exposed under a MinIO or S3-compatible domain.
+Some workflows need access from outside the cluster, for example from a local development machine or external automation. The S3 API is exposed under its own hostname.
 
 ```text
-https://minio.<your-prokube-domain>
+https://s3.<your-prokube-domain>
 ```
 
 External S3 clients need these settings:
@@ -113,7 +113,7 @@ External S3 clients need these settings:
 - access key ID;
 - secret access key.
 
-For deployments that expose the MinIO Console, create and rotate personal S3 access keys in the MinIO UI, usually under `https://<your-prokube-domain>/minio/`. Sign in with the same SSO account you use for prokube, open **Access Keys**, and create a new access key. Store the secret key in a password manager or secret store when it is shown. Do not commit secret keys to notebooks, repositories, pipeline definitions, or container images.
+The endpoint serves the S3 API only; there is no object-store web console. Use the credentials from the `s3creds` Secret in your workspace namespace, the same pair your Labs and pipelines use. If you need separate credentials for a third party or an external system, ask your administrator to create a dedicated S3 user. Store secret keys in a password manager or secret store and do not commit them to notebooks, repositories, pipeline definitions, or container images.
 
 **Example:** Configure `s3fs` explicitly for external access.
 
@@ -121,7 +121,7 @@ For deployments that expose the MinIO Console, create and rotate personal S3 acc
 import getpass
 import s3fs
 
-AWS_ENDPOINT_URL = "https://minio.<your-prokube-domain>"
+AWS_ENDPOINT_URL = "https://s3.<your-prokube-domain>"
 AWS_ACCESS_KEY_ID = "<access-key-id>"
 AWS_SECRET_ACCESS_KEY = getpass.getpass("S3 secret access key: ")
 
@@ -221,17 +221,20 @@ git clone https://github.com/prokube/examples.git ~/examples
 | `~/examples/storage/s3/python/s3_access.ipynb` | Writing and reading the Iris dataset from S3-compatible file storage with `s3fs`. Set the bucket name at the top of the notebook. |
 | `~/examples/storage/s3/r/s3_access.R` | Writing and reading the Iris dataset from RStudio with `aws.s3`. Set the bucket name at the top of the script. |
 
-The R example uses `use_https = FALSE` for the preconfigured internal MinIO endpoint, where in-cluster traffic is protected by the platform. Do not use that setting for external S3 endpoints.
+The R example uses `use_https = FALSE` for the preconfigured in-cluster S3 endpoint, where traffic is protected by the platform. Do not use that setting for external S3 endpoints.
 
-### When to Use the MinIO UI?
+### Where Do My S3 Credentials Come From?
 
-The prokube File Storage browser covers normal file browsing, upload, download, organization, and path-copying workflows.
+prokube provisions one S3 user per workspace and writes its access key into the `s3creds` Secret in your workspace namespace. Labs, pipeline steps, and model-serving workloads read it automatically; external clients use the same pair.
 
-Use the MinIO UI only when you need account-level or storage-administration functions that are not exposed in the prokube browser:
+```bash
+kubectl get secret s3creds -n <your-workspace> \
+  -o jsonpath='{.data.AWS_ACCESS_KEY_ID}' | base64 -d; echo
+kubectl get secret s3creds -n <your-workspace> \
+  -o jsonpath='{.data.AWS_SECRET_ACCESS_KEY}' | base64 -d; echo
+```
 
-- creating or managing personal S3 access keys for external clients, if enabled;
-- reviewing MinIO-specific account settings;
-- performing bucket or policy administration tasks allowed by your administrator.
+Bucket and policy administration is not exposed to users. Ask your administrator for access to a bucket outside your workspace.
 
 ## Troubleshooting
 
@@ -256,3 +259,4 @@ Use the MinIO UI only when you need account-level or storage-administration func
 - [MLflow](../mlops/mlflow.md)
 - [Model Serving](../mlops/model_serving.md)
 - [Storage Administration](../admin/storage.md)
+- [Object Storage Administration](../admin/object_storage.md)

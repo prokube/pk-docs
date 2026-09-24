@@ -85,6 +85,7 @@ const baseSidebar: SidebarItem[] = [
       { text: 'Application Authentication', link: '/admin/application_authentication.html' },
       { text: 'External Models', link: '/admin/external_models.html', versions: [developmentVersion] },
       { text: 'Storage', link: '/admin/storage.html' },
+      { text: 'Object Storage', link: '/admin/object_storage.html', versions: [developmentVersion] },
       { text: 'GPU Administration', link: '/admin/gpu.html' },
       { text: 'Backup and Restore', link: '/admin/backup_restore.html' },
       { text: 'Upgrading', link: '/admin/upgrading.html' },

@@ -30,7 +30,7 @@ Avoid force pushes and live hotfixes unless the deployment runbook explicitly re
 
 ## Kubernetes and Node Upgrades
 
-Kubernetes or node upgrades can affect stateful workloads and `ReadWriteOnce` volumes. Before draining nodes, check for Labs, database pods, MinIO pods, MLflow components, and model-serving workloads with local or node-bound storage.
+Kubernetes or node upgrades can affect stateful workloads and `ReadWriteOnce` volumes. Before draining nodes, check for Labs, database pods, object-store pods in the `seaweedfs` namespace, MLflow components, and model-serving workloads with local or node-bound storage.
 
 If a pod cannot move during a drain, inspect:
 

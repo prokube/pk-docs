@@ -1,6 +1,6 @@
 # Storage Administration
 
-prokube uses Kubernetes storage for workspace volumes, notebook homes, databases, S3-compatible file-storage tenants, pipeline artifacts, and model-serving data. Storage behavior is deployment-specific and depends on the installed StorageClasses and CSI drivers.
+prokube uses Kubernetes storage for workspace volumes, notebook homes, databases, object-store volumes, pipeline artifacts, and model-serving data. Storage behavior is deployment-specific and depends on the installed StorageClasses and CSI drivers.
 
 ## StorageClasses
 
@@ -45,7 +45,7 @@ Typical storage choices:
 | Labs | Persistent home volumes are convenient for interactive work but can be constrained by `ReadWriteOnce` attachment. |
 | Pipelines | Prefer S3-compatible file storage for artifacts and datasets instead of relying on Lab volumes. |
 | MLflow | Metadata and artifacts need backup; artifact storage can grow quickly. |
-| MinIO | Tenant volumes require deliberate sizing, backup, and migration planning. |
+| SeaweedFS | Object-store volumes need deliberate sizing, quotas, and backup. See [Object Storage](./object_storage.md). |
 | Databases | Use storage with snapshot/backup support and predictable latency. |
 | Model Serving | Large models should live in S3-compatible file storage or MLflow, with optional cache support where configured. |
 
@@ -77,3 +77,4 @@ Before any disk wipe:
 - [Backup and Restore](backup_restore.md)
 - [Operations Runbooks](operations_runbooks.md)
 - [File Storage](../platform/file_storage.md)
+- [Object Storage](./object_storage.md)

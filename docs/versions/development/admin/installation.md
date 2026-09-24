@@ -34,11 +34,11 @@ If the deployment will run GPU workloads, choose GPU hardware supported by the N
 
 Plan stable DNS and trusted TLS before onboarding users.
 
-Most installations need DNS names that resolve to the external load balancer or ingress nodes. A common layout uses one name for the main prokube UI and APIs and a separate name for MinIO, for example:
+Most installations need DNS names that resolve to the external load balancer or ingress nodes. The layout uses one name for the main prokube UI and APIs and a separate name for the S3 API, for example:
 
 ```text
 prokube.example.com
-minio.prokube.example.com
+s3.prokube.example.com
 ```
 
 The exact hostnames depend on the deployment's ingress and file-storage configuration. Keep them stable after installation because login redirects, OIDC clients, API URLs, and generated links depend on them.
@@ -46,7 +46,7 @@ The exact hostnames depend on the deployment's ingress and file-storage configur
 At minimum, decide:
 
 - the public prokube domain;
-- whether MinIO uses a separate hostname;
+- the hostname for the S3 API, by default `s3.<your-prokube-domain>`;
 - whether applications use path-prefix routing on the main domain or dedicated subdomains;
 - certificate issuer and renewal process;
 - how private or self-signed certificate authorities are distributed to users, workloads, and platform components.
@@ -123,7 +123,7 @@ See [Workspace Defaults and Image Pull Secrets](operations_runbooks.md#workspace
 
 ## Storage Sizing
 
-Object storage, notebook volumes, MLflow artifacts, pipeline artifacts, and model files can grow quickly. Size MinIO tenants, databases, and persistent-volume storage before onboarding users.
+Object storage, notebook volumes, MLflow artifacts, pipeline artifacts, and model files can grow quickly. Size the object-store volumes, databases, and persistent-volume storage before onboarding users. See [Object Storage](object_storage.md) for the volume layout of each deployment profile.
 
 For production deployments, avoid accepting placeholder storage sizes from a demo installation. Define expected retention, dataset size, model size, pipeline concurrency, and backup requirements first.
 

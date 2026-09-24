@@ -12,7 +12,7 @@ Typical backup scope includes:
 
 - Keycloak configuration and database state;
 - Kubeflow Profiles, Notebook servers and volumes, Katib experiments, Pipelines metadata, and KServe resources;
-- MinIO tenant configuration and object data;
+- object storage: buckets, objects, and the S3 identities and policies stored in the object store;
 - MLflow experiments, runs, artifacts, registered models, and permission state;
 - platform configuration that is not otherwise recoverable from GitOps.
 
@@ -64,4 +64,5 @@ For small self-managed deployments, also document and back up host-level configu
 
 - [Operations Runbooks](operations_runbooks.md)
 - [Storage](storage.md)
+- [Object Storage](object_storage.md)
 - [Upgrading](upgrading.md)
