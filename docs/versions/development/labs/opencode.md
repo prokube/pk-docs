@@ -22,9 +22,7 @@ Common uses include:
 - configuring or testing MCP servers while developing agent workflows;
 - reviewing file changes and terminal output before committing to Git.
 
-Use [VS Code](vscode.md) when you want a full IDE. Use [JupyterLab](jupyterlab.md) when notebooks and exploratory analysis are the main workflow. Use [Agent Sandboxes](../agentops/sandboxes.md) for API-controlled execution environments used by agents and applications.
-
-You can also combine OpenCode with sandboxes through MCP. This is useful when you want OpenCode to plan, inspect, and orchestrate work from its Lab, but do not want it to execute untrusted code or shell commands directly in the OpenCode Lab pod. In that setup, OpenCode talks to an MCP server, and the MCP server runs the actual workload in an [Agent Sandbox](../agentops/sandboxes.md): OpenCode for interaction, sandboxes for isolated execution.
+Use [VS Code](vscode.md) when you want a full IDE. Use [JupyterLab](jupyterlab.md) when notebooks and exploratory analysis are the main workflow.
 
 ## Start an OpenCode Lab
 
@@ -116,15 +114,13 @@ The OpenCode image is not intended for local container image builds and does not
 
 For stronger isolation, do not rely on a "read-only directory" convention as the main security boundary. Upstream OpenCode documents [references](https://opencode.ai/docs/references/) for adding external context, and read-only external directory behavior has been discussed upstream, for example in [anomalyco/opencode#18441](https://github.com/anomalyco/opencode/issues/18441). For real isolation, deny invasive OpenCode tools and avoid mounting sensitive directories or credentials into the OpenCode Lab in the first place.
 
-If OpenCode should only inspect or orchestrate work, run edits, tests, and command execution through an MCP server backed by an [Agent Sandbox](../agentops/sandboxes.md). In that setup, the OpenCode Lab is the interactive interface and the sandbox is the execution boundary.
-
 ## Use the Integrated Terminal
 
 OpenCode Labs include an integrated terminal backed by the OpenCode PTY API. Use it for normal development commands such as `git`, SSH setup, package managers, tests, and CLIs that are available in the selected image.
 
 ![Integrated terminal](../../../_static/screenshots/labs/opencode/terminal-and-todo-ui.png)
 
-The terminal runs inside the same Lab pod as OpenCode. It is useful for explicit manual commands, but it is not a separate sandbox. If you need package installation patterns or file-storage access in a Lab where those permissions are intentionally enabled, use the shared Labs guidance:
+The terminal runs inside the same Lab pod as OpenCode. It is useful for explicit manual commands, but it is not a separate execution boundary. If you need package installation patterns or file-storage access in a Lab where those permissions are intentionally enabled, use the shared Labs guidance:
 
 - [File Storage](../platform/file_storage.md)
 - [Persistence and Package Installation](index.md#persistence-and-package-installation)
@@ -141,15 +137,11 @@ Remote MCP entries can include a URL, optional Authorization header, custom HTTP
 
 For hosting MCP servers on prokube, platform-managed MCP endpoints, and public routing, see [MCP Servers](../agentops/mcp_servers.md). For memory-backed MCP endpoints, see [Memory Stores](../agentops/memory_stores.md).
 
-## Relationship to Agent Sandboxes
-
-OpenCode Labs are interactive development environments for humans working with a coding agent. They are long-lived enough for development, inspection, and review, but they are still Labs: storage and lifecycle follow the Lab model.
-
-[Agent Sandboxes](../agentops/sandboxes.md) are API-managed execution environments for agents and applications. They can be created, claimed, paused, resumed, and controlled through APIs. Use OpenCode Labs to build and debug the code, then move operational agent execution into sandboxes or dedicated services when the workflow becomes repeatable.
-
 ## Operational Notes
 
 OpenCode Labs run as workspace pods. They inherit the same workspace access model, storage behavior, and operational limits as other Labs.
+
+They are interactive development environments for humans working with a coding agent, with storage and lifecycle following the Lab model.
 
 Important points:
 
@@ -166,7 +158,6 @@ For general lifecycle issues, storage attachment problems, image pull errors, an
 - [Using Labs](index.md)
 - [VS Code](vscode.md)
 - [JupyterLab](jupyterlab.md)
-- [Agent Sandboxes](../agentops/sandboxes.md)
 - [MCP Servers](../agentops/mcp_servers.md)
 - [pk-opencode-webui on GitHub](https://github.com/prokube/pk-opencode-webui)
 - [OpenCode upstream project](https://github.com/anomalyco/opencode)

@@ -83,7 +83,7 @@ JupyterLab is best for interactive development and inspection. Move the workload
 - use Kubeflow Pipelines for scheduled or reproducible workflows;
 - use MLflow for experiment tracking and model registry workflows;
 - use model serving for inference endpoints;
-- use AgentOps components for MCP servers, agents, and sandboxed execution.
+- use AgentOps components for MCP servers and agents.
 
 ## Related Pages
 

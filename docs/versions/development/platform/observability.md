@@ -50,7 +50,7 @@ Use **Download** to save the shown log entries as a text file for sharing or off
 - **Lab debugging**: search for the Lab pod when the environment fails to start or crashes after startup.
 - **Model-serving debugging**: search by model pod name or labels to inspect startup, model loading, and request-handling logs.
 - **Application debugging**: search logs for custom services deployed into your workspace.
-- **AgentOps debugging**: search sandbox, MCP server, gateway, or agent runtime logs when the feature-specific page does not show enough detail.
+- **AgentOps debugging**: search MCP server, gateway, or agent runtime logs when the feature-specific page does not show enough detail.
 
 ## Metrics and Dashboards
 

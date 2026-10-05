@@ -13,7 +13,7 @@ The selected workspace affects which resources you can see and create across the
 - model-serving endpoints and serverless workloads
 - workspace-scoped secrets and registry credentials
 - file-storage buckets and access credentials
-- AgentOps resources such as sandboxes, MCP servers, and memory stores where enabled
+- AgentOps resources such as agents, MCP servers, and memory stores where enabled
 
 Each workspace has its own Kubernetes namespace. That namespace is one part of the workspace boundary; the workspace also includes platform-level access rules, storage configuration, UI scope, and integrations with other services.
 

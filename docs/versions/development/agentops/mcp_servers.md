@@ -10,7 +10,7 @@ For MCP and ToolHive concepts that are not specific to prokube, use the upstream
 
 MCP servers expose tools, data sources, and internal APIs to AI assistants through the Model Context Protocol. In prokube, MCP servers run as Kubernetes workloads managed by ToolHive instead of local processes on a developer machine.
 
-Use MCP servers when an agent or MCP-capable client needs governed access to a tool, for example sandbox execution, browser automation, databases, internal APIs, or other services that should not be called with broad user credentials.
+Use MCP servers when an agent or MCP-capable client needs governed access to a tool, for example browser automation, databases, internal APIs, or other services that should not be called with broad user credentials.
 
 ## How prokube Runs MCP Servers
 
@@ -104,20 +104,6 @@ For kagent agents, open **Agents** and select the discovered MCP tools when crea
 
 OpenCode and other MCP-capable clients can use the endpoint URL shown in prokube. In OpenCode Labs, add it through the OpenCode MCP manager and configure the required headers or OAuth settings there. See [OpenCode: Add MCP Servers](../labs/opencode.html#add-mcp-servers).
 
-## Sandbox MCP
-
-The catalog includes `sandbox-mcp`, a prokube-provided MCP server for Agent Sandbox operations.
-
-It exposes tools for common sandbox tasks, including creating sandboxes, claiming existing sandboxes, running commands, executing code, reading and writing files, and managing sandbox pools.
-
-When deploying `sandbox-mcp`, prokube pre-fills deployment context for the selected workspace:
-
-- `PROKUBE_API_URL`: backend API URL reachable from the MCP server pod;
-- `PROKUBE_WORKSPACE`: selected workspace namespace;
-- `PROKUBE_USER_ID`: current user identity used for backend authorization.
-
-You can also set `SANDBOX_NAME` to auto-connect to a specific sandbox on the first tool call.
-
 ## Browser Automation Servers
 
 Some catalog entries, such as the prokube Playwright noVNC image, include live browser viewing and trace support.
@@ -163,5 +149,4 @@ Live view is only available for servers that declare live-view support in the ca
 
 - [API Keys](../platform/api_keys.html)
 - [Kubernetes Resources](../platform/kubernetes.html)
-- [Agent Sandboxes](./sandboxes.html)
 - [Agents](./agents.html)

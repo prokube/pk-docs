@@ -1,6 +1,6 @@
 # API Keys
 
-API keys provide scoped programmatic access to selected prokube services without a browser session. Use them for SDKs, automation, CI jobs, serving clients, sandbox clients, MCP clients, and external integrations.
+API keys provide scoped programmatic access to selected prokube services without a browser session. Use them for SDKs, automation, CI jobs, serving clients, MCP clients, and external integrations.
 
 Each key can be scoped to specific services/workloads instead of the whole workspace, sent with either of two client authentication headers, and given an optional expiration date.
 
@@ -45,7 +45,6 @@ Click **Create Key** and fill in the form:
 The service list is built from services available in the selected workspace. It can include:
 
 - **Models** for KServe and LLM endpoints.
-- **Sandbox API** for Agent Sandbox programmatic access.
 - **MCP servers** for tool access.
 - **Memory stores** exposed through MCP-compatible routes.
 - **A2A agents** for kagent agent-to-agent access.
@@ -62,16 +61,9 @@ Choose the authentication format expected by the client:
 | Format | Use when |
 |---|---|
 | `Authorization: Bearer <key>` | The client is OpenAI-compatible or expects bearer authentication. This is the recommended format for LLM clients. |
-| `x-api-key: <key>` | The client uses existing prokube service examples for Sandboxes, MCP, A2A, or other non-OpenAI-style APIs. |
+| `x-api-key: <key>` | The client uses existing prokube service examples for MCP, A2A, or other non-OpenAI-style APIs. |
 
 Use the service page for the exact URL and request body. Examples:
-
-Sandbox-style APIs commonly use `x-api-key`:
-
-```bash
-curl "https://<your-prokube-domain>/sandbox/<workspace>/sandboxes" \
-  -H "x-api-key: <api-key>"
-```
 
 OpenAI-compatible model clients commonly use bearer authentication:
 
@@ -175,7 +167,6 @@ Regular users see **Keys owned by you**. Administrators see **All workspace keys
 ## Related Pages
 
 - [Agent Gateway](agent_gateway.html)
-- [Sandboxes](../agentops/sandboxes.html)
 - [MCP Servers](../agentops/mcp_servers.html)
 - [Model Serving](../mlops/model_serving.html)
 - [Serverless](../mlops/knative.html)
