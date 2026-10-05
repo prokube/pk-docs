@@ -89,5 +89,5 @@ JupyterLab is best for interactive development and inspection. Move the workload
 
 - [Using Labs](index.md)
 - [Custom Notebooks](custom_notebooks.md)
-- [Existing documentation](https://docs.prokube.ai/latest/)
+- [File Storage](../platform/file_storage.md)
 - [Pipelines](../mlops/pipelines.md)
