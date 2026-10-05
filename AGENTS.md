@@ -80,13 +80,15 @@ When repos disagree, prefer current shipped behavior in `pkui` and persistent pl
 
 ## Git Workflow
 
+- Always fetch the latest PR base before starting work or resuming work on an existing branch. The base is `staging` unless the user explicitly specifies another branch: run `git fetch origin staging` before inspecting base content, creating a branch or worktree, or editing files. Never rely on a cached `origin/staging` or branch from an unrelated feature branch by default.
+- Create new feature branches and worktrees from the freshly fetched `origin/staging`. For an existing branch, compare it with the fetched base before editing; if the base has advanced, resolve how to integrate those changes with the user before continuing. Preserve uncommitted work and do not silently rebase or merge.
 - Work on feature branches for non-trivial changes.
 - Do not commit directly to protected branches such as `staging`; create a feature branch and PR into `staging`.
-- For assigned GitHub issues, create an isolated worktree from `origin/main` before editing:
+- For assigned GitHub issues, create an isolated worktree from the freshly fetched `origin/staging` before editing:
 
 ```bash
-git fetch origin main
-git worktree add worktrees/issue-<number> -b feature/issue-<number> origin/main
+git fetch origin staging
+git worktree add worktrees/issue-<number> -b feature/issue-<number> origin/staging
 ```
 
 - Do all issue work inside the issue worktree.
