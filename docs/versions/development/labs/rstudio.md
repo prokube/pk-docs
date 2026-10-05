@@ -33,4 +33,4 @@ For controlled R package stacks or additional system libraries, use a custom ima
 
 - [Using Labs](index.md)
 - [Custom Notebooks](custom_notebooks.md)
-- [Existing documentation](https://docs.prokube.ai/latest/)
+- [File Storage](../platform/file_storage.md)
