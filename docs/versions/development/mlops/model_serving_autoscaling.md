@@ -63,24 +63,24 @@ Wait until the InferenceService is ready:
 kubectl get isvc "${ISVC_NAME}" -n "${NAMESPACE}"
 ```
 
-Use the endpoint URL from the model detail page or from the resource status:
+Copy the endpoint URL from the model's **Overview** tab in the prokube UI. It shows two URLs for each protocol:
+
+- **Internal**: for callers in the same workspace, such as a Lab. No API key is needed.
+- **External**: for callers outside the cluster, under `/svc/serving/<workspace>/<name>/...`. Requires an [API key](../platform/api_keys.md) scoped to the model.
+
+This walkthrough generates load from a Lab in the same workspace, so it uses the internal **V1 Protocol** URL. Generate concurrent requests with a load-testing tool such as [`hey`](https://github.com/rakyll/hey):
 
 ```bash
-export MODEL_URL="$(kubectl get isvc "${ISVC_NAME}" -n "${NAMESPACE}" -o jsonpath='{.status.url}')"
-```
-
-Generate concurrent requests with a load-testing tool such as [`hey`](https://github.com/rakyll/hey). Use a prokube API key for external endpoint calls:
-
-```bash
-export API_KEY="<api-key>"
+export PREDICT_URL="<internal V1 URL from the Overview tab>"
 
 hey -z 30s -c 5 \
   -m POST \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer ${API_KEY}" \
   -d '{"instances":["MLOps is useful."]}' \
-  "${MODEL_URL}/v1/models/${MODEL_NAME}:predict"
+  "${PREDICT_URL}"
 ```
+
+To generate load from outside the cluster instead, use the external V1 URL and add `-H "Authorization: Bearer <api-key>"`.
 
 With `scaleMetric: concurrency` and `scaleTarget: 1`, KPA tries to keep roughly one in-flight request per replica. Cold starts can temporarily create more replicas than the visible concurrency level because requests accumulate while new pods pull images, download models, and become ready. This is expected for bursty traffic and large models.
 

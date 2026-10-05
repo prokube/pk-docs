@@ -48,6 +48,10 @@ The service list is built from services available in the selected workspace. It 
 - **A2A agents** for kagent agent-to-agent access.
 - **Knative services** exposed through gateway routes.
 
+Besides individual services, you can select aggregate scopes such as **All MCP servers** or **All AI models**. They also cover matching services created later. **Full workspace access** covers every service in the workspace. Keys with **All AI models**, **All external AI models**, or **Full workspace access** must use the Bearer format.
+
+Admin-granted [external models](../admin/external_models.html) are not listed as individual services. To reach them, use a Bearer-format key with **All external AI models**, **All AI models**, or **Full workspace access**. These scopes cover every granted model in the workspace; a key cannot be limited to one granted model.
+
 Select only the services the client needs. If no services are available, deploy or expose the service first, then create the key.
 
 Service-specific scopes are the default choice for production clients. They reduce blast radius if a key is exposed and make it clear which integration depends on which platform service.
@@ -59,7 +63,7 @@ Choose the authentication format expected by the client:
 | Format | Use when |
 |---|---|
 | `Authorization: Bearer <key>` | The client is OpenAI-compatible or expects bearer authentication. This is the recommended format for LLM clients. |
-| `x-api-key: <key>` | The client uses existing prokube service examples for MCP, A2A, or other non-OpenAI-style APIs. |
+| `x-api-key: <key>` | The client cannot set an `Authorization` header, or an existing integration already sends `x-api-key`. Not available for keys with **All AI models**, **All external AI models**, or **Full workspace access**. |
 
 Use the service page for the exact URL and request body. Examples:
 

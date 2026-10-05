@@ -61,6 +61,8 @@ Workloads in the same workspace can use the internal route with their workload i
 
 Agent Gateway also exposes workspace services to SDKs, automation, CI jobs, and agents outside the platform. Public routes are grouped by service type: `/svc/ai`, `/svc/mcp`, and `/svc/a2a`.
 
+External clients can also call an admin-granted model through `/svc/ai/<workspace>/models/<route-id>/v1/...`. Granted models are not listed as individual services on the API Keys page, so the client needs a Bearer-format key with **All external AI models**, **All AI models**, or **Full workspace access**. Such a key covers every granted model in the workspace. See [API Keys](../platform/api_keys.html#create-a-key).
+
 External access is configured through service-scoped API keys, not on this page. See [API Keys](../platform/api_keys.html) for creating, rotating, and restricting keys and [Agent Gateway](../platform/agent_gateway.html) for the public routing model.
 
 ## Observability

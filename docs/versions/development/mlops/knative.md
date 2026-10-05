@@ -19,7 +19,7 @@ The platform provides dedicated solutions for common workload types. Prefer thos
 | Workload | Use instead |
 |---|---|
 | ML model inference | [KServe InferenceServices](model_serving.html) – model runtimes, storage, inference protocols, automatic `/svc/serving/...` URL |
-| LLM serving (vLLM, TGI) | [AgentOps documentation](../agentops/index.md) – OpenAI-compatible endpoints, GPU scaling, dedicated runtimes |
+| LLM serving (vLLM, HuggingFace) | [AgentOps documentation](../agentops/index.md) – OpenAI-compatible endpoints, GPU scaling, dedicated runtimes |
 | MCP servers | [MCP Servers](../agentops/mcp_servers.html) – tool-provisioning protocol with lifecycle management |
 
 KServe InferenceServices and Knative services share the same external path family, `/svc/serving/<workspace>/<name>`. A Knative service therefore cannot use the same name as an InferenceService in the same workspace.
