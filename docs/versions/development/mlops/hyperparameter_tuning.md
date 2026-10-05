@@ -218,7 +218,9 @@ Keep parameter names consistent across `spec.parameters`, `trialTemplate.trialPa
 
 ### 4. Start the Experiment
 
-From a Lab in the target workspace, run:
+Open **Hparam Search** in the prokube UI, select the target workspace, click **Apply YAML**, and paste the contents of `katib-experiment.yaml`.
+
+Alternatively, from a Lab in the target workspace, run:
 
 ```bash
 cd ~/examples/hparam-tuning/minimal-mnist

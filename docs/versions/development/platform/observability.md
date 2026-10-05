@@ -68,7 +68,7 @@ When these tools are exposed by your deployment:
 
 - use Grafana for curated dashboards and ad hoc exploration;
 - use Prometheus or Grafana Explore for metrics queries;
-- use Loki or Grafana Explore for log queries that need LogQL beyond the prokube Logs page.
+- use Loki or Grafana Explore for log queries that need LogQL, Loki's query language, beyond the prokube Logs page.
 
 Broad Grafana or Loki access can expose logs and metrics across namespaces depending on the configured permissions. Treat platform dashboards as administrator-facing unless your administrator has documented the access scope for your user or group.
 
