@@ -1,6 +1,6 @@
 # API Keys
 
-API keys provide scoped programmatic access to selected prokube services without a browser session. Use them for SDKs, automation, CI jobs, serving clients, MCP clients, and external integrations.
+API keys provide scoped programmatic access to selected prokube services without a browser session. Use them wherever a script, CI job, or external client calls a prokube service.
 
 Each key can be scoped to specific services/workloads instead of the whole workspace, sent with either of two client authentication headers, and given an optional expiration date.
 
@@ -16,9 +16,7 @@ Regular users see only their own keys in the selected workspace. Administrators 
 
 ![API Keys list with filters and key metadata](../../../_static/screenshots/platform/api-keys/api-key-list.png)
 
-The table shows key metadata, not the full key value.
-
-Visible metadata includes the key name, prefix, owner, status, expiration, authentication format, and scope summary. The prefix helps identify which key a client is using without exposing the secret value.
+The table shows each key's metadata, such as owner, status, expiration, and scopes, but never the full key value. The key prefix helps identify which key a client is using without exposing the secret.
 
 ## Ownership and Workspace Scope
 

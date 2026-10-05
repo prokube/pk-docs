@@ -32,7 +32,17 @@ Click **Deploy Model** and choose a preset, or select **Deploy Custom Model** to
 - **Deployment Name**: unique name in the workspace.
 - **Model Type**: Text Generation, Embedding, Reranking, Text to Speech, or Speech to Text. Typing a HuggingFace-style model ID (`org/model`) auto-detects the type.
 - **Model ID**: a HuggingFace model ID, for example `meta-llama/Llama-2-7b-chat-hf`. HuggingFace is the only model source available in the form; use the YAML editor for other storage URIs.
-- **Runtime**: filtered to runtimes that support the selected type. Options include HuggingFace (recommended for text generation and embeddings), TEI (CPU-optimized embeddings), vLLM, vLLM Omni (audio models), and faster-whisper (CPU speech-to-text). vLLM requires a custom ClusterServingRuntime.
+- **Runtime**: filtered to the runtimes that support the selected type.
+
+| Model type | Available runtimes |
+|---|---|
+| Text Generation | HuggingFace (recommended), vLLM |
+| Embedding | HuggingFace, TEI (CPU-optimized), vLLM |
+| Reranking | HuggingFace, vLLM |
+| Text to Speech | vLLM Omni |
+| Speech to Text | vLLM Omni, faster-whisper (CPU, no GPU required) |
+
+vLLM and vLLM Omni require a custom ClusterServingRuntime.
 
 If the model is gated on HuggingFace, the form warns you before deploying: accept the license on huggingface.co, create an access token, and store it as a Kubernetes Secret named `storage-config` with key `HF_TOKEN` in the workspace (see [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets)). Deployment fails without it.
 
