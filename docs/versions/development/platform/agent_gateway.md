@@ -26,10 +26,10 @@ Agent Gateway exposes one public path family per service type. Each path is work
 
 | Family | Path pattern | Backed by |
 |---|---|---|
-| `/ai` | `/ai/<workspace>/models/<route-id>/v1/...` | OpenAI-compatible LLM traffic (chat completions, embeddings, rerank): self-hosted models deployed through [LLM Serving](../agentops/llm_serving.html), and [external models](../admin/external_models.html) granted by an administrator. Classic (non-LLM) KServe models never use this family. |
-| `/serving` | `/serving/<workspace>/<name>` | Classic KServe InferenceServices (V1/V2 predict protocol) and Knative Services. Both share this one path family: `<name>` resolves against whichever resource matches. |
-| `/mcp` | `/mcp/<workspace>/<server>` | MCP servers and MCP-compatible memory stores |
-| `/a2a` | `/a2a/<workspace>/<agent>` | kagent agent-to-agent access |
+| `/svc/ai` | `/svc/ai/<workspace>/models/<route-id>/v1/...` | OpenAI-compatible LLM traffic (chat completions, embeddings, rerank): self-hosted models deployed through [LLM Serving](../agentops/llm_serving.html), and [external models](../admin/external_models.html) granted by an administrator. Classic (non-LLM) KServe models never use this family. |
+| `/svc/serving` | `/svc/serving/<workspace>/<name>` | Classic KServe InferenceServices (V1/V2 predict protocol) and Knative Services. Both share this one path family: `<name>` resolves against whichever resource matches. |
+| `/svc/mcp` | `/svc/mcp/<workspace>/<server>` | MCP servers and MCP-compatible memory stores |
+| `/svc/a2a` | `/svc/a2a/<workspace>/<agent>` | kagent agent-to-agent access |
 
 A key only authorizes the exact routes it was scoped to at creation. A request to a path outside the key's scope is rejected even if the key is otherwise valid. See [API Keys](api_keys.html#create-a-key) for how scopes are selected.
 
@@ -37,7 +37,7 @@ A key only authorizes the exact routes it was scoped to at creation. A request t
 
 Agent Gateway separates two kinds of callers:
 
-- **Public**: external clients calling an `/ai`, `/serving`, `/mcp`, or `/a2a` path with an API key. This is what SDKs, CI jobs, and external integrations use.
+- **Public**: external clients calling a `/svc/ai`, `/svc/serving`, `/svc/mcp`, or `/svc/a2a` path with an API key. This is what SDKs, CI jobs, and external integrations use.
 - **Internal**: workloads running inside the same workspace (for example, an agent calling another service in-cluster) are authorized by their Kubernetes/mesh identity instead of an API key. This path is automatic for in-cluster workloads and does not require you to create or manage a key.
 
 You only need to think about API keys for the public path.

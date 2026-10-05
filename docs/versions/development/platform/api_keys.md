@@ -68,10 +68,26 @@ Use the service page for the exact URL and request body. Examples:
 OpenAI-compatible model clients commonly use bearer authentication:
 
 ```bash
-curl "https://<your-prokube-domain>/ai/<workspace>/v1/chat/completions" \
+curl "https://<your-prokube-domain>/svc/ai/<workspace>/v1/chat/completions" \
   -H "Authorization: Bearer <api-key>" \
   -H "Content-Type: application/json" \
   -d '{"model":"<model>","messages":[{"role":"user","content":"Hello"}]}'
+```
+
+MCP clients take the key in their server configuration. The MCP server's **Overview** tab in the prokube UI shows a ready-to-copy configuration:
+
+```json
+{
+  "mcpServers": {
+    "<server>": {
+      "type": "http",
+      "url": "https://<your-prokube-domain>/svc/mcp/<workspace>/<server>",
+      "headers": {
+        "Authorization": "Bearer <api-key>"
+      }
+    }
+  }
+}
 ```
 
 ## Copy the Key Value
@@ -121,7 +137,7 @@ The **Estimated LLM usage** panel shows input tokens, output tokens, and an esti
 - If pricing is missing for some models in the window, the panel notes that the estimate excludes those models.
 - If no pricing data is available at all, the panel says catalog pricing is unavailable rather than showing a misleading total.
 
-Token and cost figures apply only to LLM (`/ai`) traffic. Other path families report request counts but not tokens or cost.
+Token and cost figures apply only to LLM (`/svc/ai`) traffic. Other path families report request counts but not tokens or cost.
 
 ### Usage by Key
 
@@ -133,7 +149,7 @@ The **Usage by key** table lists per-key activity for the window:
 | Owner | The user who created the key. |
 | Requests | Total requests attributed to the key in the window. |
 | Failed | Requests that failed (non-2xx/3xx) in the window. |
-| LLM tokens | Input + output tokens, for `/ai` traffic only. |
+| LLM tokens | Input + output tokens, for `/svc/ai` traffic only. |
 | Estimated cost | Estimated cost for the key's LLM traffic in the window. |
 | Last Active | Approximate time since the key's last recorded request, bounded by the selected window and its sampling granularity, not an exact last-used timestamp. |
 

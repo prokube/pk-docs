@@ -237,7 +237,7 @@ Authorization: Bearer <api-key>
 The inference URL follows this pattern:
 
 ```
-https://<cluster-domain>/serving/<namespace>/<inference-service-name>/v2/models/<model-name>/infer
+https://<cluster-domain>/svc/serving/<namespace>/<inference-service-name>/v2/models/<model-name>/infer
 ```
 
 The UI shows the exact URL for each protocol (V1 and V2) on the model detail page.

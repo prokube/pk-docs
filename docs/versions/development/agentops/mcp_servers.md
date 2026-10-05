@@ -10,24 +10,33 @@ For MCP and ToolHive concepts that are not specific to prokube, use the upstream
 
 MCP servers expose tools, data sources, and internal APIs to AI assistants through the Model Context Protocol. In prokube, MCP servers run as Kubernetes workloads managed by ToolHive instead of local processes on a developer machine.
 
-Use MCP servers when an agent or MCP-capable client needs governed access to a tool, for example browser automation, databases, internal APIs, or other services that should not be called with broad user credentials.
+Use an MCP server when an agent or MCP-capable client needs a tool such as browser automation, a database, or an internal API. The server runs in your workspace with its own configuration and credentials, so the agent does not need broad user credentials to reach the service.
 
 ## How prokube Runs MCP Servers
 
 Open **MCP** from the prokube UI sidebar under **AgentOps**. Select the workspace before deploying or inspecting servers.
 
-An MCP server is deployed into the selected workspace namespace as a [ToolHive `MCPServer`](https://docs.stacklok.com/toolhive/reference/crds/) resource. prokube provides the UI, workspace authorization, registry integration, logs, events, metrics, and optional Agent Gateway access. ToolHive handles the server runtime and local MCP proxy for that resource.
+An MCP server is deployed into the selected workspace namespace as a [ToolHive `MCPServer`](https://docs.stacklok.com/toolhive/reference/crds/) resource. ToolHive runs the server and its local MCP proxy. prokube adds:
+
+- a UI for deploying servers from the catalog or from a custom image;
+- workspace authorization;
+- logs, events, and metrics for each server;
+- optional external access through Agent Gateway.
+
+Every deployed server can be reached in two ways. Agents and other workloads in the same workspace use one shared workspace endpoint without an API key. Clients outside the workspace call each server through Agent Gateway with an API key:
+
+![Diagram: agents and other workloads in the workspace reach all MCP servers and memory stores through one workspace MCP endpoint without an API key. External MCP clients reach each server through Agent Gateway at /svc/mcp/workspace/server with an API key that has access to that server.](../../../_static/diagrams/agentops/mcp-servers-flow.svg)
 
 The MCP page contains two main sections:
 
 - **Deployed Servers**: MCP servers currently running in the selected workspace.
-- **Server Catalog**: registry entries that can be deployed with preconfigured images, tools, metadata, and required configuration fields.
+- **Server Catalog**: ready-to-deploy MCP servers, each with its image and required configuration already described.
 
 ![MCP Servers page with deployed servers and server catalog](../../../_static/screenshots/agentops/mcp/landing-page-with-server-list-and-catalogue.png)
 
 ## Deploy from the Catalog
 
-Use the catalog for known server images and common integrations. Catalog cards show the server name, description, provided tools, source, tier, repository link, and compatibility badges such as **Requires Root**.
+Use the catalog for known server images and common integrations. Each catalog card describes the server and its tools, and shows compatibility badges such as **Requires Root**.
 
 The catalog can be filtered by:
 
@@ -40,7 +49,7 @@ Click a catalog card to deploy it. The deploy dialog shows:
 
 - **Namespace**: target workspace namespace.
 - **Server Name**: Kubernetes resource name for the MCP server.
-- **Configuration**: required and optional environment variables from the registry entry.
+- **Configuration**: required and optional environment variables from the catalog entry.
 - **Registry Credentials**: image pull secrets available in the workspace.
 - **Resource Limits**: optional CPU and memory requests and limits.
 - **Technical Details**: image, transport, and provided tools.
@@ -51,9 +60,9 @@ Environment variables can be entered directly or read from a Kubernetes Secret i
 
 ### Catalog Source and Trust
 
-prokube uses the upstream [ToolHive Catalog](https://github.com/stacklok/toolhive-catalog), a community-curated registry of MCP servers and skills. The catalog gives you a better starting point than searching for arbitrary container images: entries are described in a common format, reviewed through the ToolHive project, and include metadata such as the publisher, repository, required configuration, tools, and maintenance tier.
+The catalog comes from the upstream [ToolHive Catalog](https://github.com/stacklok/toolhive-catalog), a community-maintained list of MCP servers. Each entry is reviewed through the ToolHive project and lists its publisher, source repository, tools, and required configuration. That makes it a safer starting point than an arbitrary container image.
 
-Treat the catalog as a curated trust signal, not as a blanket approval for every environment:
+A catalog entry is still not an approval for your environment. The tier tells you who maintains it:
 
 - **Official** entries are maintained by the MCP team, the upstream project, or platform owners.
 - **Community** entries are contributed and maintained by the community.
@@ -94,13 +103,29 @@ The namespace is set by prokube to the selected workspace namespace. Custom YAML
 
 ## Connect Clients
 
-The **Deployed Servers** table shows each server's status, image, transport, proxy port, and URL when available. Deploying an MCP server also registers it with the workspace's federated MCP endpoint in Agent Gateway.
+The **Deployed Servers** table shows each server's status and, when available, its URL. Open a server to see its connection details on the **Overview** tab.
 
 ![MCP server overview with external and internal connection details](../../../_static/screenshots/agentops/mcp/playwright-overview.png)
 
-For external clients, create an [API key](../platform/api_keys.html) scoped to the MCP server. Use the authentication format expected by the client.
+Inside the workspace, one endpoint serves the tools of all deployed MCP servers and [Memory Stores](memory_stores.html). New servers join it automatically, and it accepts calls only from the same workspace. kagent agents use it without any setup: open **Agents** and select the MCP tools you need when creating or editing the agent. The tools appear under the managed `gateway-mcp` endpoint. Add an entry under **Tools** only to connect an MCP endpoint outside the workspace. Other workloads in the workspace can use the internal URL shown on the **Overview** tab.
 
-For kagent agents, open **Agents** and select the discovered MCP tools when creating or editing the agent. Tools from workspace MCP servers appear through the managed `gateway-mcp` endpoint; create a separate Tool only when you need to connect an additional external MCP endpoint.
+External clients use the server's external URL, `https://<your-prokube-domain>/svc/mcp/<workspace>/<server>`, with an [API key](../platform/api_keys.html) that has access to that server. The **Overview** tab shows a ready-to-copy client configuration:
+
+```json
+{
+  "mcpServers": {
+    "<server>": {
+      "type": "http",
+      "url": "https://<your-prokube-domain>/svc/mcp/<workspace>/<server>",
+      "headers": {
+        "Authorization": "Bearer <api-key>"
+      }
+    }
+  }
+}
+```
+
+If the key was created with the `x-api-key` format, send `x-api-key: <api-key>` instead of the `Authorization` header.
 
 OpenCode and other MCP-capable clients can use the endpoint URL shown in prokube. In OpenCode Labs, add it through the OpenCode MCP manager and configure the required headers or OAuth settings there. See [OpenCode: Add MCP Servers](../labs/opencode.html#add-mcp-servers).
 

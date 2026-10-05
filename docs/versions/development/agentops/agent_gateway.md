@@ -55,11 +55,11 @@ See [Agents](agents.html) for the UI workflow and [MCP Servers](mcp_servers.html
 
 prokube creates an A2A route for each supported kagent Agent. Other workloads can use that route to invoke the Agent without depending on its backing Pod or Service address.
 
-Workloads in the same workspace can use the internal route with their workload identity and do not need an API key. Calls from other workspace or cluster namespaces are denied. External clients use the public `/a2a/<workspace>/<agent>` path and an API key scoped to that Agent.
+Workloads in the same workspace can use the internal route with their workload identity and do not need an API key. Calls from other workspace or cluster namespaces are denied. External clients use the public `/svc/a2a/<workspace>/<agent>` path and an API key scoped to that Agent.
 
 ## External Clients
 
-Agent Gateway also exposes workspace services to SDKs, automation, CI jobs, and agents outside the platform. Public routes are grouped by service type: `/ai`, `/mcp`, and `/a2a`.
+Agent Gateway also exposes workspace services to SDKs, automation, CI jobs, and agents outside the platform. Public routes are grouped by service type: `/svc/ai`, `/svc/mcp`, and `/svc/a2a`.
 
 External access is configured through service-scoped API keys, not on this page. See [API Keys](../platform/api_keys.html) for creating, rotating, and restricting keys and [Agent Gateway](../platform/agent_gateway.html) for the public routing model.
 
