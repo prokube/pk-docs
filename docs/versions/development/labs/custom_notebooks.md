@@ -44,7 +44,7 @@ For the Kubernetes-level behavior of image pull credentials, see [Registry Crede
 
 ## Custom Solutions
 
-prokube can support custom Lab solutions for teams that need specialized images, custom web applications, GPU stacks, or additional platform integration.
+prokube can also support custom Lab solutions that go beyond a custom image, such as additional platform integration.
 
 ## Related Pages
 

@@ -2,19 +2,18 @@
 
 Labs are browser-based development environments with access to the compute resources, storage, credentials, and platform tools available in your workspace.
 
-You can use Labs to explore data, write code, start platform workflows, and prepare work for production runtimes without setting up a local development environment first. From within a Lab you can access other prokube tools programmatically through `kubectl`, SDKs, CLIs, and APIs, for example to launch pipelines, run hyperparameter tuning or distributed computing experiments, develop MCP servers, and test agent workflows.
+You can work in a Lab without setting up a local development environment first. From a Lab, you reach other prokube tools programmatically through `kubectl`, SDKs, CLIs, and APIs. For example, you can launch pipelines, run hyperparameter tuning or distributed computing experiments, develop MCP servers, and test agent workflows.
 
-Alongside classic preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md), and [RStudio](rstudio.md) images, prokube also supports agentic engineering environments: GitHub Copilot in VS Code and [OpenCode](opencode.md) as a dedicated agentic coding tool.
+In addition to preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md), and [RStudio](rstudio.md) images, Labs support AI-assisted coding: GitHub Copilot in VS Code, and [OpenCode](opencode.md) as a dedicated coding agent.
 
 ![Labs overview](../../../_static/screenshots/labs/labs-overview.png)
 
 ## When to Use Labs
 
 - You want a browser IDE with workspace storage and platform credentials already available.
-- You want coding agents to run in a controlled workspace that keeps working when your laptop is closed, disconnected, or not the right place to execute agent-driven code changes.
+- You want coding agents to run in a controlled workspace that keeps working when your laptop is closed or disconnected, instead of executing agent-driven code changes on your own machine.
 - You need to run experiments against the same cluster resources used by production workloads, including CPUs, GPUs, and persistent volumes.
-- You want to develop code and then hand it off to pipelines, model serving, agents, or MCP servers.
-- You want to test platform integrations from inside the workspace before packaging them for repeatable or production use.
+- You want to develop and test platform integrations from inside the workspace before packaging them for repeatable or production use.
 
 ## Available Environments
 
@@ -30,7 +29,12 @@ Alongside classic preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md
 
 Labs are built on [Kubeflow Notebooks](https://www.kubeflow.org/docs/components/notebooks/) and run inside your [prokube workspace](../platform/workspaces.md). Each Lab gets its own [Kubernetes Pod](https://kubernetes.io/docs/concepts/workloads/pods/), resource limits, and mounted storage.
 
-prokube adds curated images, platform credentials, storage defaults, and workspace integrations on top of Kubeflow Notebooks.
+On top of Kubeflow Notebooks, prokube adds:
+
+- **Curated images**: prokube-maintained `pk-*` images with tools such as `rclone` and Docker Buildx preinstalled.
+- **Platform credentials**: workspace settings such as the file storage configuration are available inside the Lab.
+- **Storage defaults**: the workspace volume is mounted as the Lab home directory.
+- **Workspace integration**: the Lab runs in the workspace namespace and can reach other workspace services through `kubectl`, SDKs, and APIs.
 
 ## Workspaces
 
@@ -46,11 +50,11 @@ Each workspace has its own Kubernetes namespace. Edit and view contributors can 
 Do not put personal access tokens, admin credentials, cloud root keys, or other broad credentials into a workspace that other people can access. For team work, use a shared workspace with credentials intended for that team and workload.
 :::
 
-See the existing [workspace and user management documentation](https://docs.prokube.ai/latest/user_docs/user_management/) for access levels and shared workspace behavior.
+See [Workspaces](../platform/workspaces.md) for access levels and shared workspace behavior.
 
 ## Launch Options
 
-When you launch a Lab, the same basic options apply across JupyterLab, VS Code, RStudio, OpenCode, and custom notebook images:
+When you launch a Lab, the same basic options apply across all Lab types:
 
 - **Name**: identifies the Lab in your workspace.
 - **Image**: selects the IDE, language stack, preinstalled packages, and system tools.
@@ -63,45 +67,46 @@ Key concepts apply across all Lab types:
 
 - **Workspace storage**: files under the Lab home directory are backed by a [persistent volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and survive restarts. In the default images this is the `jovyan` user's home directory, usually `/home/jovyan`. A persistent volume can be mounted by other Labs or other pods, but the default storage class is commonly `ReadWriteOnce`: in multi-node clusters, the same volume can usually only be mounted read-write by pods on one node at a time.
 - **Data volumes**: additional volumes can be mounted when you need shared datasets or larger working directories. Use S3-compatible file storage or a storage class with the required access mode when multiple pods need concurrent access across nodes.
-- **Compute resources**: CPU, memory, and GPU requests are configured when the Lab is created.
-- **Platform access**: Labs can use workspace credentials, `kubectl`, SDKs, CLIs, and APIs to interact with other prokube tools.
-- **Images**: the selected image defines the IDE, language stack, system tools, and preinstalled packages.
 - **Ephemeral container state**: changes outside mounted volumes should be treated as temporary. If you need extra tools, install them into the persistent home directory with user-space package managers where available, or move them into a custom image.
 
 ## Managing Labs
 
 Running Labs reserve CPU, memory, GPU, and volume attachments in the cluster. Stop Labs when you no longer need the running process.
 
-Some deployments enable notebook culling for idle JupyterLab servers. Culling is controller configuration, not a guarantee that every Lab type behaves the same way. VS Code, RStudio, OpenCode, and custom notebook images can have different idle-detection behavior depending on the installed controllers and images.
+Some deployments stop idle JupyterLab servers automatically, which is called notebook culling. This is a deployment setting, not guaranteed behavior. VS Code, RStudio, OpenCode, and custom notebook images may detect idle time differently, depending on the installed controllers and images.
 
 Common lifecycle operations:
 
 - **Stop**: stops the Lab pod and releases compute resources. Files on mounted persistent volumes remain.
 - **Start**: creates the Lab pod again from the configured image, resources, and volumes.
 - **Delete**: removes the Lab server object and pod. Mounted volumes are not necessarily deleted with it; delete unused volumes separately when you no longer need the data.
-- **Recreate**: use this when you need to change image, compute resources, storage, or advanced configuration. Stop the old Lab, create a new one with the desired settings, and reuse the relevant persistent volume if you want to keep the home directory.
+- **Recreate**: needed to change the image, compute resources, storage, or advanced configuration of a Lab. Stop the old Lab, then create a new one with the desired settings. To keep your home directory, attach the old Lab's persistent volume to the new one.
 
-Existing Labs generally should not be treated as mutable infrastructure. If you need a repeatable environment for a team, build a [Custom Notebook](custom_notebooks.md) image instead of manually changing a running Lab.
+Avoid customizing a running Lab by hand for anything you need to reproduce. If a team needs a repeatable environment, build a [Custom Notebook](custom_notebooks.md) image instead.
 
 ### Advanced Configuration
 
-The `Configurations` and `Security options` fields are administrator-provided options for the Lab pod. Depending on the installation, they may include environment variables, secret injection, labels, tolerations, node affinity, or hardening options.
+The `Configurations` and `Security options` fields are administrator-provided options for the Lab pod. Which options are available depends on the installation.
 
 For example, GPU-specific workloads may use an affinity configuration so that the Lab is scheduled on nodes with the required GPU type. If the required option is not visible in the launch dialog, ask your platform administrator.
 
 Configurations can also expose selected Kubernetes Secret values as environment variables. Create the secret in the workspace first, for example through **K8s Secrets** in the prokube user menu, then select the matching configuration when launching the Lab. Do not put secret values directly into notebooks, shell history, or container images.
 
-Administrators create these options with Kubeflow PodDefaults or equivalent notebook configuration. Users can select only the configurations exposed to the workspace. If a required secret, node affinity, toleration, or environment variable is missing, ask the platform administrator to add a reusable configuration instead of editing generated notebook resources by hand.
+Administrators create these options with Kubeflow PodDefaults or equivalent notebook configuration. Users can select only the configurations exposed to the workspace. If a configuration you need is missing, ask the platform administrator to add a reusable configuration instead of editing generated notebook resources by hand.
 
 ## Persistence and Package Installation
 
 Files in the Lab home directory are backed by the workspace volume and survive Lab restarts. In the default images this is the `jovyan` user's home directory, usually `/home/jovyan`. This is the right place for notebooks, source code, configuration files, and cloned repositories.
 
-Container-local changes outside mounted volumes should be treated as temporary. Python packages installed into system locations, system packages installed inside the running container, and background processes may disappear when the Lab is recreated.
+Changes outside mounted volumes are temporary. Whenever the Lab pod is recreated, including when you stop and start the Lab, the following are lost:
+
+- Python packages installed into system locations
+- system packages installed inside the running container
+- background processes
 
 For additional packages, prefer installs that write into the persistent home directory or project directory:
 
-- use pip's [user install mode](https://pip.pypa.io/en/stable/user_guide/#user-installs), for example `pip install --user`, for simple Python additions when user-site installs are visible in the selected environment;
+- use pip's [user install mode](https://pip.pypa.io/en/stable/user_guide/#user-installs), for example `pip install --user`, for simple Python additions, provided the active Python environment loads user-site packages (isolated virtual environments usually do not);
 - use [uv project environments](https://docs.astral.sh/uv/concepts/projects/config/#project-environment-path) under the persistent workspace, for example the default `.venv` next to your project;
 - use [Poetry in-project virtual environments](https://python-poetry.org/docs/configuration/#virtualenvsin-project) when working with Poetry projects;
 - use [conda environments with an explicit prefix](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#specifying-a-location-for-an-environment), for example under `/home/jovyan/envs` or your project directory;
@@ -152,7 +157,7 @@ If you need the same Node.js version for a team workflow, prefer a custom image 
 
 ## File Storage from Labs
 
-Labs can work with S3-compatible file storage through Python libraries, SDKs, UI extensions, and command-line tools, depending on the selected image and workspace configuration.
+Labs can work with S3-compatible file storage. The available tools depend on the selected image and workspace configuration.
 
 The prokube-maintained `pk-*` notebook images include `rclone` with a preconfigured `minio` remote when the workspace file-storage configuration is available. Use it from a Lab terminal:
 
@@ -162,22 +167,26 @@ rclone copy local-file minio:my-bucket/path/
 rclone copy minio:my-bucket/path/file ./file
 ```
 
-For S3-backed file storage, PVC-backed file storage, Python and R examples, `s3fs`, pandas, S3-compatible configuration, external clients, and storage security notes, see [File Storage](../platform/file_storage.md).
+See [File Storage](../platform/file_storage.md) for S3-backed and PVC-backed storage. It has Python and R examples with `s3fs` and pandas, connection settings for external clients, and storage security notes.
 
 ## Building Container Images
 
-The prokube-maintained `pk-*` notebook images generated from the upstream Kubeflow notebook server images include Docker CLI and Buildx support for building container images through a remote [BuildKit](https://github.com/moby/buildkit) service in the cluster. This covers the standard prokube JupyterLab, VS Code/code-server, and RStudio image families. Upstream or fully custom images only have this capability if they include the same tooling and startup configuration.
+You can build container images from a Lab and push them to a registry.
 
-The Lab pod does not run a local Docker daemon. The image contains the Docker client and Buildx plugin; the actual build runs in the remote BuildKit service configured by `BUILDKIT_HOST` when available.
+The build does not run in the Lab pod, and there is no local Docker daemon. The Docker client and Buildx plugin in the image send the build to a remote [BuildKit](https://github.com/moby/buildkit) service in the cluster. The `BUILDKIT_HOST` environment variable points to this service when the cluster provides it.
 
-Builds should be pushed to a registry:
+This tooling is included in the prokube-maintained `pk-*` notebook images, which are based on the upstream Kubeflow notebook server images. That covers the standard prokube JupyterLab, VS Code (code-server), and RStudio images. Upstream or fully custom images support builds only if they include the same tooling and startup configuration.
+
+Push every build to a registry:
 
 ```bash
 docker login <registry>
 docker buildx build -t <registry>/<image>:<tag> --push .
 ```
 
-In prokube-maintained images, `docker build` may be wrapped to use `docker buildx build`, so existing scripts and Makefiles can work with the remote builder. Use `--push`; there is no local Docker image store in the Lab pod.
+Always use `--push`. The Lab pod has no local image store, so the built image is only usable from the registry.
+
+In prokube-maintained images, `docker build` may be wrapped to call `docker buildx build`, so existing scripts and Makefiles work with the remote builder.
 
 For multi-architecture images, pass the target platforms explicitly and push the manifest list:
 
@@ -188,7 +197,9 @@ docker buildx build \
   --push .
 ```
 
-Registry credentials are not shared between users by the builder. Log in from your Lab before pushing, and add pull credentials to the workspace when platform workloads need to pull a private image. Build layers may be cached by the remote builder to speed up later builds, but the cache is not a registry and should not be treated as persistent storage.
+The builder does not share registry credentials between users. Run `docker login` in your Lab before pushing. If platform workloads later need to pull the private image, add pull credentials to the workspace. See [Registry Credentials](../platform/kubernetes.md#registry-credentials).
+
+The remote builder may cache build layers to speed up later builds. The cache is not a registry, so do not rely on it to keep images.
 
 This setup is only for building and pushing images. It is not a container runtime: images cannot be started with `docker run` inside the Lab. Run workloads through Kubernetes resources, pipelines, model serving, or other platform runtimes instead.
 

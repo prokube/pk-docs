@@ -25,7 +25,7 @@ If you only need OpenAI, Anthropic, or Gemini, create a Model Configuration dire
 
 ## Deploy a Model
 
-Open **LLM Serving** in the sidebar. The page lists deployed models for the selected workspace, filterable by type (**All / Text Generation / Embedding / Reranking**), with columns for name, status, model ID, type, runtime, and age.
+Open **LLM Serving** in the sidebar. The page lists the models deployed in the selected workspace.
 
 Click **Deploy Model** and choose a preset, or select **Deploy Custom Model** to configure the deployment from scratch. Presets provide curated defaults and can be searched or filtered by GPU count, task type, and verification status. Both paths open the same form:
 
