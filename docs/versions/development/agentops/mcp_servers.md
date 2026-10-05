@@ -68,7 +68,7 @@ A catalog entry is still not an approval for your environment. The tier tells yo
 - **Community** entries are contributed and maintained by the community.
 - **prokube.ai Only** narrows the list to entries published or curated by prokube.ai where available.
 
-Before giving an MCP server credentials or access to internal systems, still review what it connects to, who maintains it, which tools it exposes, and whether it needs broad permissions. Prefer Official or internally maintained servers for production workflows.
+Before giving an MCP server credentials or access to internal systems, review what it connects to, who maintains it, which tools it exposes, and whether it needs broad permissions. Prefer Official or internally maintained servers for production workflows.
 
 ## Deploy a Custom Server
 
@@ -95,9 +95,7 @@ Prefer custom images that run as non-root and work with a read-only root filesys
 
 ## Use YAML for Advanced Configuration
 
-As with other Kubernetes-backed resources in prokube, you can use YAML when the form does not expose a setting you need.
-
-The deploy dialog can generate a ToolHive `MCPServer` manifest from the form fields. Use it to inspect the resource before deployment, adjust advanced fields, or submit a reviewed manifest directly through the UI.
+Use YAML when the form does not expose a setting you need. The deploy dialog can generate a ToolHive `MCPServer` manifest from the form fields. Inspect or adjust it, then submit it through the UI.
 
 The namespace is set by prokube to the selected workspace namespace. Custom YAML must still be a ToolHive `MCPServer` resource using a supported `toolhive.stacklok.dev` API version.
 
@@ -107,7 +105,14 @@ The **Deployed Servers** table shows each server's status and, when available, i
 
 ![MCP server overview with external and internal connection details](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/playwright-overview.png)
 
-Inside the workspace, one endpoint serves the tools of all deployed MCP servers and [Memory Stores](memory_stores.html). New servers join it automatically, and it accepts calls only from the same workspace. kagent agents use it without any setup: open **Agents** and select the MCP tools you need when creating or editing the agent. The tools appear under the managed `gateway-mcp` endpoint. Add an entry under **Tools** only to connect an MCP endpoint outside the workspace. Other workloads in the workspace can use the internal URL shown on the **Overview** tab.
+### From the Workspace
+
+One internal endpoint serves the tools of all deployed MCP servers and [Memory Stores](memory_stores.html) in the workspace. New servers join it automatically. It accepts calls only from the same workspace and needs no API key.
+
+- **kagent agents**: open **Agents** and select the MCP tools when creating or editing the agent. The tools appear under the managed `gateway-mcp` endpoint, with no further setup. Add an entry under **Tools** only to connect an MCP endpoint outside the workspace.
+- **Other workloads**: use the internal URL shown on the **Overview** tab.
+
+### From Outside the Workspace
 
 External clients use the server's external URL, `https://<your-prokube-domain>/svc/mcp/<workspace>/<server>`, with an [API key](../platform/api_keys.html) that has access to that server. The **Overview** tab shows a ready-to-copy client configuration:
 
@@ -127,7 +132,7 @@ External clients use the server's external URL, `https://<your-prokube-domain>/s
 
 If the key was created with the `x-api-key` format, send `x-api-key: <api-key>` instead of the `Authorization` header.
 
-OpenCode and other MCP-capable clients can use the endpoint URL shown in prokube. In OpenCode Labs, add it through the OpenCode MCP manager and configure the required headers or OAuth settings there. See [OpenCode: Add MCP Servers](../labs/opencode.html#add-mcp-servers).
+In OpenCode Labs, add the server's URL from the **Overview** tab through the OpenCode MCP manager and set any required headers or OAuth settings there. See [OpenCode: Add MCP Servers](../labs/opencode.html#add-mcp-servers).
 
 ## Browser Automation Servers
 
