@@ -67,10 +67,10 @@ Choose the authentication format expected by the client:
 
 Use the service page for the exact URL and request body. Examples:
 
-OpenAI-compatible model clients commonly use bearer authentication:
+OpenAI-compatible model clients commonly use bearer authentication. For a model deployed through [LLM Serving](../agentops/llm_serving.html), `<route-id>` is the deployment name; for an admin-granted [external model](../admin/external_models.html), it is the route ID chosen in the grant:
 
 ```bash
-curl "https://<your-prokube-domain>/svc/ai/<workspace>/v1/chat/completions" \
+curl "https://<your-prokube-domain>/svc/ai/<workspace>/models/<route-id>/v1/chat/completions" \
   -H "Authorization: Bearer <api-key>" \
   -H "Content-Type: application/json" \
   -d '{"model":"<model>","messages":[{"role":"user","content":"Hello"}]}'

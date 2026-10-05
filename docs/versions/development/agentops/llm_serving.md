@@ -92,7 +92,14 @@ From the model list or detail page, select **Edit** to change Model Type, Quanti
 
 ## External Access
 
-Endpoints shown on the model's detail/API tabs are the workspace-internal serving URL, useful for testing from inside the platform. For external clients (SDKs, CI jobs, applications outside the cluster), call the model through [Agent Gateway](../platform/agent_gateway.html) instead, using a URL of the form `/svc/ai/<workspace>/models/<route-id>/v1/...` and an API key scoped to the model. See [API Keys](../platform/api_keys.html). Models granted through [External Models](../admin/external_models.html) use the same URL pattern. They are not listed as individual services on the API Keys page, so they need a Bearer-format key with **All external AI models**, **All AI models**, or **Full workspace access**.
+The endpoints on the model's **Chat** and **API** tabs are external URLs served through [Agent Gateway](../platform/agent_gateway.html). External clients, such as SDKs, CI jobs, and applications outside the cluster, call them with an API key scoped to the model. See [API Keys](../platform/api_keys.html). The URL depends on the model type:
+
+| Model type | URL pattern |
+|---|---|
+| Text Generation, Embedding, Reranking | `/svc/ai/<workspace>/models/<deployment-name>/v1/...` |
+| Text to Speech, Speech to Text | `/svc/serving/<workspace>/<deployment-name>/openai/v1/audio/...` |
+
+Models granted through [External Models](../admin/external_models.html) use the `/svc/ai` pattern with the route ID chosen in the grant. They are not listed as individual services on the API Keys page, so they need a Bearer-format key with **All external AI models**, **All AI models**, or **Full workspace access**.
 
 To use a deployed model from a kagent agent instead of an external client, create an **Internal - OpenAI-compatible** Model Configuration and pick this model from the **LLM Serving model** dropdown. See [Agents](agents.html#_2-choose-or-create-a-model-configuration).
 
