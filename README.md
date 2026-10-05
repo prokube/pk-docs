@@ -50,8 +50,8 @@ This site uses `vitepress-versioning-plugin` for documentation versions.
 - `/docs/latest/` is an unlisted redirect-only alias to the latest released version, currently `/docs/1.9/`.
 - `/docs/` redirects to the latest released version, currently `/docs/1.9/`.
 - The sidebar is defined once in `docs/.vitepress/config.mts`; version-specific sidebar links are generated from that shared definition.
-- Keep screenshots and shared docs assets under `docs/_static/`; versioned section pages link back to that shared folder with `../../../_static/...`.
-- Do not copy `_static/` into `docs/versions/<version>/` unless an asset must be frozen for that specific version.
+- Store screenshots and image diagrams in the public `gs://prokube-docs-pictures/pk-docs/` bucket and reference them by absolute URL, so every version can share them. See `AGENTS.md` for the upload workflow.
+- Keep the logos and favicon under `docs/public/_static/`.
 
 Run `npm run build` after adding or changing a version.
 
