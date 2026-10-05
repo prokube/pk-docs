@@ -80,7 +80,8 @@ Common lifecycle operations:
 - **Stop**: stops the Lab pod and releases compute resources. Files on mounted persistent volumes remain.
 - **Start**: creates the Lab pod again from the configured image, resources, and volumes.
 - **Delete**: removes the Lab server object and pod. Mounted volumes are not necessarily deleted with it; delete unused volumes separately when you no longer need the data.
-- **Recreate**: needed to change the image, compute resources, storage, or advanced configuration of a Lab. Stop the old Lab, then create a new one with the desired settings. To keep your home directory, attach the old Lab's persistent volume to the new one.
+- **Edit**: changes the image, compute resources, volumes, configurations, or security options of an existing Lab. A running Lab restarts to apply the change, so save your work first: files outside mounted volumes are lost.
+- **Recreate**: for changes that Edit does not cover, such as the Lab name or type, create a new Lab. To keep your home directory, attach the old Lab's persistent volume to the new one.
 
 Avoid customizing a running Lab by hand for anything you need to reproduce. If a team needs a repeatable environment, build a [Custom Notebook](custom_notebooks.md) image instead.
 
@@ -98,7 +99,7 @@ Administrators create these options with Kubeflow PodDefaults or equivalent note
 
 Files in the Lab home directory are backed by the workspace volume and survive Lab restarts. In the default images this is the `jovyan` user's home directory, usually `/home/jovyan`. This is the right place for notebooks, source code, configuration files, and cloned repositories.
 
-Changes outside mounted volumes are temporary. Whenever the Lab pod is recreated, including when you stop and start the Lab, the following are lost:
+Changes outside mounted volumes are temporary. Whenever the Lab pod is recreated, including when you stop and start or edit the Lab, the following are lost:
 
 - Python packages installed into system locations
 - system packages installed inside the running container
@@ -221,6 +222,6 @@ Common cases:
 - **The Lab starts and then crashes**: use the [Logs browser](../platform/observability.md#logs-browser) to search the Lab pod logs by workspace and pod name.
 - **A private custom image cannot be pulled**: verify the image reference and registry credentials. See [Registry Credentials](custom_notebooks.md#registry-credentials).
 - **A volume cannot be attached**: another running pod may still be using a `ReadWriteOnce` volume on a different node, or the cluster may still have a stale volume attachment after a node restart. Stop other Labs using the volume and contact your administrator if the attachment does not clear. Do not delete `VolumeAttachment` resources yourself unless you administer the cluster and have verified the stale attachment.
-- **The Lab cannot be resized**: create a new Lab with the desired resources and reuse the relevant persistent volume. If the volume itself is too small, create or request a larger volume and copy the data.
+- **The Lab needs more CPU, memory, or GPU**: change the compute resources with **Edit**. If the volume itself is too small, create or request a larger volume and copy the data.
 - **A deleted Lab leaves data behind**: this is expected for persistent volumes. Delete unused volumes separately when you no longer need them.
 - **A Lab server object or pod appears stuck**: check events first. If a pod remains after deleting the Lab, ask an administrator or use `kubectl` only if you understand which pod belongs to the Lab.

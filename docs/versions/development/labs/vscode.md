@@ -120,7 +120,7 @@ Notebook kernel integration depends on the selected image and the VS Code extens
 
 Browser-based VS Code and RStudio Labs may not report idleness in the same way as JupyterLab. Do not rely on automatic idle shutdown unless your administrator has confirmed it for your environment.
 
-For start, stop, delete, recreate, and troubleshooting behavior, see [Managing Labs](index.md#managing-labs) and [Troubleshooting Labs](index.md#troubleshooting-labs).
+For start, stop, edit, delete, recreate, and troubleshooting behavior, see [Managing Labs](index.md#managing-labs) and [Troubleshooting Labs](index.md#troubleshooting-labs).
 
 ## Related Pages
 
