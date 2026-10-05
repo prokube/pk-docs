@@ -110,7 +110,7 @@ Common permission levels:
 
 Administrators can grant access to users or groups. Group-based permissions are the preferred pattern for team resources because they avoid granting access user by user.
 
-MLflow administrators can manage users, groups, service accounts, permissions, experiments, runs, registered models, model versions, and prompts through the MLflow OIDC permissions UI when the deployment exposes those features. Treat MLflow admin access as platform-level access: it can expose experiments and artifacts across teams.
+MLflow administrators manage users, groups, service accounts, and permissions in the MLflow OIDC permissions UI, where the deployment exposes it. They can also manage every experiment, run, registered model, and prompt. Treat MLflow admin access as platform-level access: it can expose experiments and artifacts across teams.
 
 After Keycloak group or role changes, users may need to sign out and sign in again before MLflow receives updated claims.
 

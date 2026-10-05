@@ -42,7 +42,7 @@ To delete a user, open the row action menu and choose **Delete**. Deleting a use
 
 ## Workspaces
 
-Open **User Management** > **Workspaces** to manage workspace namespaces. The table shows each workspace name, workspace type, member count, group access, security policy state, egress profile assignment, and available actions.
+Open **User Management** > **Workspaces** to manage workspace namespaces. The table lists every workspace, including its security policy state and egress profile assignment.
 
 ![Workspaces page](../../../_static/screenshots/admin/user-management/workspaces-page.png)
 

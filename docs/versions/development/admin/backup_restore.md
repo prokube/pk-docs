@@ -58,7 +58,15 @@ Replication is not backup. Replicated storage can survive a node or disk failure
 
 ## Host-Level Items
 
-For small self-managed deployments, also document and back up host-level configuration that is outside Kubernetes, such as SSH access policy, network configuration, firewall rules, DNS records, certificates, and cloud-provider credentials. Keep those backups in the same operational runbook as the platform restore procedure.
+For small self-managed deployments, also document and back up host-level configuration that is outside Kubernetes:
+
+- SSH access policy;
+- network configuration and firewall rules;
+- DNS records;
+- certificates;
+- cloud-provider credentials.
+
+Keep those backups in the same operational runbook as the platform restore procedure.
 
 ## Related Pages
 
