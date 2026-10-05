@@ -70,7 +70,7 @@ For a declarative agent, attach tools:
 - **MCP tools**: a searchable, filterable table of every tool discovered from MCP servers (Tools) available to the workspace. Check individual tools, or use **"Use all current and future tools from `<server>`"** per server to keep the agent in sync with a tool server automatically instead of a fixed snapshot.
 - **Agent tools**: let this agent call other agents in the same workspace as tools.
 
-MCP tools come from **Tools** on the same Agents page. Connect an MCP endpoint there first if the tool you need isn't listed yet. See [MCP Servers](mcp_servers.html) for details. If the agent uses [Agent Sandboxes](sandboxes.html)-backed skills, attach the Tool that points at `sandbox-mcp`.
+MCP tools come from **Tools** on the same Agents page. Connect an MCP endpoint there first if the tool you need isn't listed yet. See [MCP Servers](mcp_servers.html) for details.
 
 ### 4. Test the Agent
 
@@ -91,7 +91,6 @@ For programmatic access instead of the chat UI, the agent's Overview tab lists i
 - [Agent Gateway](agent_gateway.html)
 - [LLM Serving](llm_serving.html)
 - [MCP Servers](mcp_servers.html)
-- [Agent Sandboxes](sandboxes.html)
 - [Memory Stores](memory_stores.html)
 - [External Models](../admin/external_models.html)
 - [API Keys](../platform/api_keys.html)

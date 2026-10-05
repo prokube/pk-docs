@@ -125,7 +125,7 @@ while true; do
 done
 ```
 
-For stable external access, use the platform feature designed for that workload, such as model-serving endpoints, API gateway routes, Knative services, or agent/sandbox ingress.
+For stable external access, use the platform feature designed for that workload, such as model-serving endpoints, API gateway routes, Knative services, or agent endpoints.
 
 ## Check Your Permissions
 

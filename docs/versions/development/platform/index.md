@@ -13,7 +13,7 @@ Foundation covers the shared platform concepts used across Labs, MLOps, and Agen
 | [Component Versions](./component_versions.html) | Finding the deployed prokube and upstream component versions for compatibility checks. |
 | [Observability](./observability.html) | Monitoring, logging, tracing, and dashboards. |
 | [System Status](./system_status.html) | Workspace pod quota, completed pipeline pod cleanup, and admin-only component health checks. |
-| [API Keys](./api_keys.html) | Scoped programmatic access for SDKs, automation, serving clients, sandboxes, MCP, and external integrations. |
+| [API Keys](./api_keys.html) | Scoped programmatic access for SDKs, automation, serving clients, MCP, and external integrations. |
 
 ## Shared Model
 

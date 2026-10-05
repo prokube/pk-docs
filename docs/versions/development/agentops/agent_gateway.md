@@ -22,7 +22,7 @@ Agent Gateway provides common routing between the main parts of an agent workloa
 - **Agent to model:** a kagent Agent uses its selected Model Configuration to reach a self-hosted or administrator-managed model.
 - **Agent to tool:** workspace MCP endpoints are federated behind Agent Gateway and exposed to kagent through a `RemoteMCPServer`.
 - **Agent to agent:** kagent agents are reachable over Agent2Agent (A2A) routes.
-- **Application to service:** internal applications and authenticated external clients can call models, MCP servers, agents, and sandbox APIs through stable workspace routes.
+- **Application to service:** internal applications and authenticated external clients can call models, MCP servers, and agents through stable workspace routes.
 
 prokube creates and maintains the required gateway backends, routes, workspace isolation policies, and kagent references when supported resources are created through pkui.
 
@@ -59,7 +59,7 @@ Workloads in the same workspace can use the internal route with their workload i
 
 ## External Clients
 
-Agent Gateway also exposes workspace services to SDKs, automation, CI jobs, and agents outside the platform. Public routes are grouped by service type, including `/ai`, `/mcp`, `/a2a`, and `/sandbox`.
+Agent Gateway also exposes workspace services to SDKs, automation, CI jobs, and agents outside the platform. Public routes are grouped by service type: `/ai`, `/mcp`, and `/a2a`.
 
 External access is configured through service-scoped API keys, not on this page. See [API Keys](../platform/api_keys.html) for creating, rotating, and restricting keys and [Agent Gateway](../platform/agent_gateway.html) for the public routing model.
 

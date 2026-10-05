@@ -13,7 +13,7 @@ Alongside classic preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md
 - You want a browser IDE with workspace storage and platform credentials already available.
 - You want coding agents to run in a controlled workspace that keeps working when your laptop is closed, disconnected, or not the right place to execute agent-driven code changes.
 - You need to run experiments against the same cluster resources used by production workloads, including CPUs, GPUs, and persistent volumes.
-- You want to develop code and then hand it off to pipelines, model serving, agents, MCP servers, or sandboxes.
+- You want to develop code and then hand it off to pipelines, model serving, agents, or MCP servers.
 - You want to test platform integrations from inside the workspace before packaging them for repeatable or production use.
 
 ## Available Environments
@@ -190,7 +190,7 @@ docker buildx build \
 
 Registry credentials are not shared between users by the builder. Log in from your Lab before pushing, and add pull credentials to the workspace when platform workloads need to pull a private image. Build layers may be cached by the remote builder to speed up later builds, but the cache is not a registry and should not be treated as persistent storage.
 
-This setup is only for building and pushing images. It is not a container runtime: images cannot be started with `docker run` inside the Lab. Run workloads through Kubernetes resources, pipelines, model serving, sandboxes, or other platform runtimes instead.
+This setup is only for building and pushing images. It is not a container runtime: images cannot be started with `docker run` inside the Lab. Run workloads through Kubernetes resources, pipelines, model serving, or other platform runtimes instead.
 
 ## Troubleshooting Labs
 

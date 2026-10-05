@@ -20,7 +20,6 @@ The platform provides dedicated solutions for common workload types. Prefer thos
 |---|---|
 | ML model inference | [KServe InferenceServices](model_serving.html) – model runtimes, storage, inference protocols, automatic `/serving/...` URL |
 | LLM serving (vLLM, TGI) | [AgentOps documentation](../agentops/index.md) – OpenAI-compatible endpoints, GPU scaling, dedicated runtimes |
-| Agent execution | [Agent Sandboxes](../agentops/sandboxes.html) – isolated environments with workspace boundaries |
 | MCP servers | [MCP Servers](../agentops/mcp_servers.html) – tool-provisioning protocol with lifecycle management |
 
 Knative services do not get automatic external exposure through the `/serving/...` path – they need an additional VirtualService to be reachable from outside the cluster.

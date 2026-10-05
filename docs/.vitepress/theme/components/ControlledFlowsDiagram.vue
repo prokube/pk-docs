@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const modelItems = ['Locally hosted LLMs', 'External provider LLMs']
 const clientItems = ['Internal AI apps', 'Upstream agents', 'External client apps']
-const runtimeItems = ['Agent identity', 'Sessions and memory', 'Secure sandboxes']
+const runtimeItems = ['Agent identity', 'Sessions and memory']
 const capabilityItems = ['MCP tools', 'Other agents', 'Skills']
 const observabilityItems = ['Logs', 'Metrics', 'Traces', 'Evals', 'Audit']
 </script>
@@ -305,7 +305,7 @@ const observabilityItems = ['Logs', 'Metrics', 'Traces', 'Evals', 'Audit']
 .controlled-flows__runtime-grid {
   display: grid;
   gap: 0.5rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .controlled-flows__runtime-item {

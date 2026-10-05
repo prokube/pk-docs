@@ -68,8 +68,7 @@ Common workflows include:
 - developing model servers or inference helpers before moving them to model serving;
 - building container images for pipelines, model serving, MCP servers, or agent runtimes when the selected image includes [remote BuildKit support](index.md#building-container-images);
 - inspecting workspace resources with `kubectl`;
-- working with S3-backed file storage through configured [CLIs or SDKs](index.md#file-storage-from-labs);
-- developing and testing code that later runs in [Agent Sandboxes](../agentops/sandboxes.md).
+- working with S3-backed file storage through configured [CLIs or SDKs](index.md#file-storage-from-labs).
 
 ## Attach Local VS Code to a Running Lab
 
@@ -123,4 +122,3 @@ For start, stop, delete, recreate, and troubleshooting behavior, see [Managing L
 - [JupyterLab](jupyterlab.md)
 - [OpenCode](opencode.md)
 - [Custom Notebooks](custom_notebooks.md)
-- [Agent Sandboxes](../agentops/sandboxes.md)
