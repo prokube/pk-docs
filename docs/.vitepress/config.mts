@@ -1,7 +1,7 @@
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import defineVersionedConfig from 'vitepress-versioning-plugin'
-import { developmentVersion, latestReleasedVersion, visibleVersions } from './versions'
+import { developmentVersion, latestReleasedVersion, releasedVersions, visibleVersions } from './versions'
 
 const base = process.env.VITEPRESS_BASE ?? '/docs/'
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -36,7 +36,7 @@ const baseSidebar: SidebarItem[] = [
     items: [
       { text: 'Overview', link: '/agentops/' },
       { text: 'Agent Gateway', link: '/agentops/agent_gateway.html' },
-      { text: 'Agent Sandboxes', link: '/agentops/sandboxes.html' },
+      { text: 'Agent Sandboxes', link: '/agentops/sandboxes.html', versions: [...releasedVersions] },
       { text: 'MCP Servers', link: '/agentops/mcp_servers.html' },
       { text: 'Memory Stores', link: '/agentops/memory_stores.html' },
       { text: 'Agents', link: '/agentops/agents.html' },
