@@ -21,6 +21,8 @@ KServe workloads in prokube commonly use one of these modes:
 
 Do not let KPA and KEDA control the same workload. If you create a KEDA `ScaledObject` manually, run the InferenceService in RawDeployment mode so KServe creates a normal Kubernetes `Deployment` instead of a Knative Revision.
 
+For models deployed through [LLM Serving](../agentops/llm_serving.html), these choices are part of the deploy and edit forms: **Serverless (Knative)** deployments scale with KPA, and **Raw Deployment** offers **HPA** or **KEDA** as the autoscaler mode. The manual steps on this page are for InferenceServices created outside LLM Serving, or for settings the forms do not expose.
+
 ## KPA Walkthrough
 
 KPA is the default autoscaler for many KServe deployments. It works well when concurrent request count or QPS is a useful proxy for load.
@@ -123,6 +125,17 @@ For vLLM workloads, useful scaling signals include:
 - time to first token, primarily for monitoring and alerting.
 
 Avoid using time to first token as the first autoscaling trigger without testing. It can drop sharply after a replica is added, which may cause scale-up and scale-down oscillation. Token throughput is usually a safer starting point because it remains high while sustained demand remains high.
+
+### Configure KEDA in LLM Serving
+
+For a model deployed through LLM Serving, open **Advanced Configuration** in the deploy form. The deployment mode is fixed after creation, but you can change the autoscaler settings later with **Edit**.
+
+1. Set **Deployment Mode** to **Raw Deployment**.
+2. Set **Autoscaler Mode** to **KEDA**.
+3. Check the **Prometheus Metric Query**. The form pre-fills a prompt plus generation token-throughput query for the model.
+4. Set the **Scale Threshold**. The default of `100000` is intentionally high so the model does not scale up before calibration. Deploy the model, measure per-replica throughput under load, then lower the threshold as described in [Load Test and Calibrate](#_4-load-test-and-calibrate).
+
+Use the manual pattern below when the InferenceService is not managed by LLM Serving, or when you need settings the form does not expose, such as multiple triggers or custom scale-down behavior.
 
 ### Prerequisites
 

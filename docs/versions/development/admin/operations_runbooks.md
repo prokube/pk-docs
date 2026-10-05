@@ -76,15 +76,16 @@ Typical workflow:
 
 ### Large Uploads and 413 Errors
 
-Browser uploads can fail with `413 Request Entity Too Large` when an ingress or gateway request-body limit is lower than the object size.
+Browser uploads fail with `413 Request Entity Too Large` when a component on the request path enforces a body-size limit that is lower than the object size.
 
-Prefer S3 clients such as `rclone` or SDKs for large files. If browser uploads must support larger files, adjust the request-body limit in the ingress or gateway used by the deployment. For ingress-nginx deployments, the relevant annotation is commonly:
+The prokube front door is Envoy Gateway (`main-gateway` in the `envoy-gateway-system` namespace). The base platform configuration sets no request-buffer or body-size policy on it. If uploads still fail with `413`, find the component that returns it: check the Envoy proxy logs first, then the backend application.
 
-```yaml
-nginx.ingress.kubernetes.io/proxy-body-size: "500m"
+```bash
+kubectl logs -n envoy-gateway-system \
+  -l gateway.envoyproxy.io/owning-gateway-name=main-gateway --tail=200
 ```
 
-Use the mechanism that matches the actual gateway in your cluster; not every prokube deployment uses ingress-nginx.
+Prefer S3 clients such as `rclone` or SDKs for large files; they upload large objects in parts. If a deployment needs an explicit request-buffer limit, configure it on the route with an Envoy Gateway [`BackendTrafficPolicy`](https://gateway.envoyproxy.io/docs/api/extension_types/#backendtrafficpolicy) through the deployment's GitOps repository.
 
 ### MinIO TLS Certificates
 
@@ -235,27 +236,18 @@ To grant prokube platform administration rights, assign the user to the `pk-admi
 
 ### Login 502 from Large Response Headers
 
-A `502` during login can happen before the request reaches the application if the ingress cannot buffer large response headers, such as large cookies or identity-provider tokens. In ingress-nginx logs this commonly appears as `upstream sent too big header`.
+A `502` during login can happen before the request reaches the application when a proxy on the request path rejects large headers, such as large cookies or identity-provider tokens.
 
-Check the ingress controller logs first:
+Check the Envoy Gateway proxy logs first:
 
 ```bash
-kubectl logs -n ingress-nginx deploy/ingress-nginx-controller
+kubectl logs -n envoy-gateway-system \
+  -l gateway.envoyproxy.io/owning-gateway-name=main-gateway --tail=200
 ```
 
-If the deployment uses ingress-nginx, increase the proxy buffer size on the affected ingress:
+The base platform configuration does not override Envoy Gateway's connection buffer limits. If a deployment needs larger buffers, set them on `main-gateway` with an Envoy Gateway [`ClientTrafficPolicy`](https://gateway.envoyproxy.io/docs/api/extension_types/#clienttrafficpolicy) in the deployment configuration rather than as a live patch. If the logs show the request passing Envoy, continue with the Istio ingress gateway and authentication service logs.
 
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: main
-  namespace: istio-system
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-buffer-size: "32k"
-```
-
-Use the mechanism that matches the actual gateway in your cluster. Not every prokube deployment uses ingress-nginx, and gateway-specific buffer settings belong in the deployment configuration rather than one-off live patches when GitOps manages the cluster.
+For older deployments that still use ingress-nginx, see the [legacy documentation](https://docs.prokube.ai/latest/).
 
 ## MicroK8s Certificate Maintenance
 
@@ -362,7 +354,7 @@ spec:
       <storage-class>.storageclass.storage.k8s.io/requests.storage: 10Gi
 ```
 
-To change defaults for future workspaces, update the profile patch used by the `pk-user-management-operator` in the deployment repository and roll it out through the normal GitOps or release process. In current platform configuration, that patch is maintained under the user-management operator profile patches, but deployments may carry environment-specific overlays. Do not patch generated resources by hand when GitOps or an operator will overwrite them.
+The default comes from the `profiles-patches` ConfigMap of the `pk-user-management-operator`. The ConfigMap is generated from the operator's `patch_profiles.j2` template in the deployment repository, and the operator applies it to workspace `Profile` resources. To change the default, edit that template, or an environment overlay that overrides it, and roll the change out through the normal GitOps or release process. Do not patch generated resources by hand when GitOps or an operator will overwrite them.
 
 Quota changes are capacity decisions. Before increasing limits, check node capacity, autoscaler behavior, storage class capacity, GPU availability, and expected concurrency for the workload class.
 
