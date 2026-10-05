@@ -6,7 +6,7 @@ You can work in a Lab without setting up a local development environment first. 
 
 In addition to preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md), and [RStudio](rstudio.md) images, Labs support AI-assisted coding: GitHub Copilot in VS Code, and [OpenCode](opencode.md) as a dedicated coding agent.
 
-![Labs overview](../../../_static/screenshots/labs/labs-overview.png)
+![Labs overview](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/labs/labs-overview.png)
 
 ## When to Use Labs
 
@@ -42,7 +42,7 @@ Labs run in the currently selected workspace. Most users have a personal workspa
 
 The active workspace determines which namespace, storage, credentials, and access rules the Lab uses. When you have access to multiple workspaces, select the workspace before launching a Lab.
 
-![Workspace selection](../../../_static/screenshots/labs/labs-workspace-selection.png)
+![Workspace selection](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/labs/labs-workspace-selection.png)
 
 ::: warning Secrets are workspace-visible
 Each workspace has its own Kubernetes namespace. Edit and view contributors can read Kubernetes `Secret`s in that namespace, including secrets used by Labs, PodDefaults, pipelines, model-serving workloads, or manually created `kubectl create secret ...` resources.

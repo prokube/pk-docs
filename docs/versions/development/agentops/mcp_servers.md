@@ -25,14 +25,14 @@ An MCP server is deployed into the selected workspace namespace as a [ToolHive `
 
 Every deployed server can be reached in two ways. Agents and other workloads in the same workspace use one shared workspace endpoint without an API key. Clients outside the workspace call each server through Agent Gateway with an API key:
 
-![Diagram: agents and other workloads in the workspace reach all MCP servers and memory stores through one workspace MCP endpoint without an API key. External MCP clients reach each server through Agent Gateway at /svc/mcp/workspace/server with an API key that has access to that server.](../../../_static/diagrams/agentops/mcp-servers-flow.svg)
+![Diagram: agents and other workloads in the workspace reach all MCP servers and memory stores through one workspace MCP endpoint without an API key. External MCP clients reach each server through Agent Gateway at /svc/mcp/workspace/server with an API key that has access to that server.](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/diagrams/agentops/mcp-servers-flow.svg)
 
 The MCP page contains two main sections:
 
 - **Deployed Servers**: MCP servers currently running in the selected workspace.
 - **Server Catalog**: ready-to-deploy MCP servers, each with its image and required configuration already described.
 
-![MCP Servers page with deployed servers and server catalog](../../../_static/screenshots/agentops/mcp/landing-page-with-server-list-and-catalogue.png)
+![MCP Servers page with deployed servers and server catalog](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/landing-page-with-server-list-and-catalogue.png)
 
 ## Deploy from the Catalog
 
@@ -54,7 +54,7 @@ Click a catalog card to deploy it. The deploy dialog shows:
 - **Resource Limits**: optional CPU and memory requests and limits.
 - **Technical Details**: image, transport, and provided tools.
 
-![Deploy dialog for a catalog MCP server](../../../_static/screenshots/agentops/mcp/playwright-launch-dialog.png)
+![Deploy dialog for a catalog MCP server](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/playwright-launch-dialog.png)
 
 Environment variables can be entered directly or read from a Kubernetes Secret in the workspace. Use Secrets for tokens, passwords, API keys, and other sensitive values. See [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets).
 
@@ -105,7 +105,7 @@ The namespace is set by prokube to the selected workspace namespace. Custom YAML
 
 The **Deployed Servers** table shows each server's status and, when available, its URL. Open a server to see its connection details on the **Overview** tab.
 
-![MCP server overview with external and internal connection details](../../../_static/screenshots/agentops/mcp/playwright-overview.png)
+![MCP server overview with external and internal connection details](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/playwright-overview.png)
 
 Inside the workspace, one endpoint serves the tools of all deployed MCP servers and [Memory Stores](memory_stores.html). New servers join it automatically, and it accepts calls only from the same workspace. kagent agents use it without any setup: open **Agents** and select the MCP tools you need when creating or editing the agent. The tools appear under the managed `gateway-mcp` endpoint. Add an entry under **Tools** only to connect an MCP endpoint outside the workspace. Other workloads in the workspace can use the internal URL shown on the **Overview** tab.
 
@@ -140,9 +140,9 @@ For these servers, the details page can show:
 - **Logs** and **Events** for debugging startup and runtime issues;
 - **Metrics** for runtime monitoring.
 
-![Live browser view for a browser automation MCP server](../../../_static/screenshots/agentops/mcp/playwright-live-browser-viewer.png)
+![Live browser view for a browser automation MCP server](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/playwright-live-browser-viewer.png)
 
-![MCP server metrics for a browser automation server](../../../_static/screenshots/agentops/mcp/playwright-details-metrics.png)
+![MCP server metrics for a browser automation server](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/playwright-details-metrics.png)
 
 Live view is only available for servers that declare live-view support in the catalog or custom configuration.
 
@@ -168,7 +168,7 @@ Live view is only available for servers that declare live-view support in the ca
 | Client cannot connect | Confirm the server is `Running`, copy the current URL, and verify the API key is scoped to the MCP server. |
 | Tool calls fail after connecting | Check server logs, required upstream credentials, workspace network policy, and whether the tool depends on an external service. |
 
-![MCP server logs for a browser automation server](../../../_static/screenshots/agentops/mcp/playwright-details-logs.png)
+![MCP server logs for a browser automation server](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/playwright-details-logs.png)
 
 ## Related Pages
 
