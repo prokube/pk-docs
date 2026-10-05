@@ -16,7 +16,14 @@ Recommended baseline for a multi-user deployment:
 | CPU per node | 8 cores | 24 cores |
 | Storage per node | 100 GB | 1 TB |
 
-These values are starting points. Actual sizing depends on enabled product tracks, number of users, notebook and pipeline concurrency, model size, GPU use, retention periods, and whether platform databases and file storage run in the same cluster.
+These values are starting points. Actual sizing depends on:
+
+- enabled product tracks;
+- number of users;
+- notebook and pipeline concurrency;
+- model size and GPU use;
+- retention periods;
+- whether platform databases and file storage run in the same cluster.
 
 Before installation, confirm:
 

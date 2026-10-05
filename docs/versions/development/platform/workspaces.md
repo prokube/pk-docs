@@ -21,7 +21,7 @@ Each workspace has its own Kubernetes namespace. That namespace is one part of t
 
 ### Personal Workspaces
 
-Each user gets a personal workspace for their own experiments, development environments, and private platform resources.
+Each user gets a personal workspace for individual work that is not shared with others.
 
 Personal workspaces are tied to user lifecycle. Administrators manage them through user and workspace administration; attached personal workspaces are not deleted as regular project workspaces from the Workspaces page.
 
