@@ -31,7 +31,7 @@ Agent Gateway exposes one public path family per service type. Each path is work
 | `/svc/mcp` | `/svc/mcp/<workspace>/<server>` | MCP servers and MCP-compatible memory stores |
 | `/svc/a2a` | `/svc/a2a/<workspace>/<agent>` | kagent agent-to-agent access |
 
-A key only authorizes the exact routes it was scoped to at creation. A request to a path outside the key's scope is rejected even if the key is otherwise valid. See [API Keys](api_keys.html#create-a-key) for how scopes are selected.
+A key authorizes only the services in its current scopes: individual services, or aggregate scopes such as **All MCP servers** that also cover matching services created later. A request to any other path is rejected even if the key is otherwise valid. See [API Keys](api_keys.html#create-a-key) for how scopes are selected.
 
 ## Public vs. Internal Traffic
 
