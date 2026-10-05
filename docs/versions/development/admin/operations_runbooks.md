@@ -236,16 +236,18 @@ To grant prokube platform administration rights, assign the user to the `pk-admi
 
 ### Login 502 from Large Response Headers
 
-A `502` during login can happen before the request reaches the application when a proxy on the request path rejects large headers, such as large cookies or identity-provider tokens.
+A `502` during login can happen before the request reaches the application when a proxy on the request path rejects large headers, such as large cookies or identity-provider tokens. Login requests pass through Envoy Gateway (`main-gateway`), then the Istio ingress gateway, then the authentication service.
 
-Check the Envoy Gateway proxy logs first:
+Find the hop that returns the `502`. Start with the Envoy Gateway proxy logs:
 
 ```bash
 kubectl logs -n envoy-gateway-system \
   -l gateway.envoyproxy.io/owning-gateway-name=main-gateway --tail=200
 ```
 
-The base platform configuration does not override Envoy Gateway's connection buffer limits. If a deployment needs larger buffers, set them on `main-gateway` with an Envoy Gateway [`ClientTrafficPolicy`](https://gateway.envoyproxy.io/docs/api/extension_types/#clienttrafficpolicy) in the deployment configuration rather than as a live patch. If the logs show the request passing Envoy, continue with the Istio ingress gateway and authentication service logs.
+If the request passed Envoy, continue with the Istio ingress gateway and authentication service logs.
+
+The base platform configuration does not change header-size limits on any of these proxies. Raise a limit only on the hop that rejects the request, and do it in the deployment configuration rather than as a live patch. Envoy Gateway connection buffer limits (`ClientTrafficPolicy` `connection.bufferLimit`) are a separate setting and do not raise header-size limits.
 
 For older deployments that still use ingress-nginx, see the [legacy documentation](https://docs.prokube.ai/latest/).
 
