@@ -62,7 +62,9 @@ The grant creates a Model Configuration in the target workspace. It appears auto
 
 The central provider credential is not exposed to the workspace. Revoke the grant from **Workspace Access** when the workspace should no longer use the model.
 
-An admin-granted model is consumed by kagent agents through its generated Model Configuration. It is not selectable as a workload when creating a user API key on the **API Keys** page.
+Agents in the workspace use the granted model through its generated Model Configuration. External clients can call it through Agent Gateway at `/svc/ai/<workspace>/models/<route-id>/v1/...`, using the route ID chosen in the grant.
+
+Granted models are not listed as individual services on the **API Keys** page. An external client needs a Bearer-format key with **All external AI models**, **All AI models**, or **Full workspace access**, which covers every granted model in the workspace. A key cannot be limited to one granted model. See [API Keys](../platform/api_keys.html#create-a-key).
 
 ## Usage and Cost
 

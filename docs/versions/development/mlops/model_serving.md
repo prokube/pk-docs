@@ -23,7 +23,7 @@ Use KServe InferenceServices when a trained model should be available as an API 
 
 Use [Labs](../labs/index.md) or [Pipelines](pipelines.md) for training and exporting models. Move to Model Serving when the model should become a reachable endpoint.
 
-This page covers classic KServe model serving: deploying sklearn, PyTorch, MLflow, and similar models as inference endpoints. For LLM-focused serving (vLLM, HuggingFace, TGI runtimes with OpenAI-compatible APIs), see [LLM Serving](../agentops/llm_serving.html) – large language models follow a different operational pattern and are documented separately there.
+This page covers classic KServe model serving: deploying sklearn, PyTorch, MLflow, and similar models as inference endpoints. For LLM-focused serving (vLLM and HuggingFace runtimes with OpenAI-compatible APIs), see [LLM Serving](../agentops/llm_serving.html) – large language models follow a different operational pattern and are documented separately there.
 
 ## Get Started
 
@@ -222,11 +222,11 @@ The URI format:
 - `mlflow://models/<model-name>/<stage>` – stage alias (`staging`, `production`, `latest`)
 - `mlflow://runs/<run-id>/<artifact-path>` – run artifact
 
-A custom [`mlflow-storage-initializer`](https://github.com/prokube/prokube-images/tree/main/mlflow-storage-initializer) init container resolves these URIs by fetching the model artifact through the MLflow API using namespace-scoped credentials (`MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME`, `MLFLOW_TRACKING_PASSWORD`). The wizard's **Import from MLflow** button handles the credential setup automatically.
+A custom [`mlflow-storage-initializer`](https://github.com/prokube/prokube-images/tree/main/mlflow-storage-initializer) init container resolves these URIs by fetching the model artifact through the MLflow API with the credentials from the workspace's `mlflow-credentials` secret. **Import from MLflow** checks that this secret exists but does not create it.
 
 ## External Access
 
-To call a model endpoint from outside the cluster, you need a workspace-scoped API key. Create one on the **API Keys** page under AI Gateway — keys can be scoped to a specific workspace or to individual services. See [API Keys](../platform/api_keys.md) for details. This external path is served by [Agent Gateway](../platform/agent_gateway.html), the same routing layer used across MLOps and AgentOps.
+To call a model endpoint from outside the cluster, you need an API key. Create one on the **API Keys** page, under **Serving** in the sidebar, and scope it to the model or to all serving models in the workspace. See [API Keys](../platform/api_keys.md) for details. This external path is served by [Agent Gateway](../platform/agent_gateway.html), the same routing layer used across MLOps and AgentOps.
 
 Include the key in requests:
 
@@ -256,7 +256,7 @@ kubectl get pod <your-pod-name> -n <your-namespace> \
 
 Alternatively, ask your administrator for the current KServe version.
 
-To find library versions pinned in a runtime image, browse the KServe repository at the matching tag under `python/<runtime>/pyproject.toml`. See the upstream [version matching guide](https://kserve.github.io/website/) for details.
+To find library versions pinned in a runtime image, browse the [KServe repository](https://github.com/kserve/kserve) at the matching tag under `python/<runtime>/pyproject.toml`.
 
 Version matching is especially important for models serialized with `pickle`, `joblib`, or framework-native formats that load Python objects. A model trained with one scikit-learn, PyTorch, XGBoost, or Python version can fail during serving even when the artifact path and credentials are correct.
 
@@ -283,7 +283,7 @@ Common causes:
 - **Model not Ready** – check the Conditions tab for the failure reason. Common issues: invalid storage URI, missing credentials, insufficient resources.
 - **ModuleNotFoundError** – library version mismatch between training and serving runtime. See [Version Matching](#version-matching).
 - **Image pull errors** – verify the container image reference and registry credentials for custom predictors.
-- **401 Unauthorized** – missing or invalid API key. Create an API key from the user menu under **API Keys**.
+- **401 Unauthorized** – missing or invalid API key. Create an API key on the **API Keys** page, under **Serving** in the sidebar.
 - **Pods are running but the InferenceService is not ready** – check KServe conditions first. If the model and transformer pods look healthy but readiness does not progress, an administrator may need to inspect Knative Serving controller logs and route status.
 - **Model load timeout** – large models may need a longer Knative progress deadline or an administrator-configured local model cache. In YAML, set `serving.knative.dev/progress-deadline` under `spec.predictor.annotations` when supported by your cluster.
 - **Service IP range exhausted** – errors such as `failed to allocate a serviceIP: range is full` are cluster-level capacity issues. Ask an administrator to inspect stale Services, Knative revision garbage collection, and service CIDR capacity.
