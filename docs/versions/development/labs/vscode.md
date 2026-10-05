@@ -54,7 +54,13 @@ git clone <repository-url>
 kubectl get pods
 ```
 
-The exact tools available depend on the selected image. prokube-maintained images commonly include platform-oriented tooling such as `kubectl`, Git, shell utilities, Python tooling, SDKs, S3-compatible file-storage helpers, and Docker/Buildx support where applicable.
+The exact tools available depend on the selected image. prokube-maintained images commonly include:
+
+- `kubectl` and Git;
+- `rclone` with a preconfigured `minio` remote, and Python clients such as `s3fs`;
+- `uv`, the Kubeflow Pipelines SDK, and the MLflow client;
+- shell tools such as `tmux`, `ripgrep`, `fzf`, and `jq`;
+- the Docker CLI with Buildx for remote image builds.
 
 VS Code Labs use the same persistence and package-installation model as other Labs. See [Using Labs](index.md#persistence-and-package-installation) for the shared storage rules and [Custom Notebooks](custom_notebooks.md) for repeatable image-based environments.
 

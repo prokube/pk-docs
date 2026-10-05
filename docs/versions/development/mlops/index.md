@@ -1,6 +1,6 @@
 # MLOps
 
-MLOps in prokube covers the operational path from interactive model development to repeatable training, experiment tracking, model registry workflows, and serving endpoints.
+MLOps in prokube covers the path from interactive model development to a model served in production.
 
 Use [Labs](../labs/index.md) for interactive work, then move repeatable or shared workloads into the MLOps services below.
 
@@ -25,9 +25,7 @@ Use [Labs](../labs/index.md) for interactive work, then move repeatable or share
 
 ## Foundation
 
-MLOps workloads run on the shared prokube foundation: workspaces, Kubernetes namespaces, storage, identity, RBAC, and observability.
-
-Start with these cross-cutting pages when you need platform behavior rather than tool-specific usage:
+MLOps workloads run on the shared prokube [Foundation](../platform/index.md). Start with these cross-cutting pages when you need platform behavior rather than tool-specific usage:
 
 - [Workspaces](../platform/workspaces.md)
 - [Kubernetes Resources](../platform/kubernetes.md)

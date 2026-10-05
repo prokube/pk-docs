@@ -225,7 +225,7 @@ The R example uses `use_https = FALSE` for the preconfigured internal MinIO endp
 
 ### When to Use the MinIO UI?
 
-The prokube File Storage browser covers normal file browsing, upload, download, organization, and path-copying workflows.
+The prokube File Storage browser covers the everyday file operations listed under [File Storage Browser](#file-storage-browser).
 
 Use the MinIO UI only when you need account-level or storage-administration functions that are not exposed in the prokube browser:
 

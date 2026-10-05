@@ -4,7 +4,7 @@ OpenCode Labs run [OpenCode](https://github.com/anomalyco/opencode) inside a pro
 
 Because sessions run in the workspace, you can leave tasks running overnight, switch between multiple projects and sessions, and review changes before they reach Git or your local checkout.
 
-prokube uses the open-source [pk-opencode-webui project](https://github.com/prokube/pk-opencode-webui) to run OpenCode in Kubeflow Notebooks. prokube.ai open-sourced this prefix-aware Web UI and Notebook integration so OpenCode can be exposed correctly behind workspace URL prefixes such as Kubeflow Notebook routes. The integration adds the notebook image, URL-prefix handling, project picker, Git/SSH helpers, MCP management UI, Lab-specific defaults, and workspace integration needed for this deployment model.
+prokube uses the open-source [pk-opencode-webui project](https://github.com/prokube/pk-opencode-webui) to run OpenCode in Kubeflow Notebooks. prokube.ai open-sourced this web UI and notebook integration so that OpenCode works behind the workspace URL prefixes used by Kubeflow Notebook routes. The project also provides the OpenCode notebook image with Lab-specific defaults, and the UI features described on this page, such as the project picker, Git and SSH helpers, and the MCP manager.
 
 ::: info OpenCode documentation
 For OpenCode features that are not specific to prokube, use the upstream [OpenCode documentation](https://opencode.ai/docs/). For the prokube wrapper and notebook integration, see [`pk-opencode-webui`](https://github.com/prokube/pk-opencode-webui).
@@ -12,7 +12,7 @@ For OpenCode features that are not specific to prokube, use the upstream [OpenCo
 
 ## When to Use OpenCode Labs
 
-Use OpenCode Labs for fully agentic engineering workflows where code is mostly written, changed, and reviewed by AI agents. OpenCode is a good fit when agents should work iteratively: inspect the repository, propose changes, run commands or tests, react to feedback, and continue across longer sessions inside the workspace rather than on your laptop.
+Use OpenCode Labs for agentic engineering, where AI agents write, change, and review most of the code. OpenCode fits work that takes many iterations: the agent inspects the repository, proposes changes, runs commands or tests, and reacts to your feedback. Sessions continue in the workspace rather than on your laptop, so longer tasks keep running.
 
 Common uses include:
 
@@ -70,7 +70,12 @@ In OpenCode, a project is the directory OpenCode works in. In practice this is u
 
 A session is a single agent conversation attached to a project. You can keep multiple sessions for the same project, for example one for debugging, one for a refactor, and one for documentation. You can also switch between projects without restarting the Lab.
 
-Within a session, you can switch model/provider settings, attach files, fork from earlier messages, and let OpenCode request permissions before file edits or shell commands.
+Within a session, you can:
+
+- switch the model or provider;
+- attach files;
+- fork from earlier messages;
+- have OpenCode ask for permission before file edits or shell commands.
 
 The UI also exposes features from the prokube wrapper around the OpenCode backend:
 
@@ -127,11 +132,11 @@ The terminal runs inside the same Lab pod as OpenCode. It is useful for explicit
 
 ## Add MCP Servers
 
-OpenCode supports [Model Context Protocol](https://modelcontextprotocol.io/) servers. The prokube UI provides a graphical MCP manager for adding remote servers, connecting and disconnecting them, starting OAuth flows where supported, and seeing server status.
+OpenCode supports [Model Context Protocol](https://modelcontextprotocol.io/) servers. The prokube UI includes a graphical MCP manager. Use it to add remote servers, connect or disconnect them, and check their status. For servers that support OAuth, you can also start the OAuth flow there.
 
 ![Add MCP servers](../../../_static/screenshots/labs/opencode/add-mcp-servers.png)
 
-Remote MCP entries can include a URL, optional Authorization header, custom HTTP headers, timeout, and OAuth settings. The UI writes MCP configuration through OpenCode's config APIs.
+Each remote MCP entry has a URL. Optional settings include an Authorization header, custom HTTP headers, a timeout, and OAuth settings. The UI writes MCP configuration through OpenCode's config APIs.
 
 ![OpenCode with MCP](../../../_static/screenshots/labs/opencode/opencode-in-action-mcp.png)
 
@@ -139,9 +144,7 @@ For hosting MCP servers on prokube, platform-managed MCP endpoints, and public r
 
 ## Operational Notes
 
-OpenCode Labs run as workspace pods. They inherit the same workspace access model, storage behavior, and operational limits as other Labs.
-
-They are interactive development environments for humans working with a coding agent, with storage and lifecycle following the Lab model.
+OpenCode Labs are workspace pods and behave like any other Lab: the same access rules, storage, lifecycle, and resource limits apply. They are meant for a person working interactively with a coding agent.
 
 Important points:
 

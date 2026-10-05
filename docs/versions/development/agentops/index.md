@@ -40,9 +40,7 @@ You usually need API keys only for external clients. In-workspace agents and too
 
 ## Foundation
 
-AgentOps workloads run on the shared prokube foundation: workspaces, Kubernetes namespaces, RBAC, secrets, storage, observability, and API-key management.
-
-Start with these cross-cutting pages when you need platform behavior rather than feature-specific usage:
+AgentOps workloads run on the shared prokube [Foundation](../platform/index.md). Start with these cross-cutting pages when you need platform behavior rather than feature-specific usage:
 
 - [Workspaces](../platform/workspaces.md)
 - [Kubernetes Resources](../platform/kubernetes.md)
