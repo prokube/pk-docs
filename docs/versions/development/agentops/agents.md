@@ -34,7 +34,7 @@ Otherwise, for an **external** provider (OpenAI, Anthropic, Gemini), create a Ku
 
 Check **Model Configurations** on the **Agents** page first. An administrator may already have granted the workspace access to an external model through AI Gateway. These configurations appear automatically with **AI Gateway** as their origin and can be selected when creating an agent.
 
-![Model Configurations list with an AI Gateway model](../../../_static/screenshots/agentops/agents/model-configurations.png)
+![Model Configurations list with an AI Gateway model](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/agents/model-configurations.png)
 
 If no suitable configuration exists, select **Create ModelConfig**. The **Provider** field selects how kagent reaches the backend:
 
@@ -82,7 +82,7 @@ Open the agent from the Agents list. The detail page's **Chat** tab is available
 
 Each response that used a tool shows a **Tool Activity** entry with the tool's arguments and result, so you can verify what the agent actually called and with what inputs. This is useful for debugging both prompt and tool wiring before relying on the agent elsewhere.
 
-![Agent chat showing connected tools and tool activity](../../../_static/screenshots/agentops/agents/chat-tool-activity.png)
+![Agent chat showing connected tools and tool activity](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/agents/chat-tool-activity.png)
 
 For programmatic access instead of the chat UI, the agent's Overview tab lists its A2A endpoint. External callers need an API key scoped to the agent (`a2a`). See [API Keys](../platform/api_keys.html). Callers inside the same workspace can reach the agent over the internal A2A path without a key.
 
