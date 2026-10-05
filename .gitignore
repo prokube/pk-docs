@@ -4,3 +4,7 @@ docs/.vitepress/dist/
 .DS_Store
 *.log
 .legacy-audit/
+.omo/
+worktrees/
+# Vale packages, fetched by `vale sync`
+.vale/
