@@ -1,8 +1,8 @@
 # JupyterLab
 
-JupyterLab Labs provide a browser-based Python workspace inside prokube. They are intended for notebooks, data exploration, model development, and quick experiments that should run close to the same storage, compute, and platform services used by production workloads.
+JupyterLab Labs provide a browser-based Python workspace inside prokube. Use them for notebooks, data exploration, model development, and quick experiments that need the same storage, compute, and platform services as your production workloads.
 
-prokube maintains its own JupyterLab images with platform-oriented defaults: common CLI tools, Python packages, S3-compatible file storage integration, image building support, and the public [`prokube/examples`](https://github.com/prokube/examples) repository are preconfigured where applicable.
+prokube maintains its own JupyterLab images. Depending on the image, they come with Python packages and common CLI tools, S3-compatible file storage access, container image builds, and the public [`prokube/examples`](https://github.com/prokube/examples) repository already set up. See [What the prokube Images Add](#what-the-prokube-images-add) for details.
 
 ::: info JupyterLab documentation
 For JupyterLab features that are not specific to prokube, use the upstream [JupyterLab documentation](https://jupyterlab.readthedocs.io/). Administrators who customize notebook images may also want the [Kubeflow Notebooks documentation](https://www.kubeflow.org/docs/components/notebooks/).

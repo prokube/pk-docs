@@ -74,7 +74,7 @@ This list matches the parsers built into the platform's currently deployed vLLM 
 
 Open a **Ready** model from the list. Text-generation models have a **Chat** tab with a built-in streaming chat tester. Embedding and reranking models have an **API** tab. Audio models have an **API** or **Test** tab, depending on the task. These tabs show the endpoint path and a ready-to-run `curl` example for the supported operation.
 
-The Configuration tab also shows Basic Information, Resources, Scaling, and API Endpoints for the model, alongside Metrics, Logs, and Conditions tabs for troubleshooting. While model weights are downloading, a storage panel shows progress (queued, preparing, downloading, or failed) instead of the usual tabs.
+The **Configuration** tab summarizes the model's settings and endpoints. For troubleshooting, use the **Metrics**, **Logs**, and **Conditions** tabs. While model weights are downloading, a storage panel shows download progress and errors instead of the usual tabs.
 
 ## Edit a Model
 

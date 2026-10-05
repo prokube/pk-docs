@@ -77,7 +77,7 @@ For user traffic, allow access to:
 
 For administrator access, expose the Kubernetes API only through the deployment's approved access path, such as private networking, VPN, bastion, provider IAM, or a restricted load balancer. Do not expose cluster admin ports broadly to user networks.
 
-Self-managed clusters also need node-to-node traffic for Kubernetes control plane, kubelet, etcd or dqlite, CNI networking, and distribution-specific agents. Examples include API server, kubelet, controller-manager, scheduler, etcd peer/client, MicroK8s dqlite, and Calico VXLAN traffic. The exact ports depend on the Kubernetes distribution and CNI.
+Self-managed clusters also need node-to-node traffic for the Kubernetes control plane, the CNI network, and distribution-specific agents. The exact ports depend on the Kubernetes distribution and CNI.
 
 For self-managed clusters, use the distribution's firewall guide as the source of truth. The following ports are commonly relevant for MicroK8s-style or kubeadm-style installations and should be restricted to cluster nodes or administrator networks, not broadly exposed to users:
 
@@ -112,7 +112,7 @@ See [Identity Providers](identity_providers.md) for external IdP guidance.
 
 ## Registry and Source Repositories
 
-prokube workloads pull platform images, user images, pipeline component images, notebook images, and serving images. Users will often need to build and push their own images for custom notebooks, pipeline components, and model-serving containers.
+prokube workloads pull both platform images and images that users build and push themselves, typically for custom notebooks, pipeline components, and model-serving containers.
 
 Plan:
 
@@ -130,9 +130,14 @@ See [Workspace Defaults and Image Pull Secrets](operations_runbooks.md#workspace
 
 ## Storage Sizing
 
-Object storage, notebook volumes, MLflow artifacts, pipeline artifacts, and model files can grow quickly. Size MinIO tenants, databases, and persistent-volume storage before onboarding users.
+Storage use grows quickly with notebook volumes, MLflow and pipeline artifacts, and model files. Size MinIO tenants, databases, and persistent-volume storage before onboarding users.
 
-For production deployments, avoid accepting placeholder storage sizes from a demo installation. Define expected retention, dataset size, model size, pipeline concurrency, and backup requirements first.
+For production deployments, do not keep the placeholder storage sizes from a demo installation. Base the sizes on:
+
+- expected retention;
+- dataset and model size;
+- pipeline concurrency;
+- backup requirements.
 
 ## Related Pages
 

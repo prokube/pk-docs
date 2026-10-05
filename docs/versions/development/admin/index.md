@@ -1,8 +1,6 @@
 # Admin Documentation
 
-Admin documentation covers installation planning, platform configuration, user and workspace administration, operations, upgrades, and troubleshooting.
-
-Use these pages when you operate a prokube deployment, connect it to organizational infrastructure, or expose custom workloads through the platform. User-facing concepts that apply across Labs, MLOps, and AgentOps are documented under [Foundation](../platform/index.md).
+Admin documentation is for people who install and operate a prokube deployment, connect it to organizational infrastructure, or expose custom workloads through the platform. User-facing concepts that apply across Labs, MLOps, and AgentOps are documented under [Foundation](../platform/index.md).
 
 ## What Admins Own
 
@@ -30,4 +28,4 @@ Use these pages when you operate a prokube deployment, connect it to organizatio
 | [Operations Runbooks](./operations_runbooks.html) | Administrator runbooks for MinIO, Keycloak bootstrap, and observability operations. |
 | [System Status](../platform/system_status.html) | Checking administrator-only backend component health and backend metadata; the same page also shows workspace pod quota to all users. |
 
-Platform-wide metrics, dashboards, alerts, and log-retention configuration remain administrator/operator topics. Use [System Status](../platform/system_status.html) for quick backend health checks, then use the deployment's Grafana, Prometheus, Alertmanager, and Loki tools for detailed monitoring.
+Platform-wide monitoring is an administrator topic. Use [System Status](../platform/system_status.html) for quick backend health checks. For dashboards, alerts, and log retention, use the deployment's Grafana, Prometheus, Alertmanager, and Loki.
