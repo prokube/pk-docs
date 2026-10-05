@@ -73,10 +73,24 @@ When repos disagree, prefer current shipped behavior in `pkui` and persistent pl
 - VitePress config lives in `docs/.vitepress/config.mts`.
 - Theme styling lives in `docs/.vitepress/theme/style.css`.
 - Root-level public assets that must be served at stable paths, such as logos and favicons, should live under `docs/public/`.
-- Content screenshots should live under `docs/_static/screenshots/`, grouped by documentation area: `labs/`, `mlops/`, `platform/`, or `agentops/`.
-- Put cross-cutting screenshots in the matching `platform/` folder instead of a feature-specific folder. For example, pod quota, kubeconfig, registry credentials, Kubernetes Secrets, and workspace selector screenshots belong under `docs/_static/screenshots/platform/`.
+- Store documentation screenshots and image diagrams in the public Cloud Storage bucket `gs://prokube-docs-pictures/pk-docs/`, not in this repository. Screenshots use `screenshots/<area>/...` (`admin`, `labs`, `mlops`, `platform`, or `agentops`); diagrams use `diagrams/<area>/...`.
+- Put cross-cutting screenshots under `screenshots/platform/`, including pod quota, kubeconfig, registry credentials, Kubernetes Secrets, and workspace selection. Keep logos and the favicon local under `docs/public/`; keep source-rendered Vue diagrams in the theme.
 - The default base path is `/docs/`; preserve this unless explicitly asked to change it.
 - `cleanUrls` is disabled intentionally for static GCS-friendly `.html` links.
+
+### Documentation Images
+
+- Use absolute public URLs in Markdown and HTML: `https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/<area>/<filename>` or the corresponding `diagrams/` path. Include descriptive alt text.
+- The bucket is public. Inspect images for credentials, tokens, internal-only URLs, customer data, and other sensitive content before uploading.
+- Use lowercase descriptive filenames and a new filename when replacing an image. Different documentation versions can reference the same object; do not overwrite or delete an existing object without checking all references and obtaining approval.
+- Upload from a temporary location with `--no-clobber`, then verify the public URL returns the correct image before adding a reference or removing a local copy. Do not change bucket permissions or create another bucket without approval.
+
+```bash
+gcloud storage cp --no-clobber /path/to/workspace-selection.png \
+  gs://prokube-docs-pictures/pk-docs/screenshots/platform/workspace-selection.png
+curl --fail --head \
+  https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/workspace-selection.png
+```
 
 ## Git Workflow
 
