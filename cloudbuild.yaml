@@ -1,16 +1,18 @@
-# We run this cloudbuild only from the gh-pages branch.
-# The GitHub workflow builds VitePress, pushes the generated site to gh-pages,
-# and includes this file in the generated output for the Cloud Build trigger.
+# Runs only from the generated-site branches:
+# - gh-pages (built from staging) -> prokube.cloud/docs
+# - gh-pages-main (built from main) -> prokube.ai/docs
+# The GitHub workflow builds VitePress, pushes the generated site to the
+# branch, and includes this file in the output for the Cloud Build trigger.
 
 substitutions:
-  # Staging-only target. Override this in the Cloud Build trigger to use a
-  # dedicated docs bucket, for example gs://prokube-docs-staging/.
+  # Staging target. The production trigger overrides it with
+  # gs://prokube-website-production/docs/.
   _DOCS_GCS_TARGET: 'gs://prokube-website/docs/'
 
 steps:
-  # Upload all content from gh-pages branch to prokube.cloud/docs.
+  # The checkout's .git directory and this file are not part of the site.
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
-    args: ['gsutil', '-m', 'rsync', '-r', '-d', '.', '${_DOCS_GCS_TARGET}']
+    args: ['gsutil', '-m', 'rsync', '-r', '-d', '-x', '^(\.git/.*|cloudbuild\.yaml)$', '.', '${_DOCS_GCS_TARGET}']
 
 options:
   logging: CLOUD_LOGGING_ONLY
