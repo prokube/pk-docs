@@ -138,23 +138,22 @@ The example experiment uses `Validation-Accuracy` as the objective metric and co
 
 ### 2. Build and Push the Training Image
 
-For your own experiments, build a training image and push it to a registry that your workspace can pull from. Authenticate to the registry before pushing; the exact login command depends on the registry you use.
+For your own experiments, build a training image and push it to a registry that your workspace can pull from. Log in to the registry first; the exact login command depends on the registry you use. Labs build images on a remote BuildKit service without a local image store, so build and push in one step:
 
 ```bash
 cd ~/examples/images/minimal-mnist
-docker build . -t <registry>/<project>/minimal-mnist:latest
-docker push <registry>/<project>/minimal-mnist:latest
+docker buildx build -t <registry>/<project>/minimal-mnist:latest --push .
 ```
 
-Then update the `image` field in `~/examples/hparam-tuning/minimal-mnist/katib-experiment.yaml` to your pushed image.
+Then update the `image` field in `~/examples/hparam-tuning/minimal-mnist/katib-experiment.yaml` to your pushed image. See [Building Container Images](../labs/index.md#building-container-images) for how image builds work in Labs.
 
-For convenience, the example manifest references a prepared image in a prokube registry by default:
+By default, the example manifest references a prepared image in the prokube release registry:
 
 ```text
-europe-west3-docker.pkg.dev/prokube-internal/prokube-customer/minimal-mnist:latest
+europe-west3-docker.pkg.dev/prokube/releases/minimal-mnist:v1.0.0
 ```
 
-Your cluster may already be able to pull this image. If it cannot, use your own pushed image instead.
+Pulling it requires access to the prokube registry. If your cluster cannot pull it, use your own pushed image instead.
 
 For private registries, create pull credentials from the prokube user menu under **Registry Credentials** before starting the experiment. See [Registry Credentials](../platform/kubernetes.md#registry-credentials).
 
@@ -219,7 +218,9 @@ Keep parameter names consistent across `spec.parameters`, `trialTemplate.trialPa
 
 ### 4. Start the Experiment
 
-From a Lab in the target workspace, run:
+Open **Hparam Search** in the prokube UI, select the target workspace, click **Apply YAML**, and paste the contents of `katib-experiment.yaml`.
+
+Alternatively, from a Lab in the target workspace, run:
 
 ```bash
 cd ~/examples/hparam-tuning/minimal-mnist
@@ -321,9 +322,9 @@ It should:
 - print the objective metric name exactly as configured in `objectiveMetricName`;
 - exit with a non-zero status when training fails so Katib can count failed trials;
 - include all runtime dependencies in the image instead of installing them interactively;
-- write models and artifacts to object storage if they must survive trial pod cleanup.
+- write models and artifacts to S3-compatible file storage if they must survive trial pod cleanup.
 
-For image builds from Labs, see [Building Container Images](../labs/index.md#building-container-images). For workspace object storage, see [Object Storage](../platform/object_storage.md).
+For image builds from Labs, see [Building Container Images](../labs/index.md#building-container-images). For workspace file storage, see [File Storage](../platform/file_storage.md).
 
 ## Operational Notes
 
@@ -382,4 +383,4 @@ Adjust `sizeLimit` to the workload and node capacity. This memory is backed by n
 | Private image cannot be pulled | Add registry credentials for the workspace and confirm the image reference includes the correct registry, project, repository, image, and tag. |
 | Trial logs show shared-memory or bus errors | Increase `/dev/shm` for the trial pod with an in-memory `emptyDir` volume. This is common with PyTorch data loaders using multiple workers. |
 | New trials stop being scheduled after earlier trials finish | Check Katib suggestion pods and events. If a suggestion controller is `OOMKilled` or CPU-throttled, an administrator may need to increase suggestion-controller resources in the Katib configuration. |
-| Too many completed pods | Delete completed pods from the prokube System Status view or reduce experiment size and trial retention. |
+| Too many completed pods | Delete finished experiments to remove their trial resources, or reduce experiment size and trial retention. The System Status cleanup removes only completed pipeline pods, not Katib trial pods. |

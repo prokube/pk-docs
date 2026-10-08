@@ -6,7 +6,7 @@ Backup setup is deployment-specific. Confirm the installed backup stack, storage
 
 ## What to Back Up
 
-A useful prokube backup covers both Kubernetes resources and application data. Kubernetes manifests alone are not enough because platform components store state in databases, object storage, and persistent volumes.
+A useful prokube backup covers both Kubernetes resources and application data. Kubernetes manifests alone are not enough because platform components store state in databases, file storage, and persistent volumes.
 
 Typical backup scope includes:
 
@@ -16,7 +16,7 @@ Typical backup scope includes:
 - MLflow experiments, runs, artifacts, registered models, and permission state;
 - platform configuration that is not otherwise recoverable from GitOps.
 
-Some deployments use Velero plus application-specific backup steps. Others use provider-native snapshots and external database/object-storage backups. The important requirement is that restore has been tested end to end, including application data.
+Some deployments use Velero plus application-specific backup steps. Others use provider-native snapshots and external database/file-storage backups. The important requirement is that restore has been tested end to end, including application data.
 
 ## Backup Storage
 
@@ -52,13 +52,21 @@ Before restoring:
 - verify target cluster capacity, storage classes, DNS, TLS, and identity-provider configuration;
 - stop or isolate workloads that could write conflicting state;
 - restore Kubernetes resources and application data in the order required by the deployment;
-- validate login, workspaces, object storage, Labs, Pipelines, MLflow, and Model Serving after restore.
+- validate login, workspaces, file storage, Labs, Pipelines, MLflow, and Model Serving after restore.
 
 Replication is not backup. Replicated storage can survive a node or disk failure, but it does not protect against accidental deletion, corrupted data, faulty migrations, or destructive admin commands.
 
 ## Host-Level Items
 
-For small self-managed deployments, also document and back up host-level configuration that is outside Kubernetes, such as SSH access policy, network configuration, firewall rules, DNS records, certificates, and cloud-provider credentials. Keep those backups in the same operational runbook as the platform restore procedure.
+For small self-managed deployments, also document and back up host-level configuration that is outside Kubernetes:
+
+- SSH access policy;
+- network configuration and firewall rules;
+- DNS records;
+- certificates;
+- cloud-provider credentials.
+
+Keep those backups in the same operational runbook as the platform restore procedure.
 
 ## Related Pages
 

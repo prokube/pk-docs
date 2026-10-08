@@ -50,7 +50,7 @@ Use **Download** to save the shown log entries as a text file for sharing or off
 - **Lab debugging**: search for the Lab pod when the environment fails to start or crashes after startup.
 - **Model-serving debugging**: search by model pod name or labels to inspect startup, model loading, and request-handling logs.
 - **Application debugging**: search logs for custom services deployed into your workspace.
-- **AgentOps debugging**: search sandbox, MCP server, gateway, or agent runtime logs when the feature-specific page does not show enough detail.
+- **AgentOps debugging**: search MCP server, gateway, or agent runtime logs when the feature-specific page does not show enough detail.
 
 ## Metrics and Dashboards
 
@@ -68,7 +68,7 @@ When these tools are exposed by your deployment:
 
 - use Grafana for curated dashboards and ad hoc exploration;
 - use Prometheus or Grafana Explore for metrics queries;
-- use Loki or Grafana Explore for log queries that need LogQL beyond the prokube Logs page.
+- use Loki or Grafana Explore for log queries that need LogQL, Loki's query language, beyond the prokube Logs page.
 
 Broad Grafana or Loki access can expose logs and metrics across namespaces depending on the configured permissions. Treat platform dashboards as administrator-facing unless your administrator has documented the access scope for your user or group.
 

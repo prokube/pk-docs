@@ -2,7 +2,7 @@
 
 prokube deployments that include GPUs commonly use the [NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html) to install and manage drivers, device plugins, monitoring, and related components.
 
-GPU availability is deployment-specific. Users request GPUs from Labs, Pipelines, model-serving workloads, and custom Kubernetes resources, but administrators are responsible for node preparation, operator configuration, quota, monitoring, and capacity planning.
+GPU availability is deployment-specific. Users request GPUs from their workloads, such as Labs, pipelines, and model serving. Administrators prepare the GPU nodes and own the operator configuration, quota, monitoring, and capacity planning.
 
 ## User Workload Requests
 

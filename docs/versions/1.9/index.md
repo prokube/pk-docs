@@ -7,13 +7,17 @@ pageClass: pk-docs-home-page
 
 Find the right prokube documentation for interactive development, agent workflows, ML workloads, and platform operations.
 
-prokube is a Kubernetes-native AI platform for teams that need to run AI workloads on infrastructure they control. It builds on established open-source tools and adds an integration and operations layer around them: tested upgrade paths, workspace and user management, observability, storage integration, audit trails, and operational guardrails.
+prokube is a Kubernetes-native AI platform for teams that need to run AI workloads on infrastructure they control. It builds on established open-source tools and integrates them into one platform with a common login, shared workspaces, storage, and observability. Administrators get tested upgrade paths for the whole stack.
 
 <div class="pk-docs-home-actions">
   <a href="./labs/" class="pk-docs-home-primary">Start with Labs</a>
   <a href="./admin/" class="pk-docs-home-secondary">Installation</a>
   <a href="https://prokube.ai/en/contact/" class="pk-docs-home-secondary">Get enterprise support</a>
 </div>
+
+::: info Using a prokube release before 1.9?
+See the **[legacy documentation](https://docs.prokube.ai/latest/)**. It covers the platform before 1.9 and does not reflect the behavior described on this site.
+:::
 
 ## Browse by Area
 
@@ -48,14 +52,9 @@ prokube is a Kubernetes-native AI platform for teams that need to run AI workloa
     <span>Start JupyterLab, VS Code, RStudio, OpenCode, or a custom notebook image inside your workspace.</span>
     <em>Learn more -></em>
   </a>
-  <a class="pk-docs-task-card" href="./agentops/sandboxes.html">
-    <strong>Create or claim a sandbox</strong>
-    <span>Give agents an isolated execution environment with controlled resources and workspace boundaries.</span>
-    <em>Learn more -></em>
-  </a>
-  <a class="pk-docs-task-card" href="./labs/#persistence-and-package-installation">
-    <strong>Work with persistent storage</strong>
-    <span>Understand what survives Lab restarts and where to place code, notebooks, packages, and data.</span>
+  <a class="pk-docs-task-card" href="./platform/file_storage.html">
+    <strong>Work with file storage</strong>
+    <span>Use S3-backed file storage and PVC-backed volumes for datasets, artifacts, Lab files, and workload data.</span>
     <em>Learn more -></em>
   </a>
   <a class="pk-docs-task-card" href="./platform/api_keys.html">

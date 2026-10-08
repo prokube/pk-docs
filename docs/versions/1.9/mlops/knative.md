@@ -18,17 +18,16 @@ The platform provides dedicated solutions for common workload types. Prefer thos
 
 | Workload | Use instead |
 |---|---|
-| ML model inference | [KServe InferenceServices](model_serving.html) – model runtimes, storage, inference protocols, automatic `/serving/...` URL |
-| LLM serving (vLLM, TGI) | [AgentOps documentation](../agentops/index.md) – OpenAI-compatible endpoints, GPU scaling, dedicated runtimes |
-| Agent execution | [Agent Sandboxes](../agentops/sandboxes.html) – isolated environments with workspace boundaries |
+| ML model inference | [KServe InferenceServices](model_serving.html) – model runtimes, storage, inference protocols, automatic `/svc/serving/...` URL |
+| LLM serving (vLLM, HuggingFace) | [AgentOps documentation](../agentops/index.md) – OpenAI-compatible endpoints, GPU scaling, dedicated runtimes |
 | MCP servers | [MCP Servers](../agentops/mcp_servers.html) – tool-provisioning protocol with lifecycle management |
 
-Knative services do not get automatic external exposure through the `/serving/...` path – they need an additional VirtualService to be reachable from outside the cluster.
+KServe InferenceServices and Knative services share the same external path family, `/svc/serving/<workspace>/<name>`. A Knative service therefore cannot use the same name as an InferenceService in the same workspace.
 
 | Aspect | KServe InferenceService | Knative Service |
 |---|---|---|
 | Use case | ML model inference | Any HTTP container |
-| External URL | Automatic `/serving/...` | Requires VirtualService |
+| External URL | Automatic `/svc/serving/...` | Automatic `/svc/serving/...` |
 | Model storage | Built-in (S3, MLflow, HTTP) | Manual |
 | Inference protocol | V1 / V2 built-in | Custom |
 | UI page | Models | Knative Services |
@@ -87,45 +86,26 @@ For your own services, build a container image that listens on the port declared
 
 Knative can run any HTTP container. Upstream Knative provides [samples for common languages and frameworks](https://knative.dev/docs/samples/); one of the most straightforward patterns is a [FastAPI service](https://knative.dev/docs/samples/serving/hello-world/helloworld-python/) – define a few routes, build a container, and deploy it as a Knative service.
 
-## Expose the Service Externally
+## Call the Service from Outside the Cluster
 
-Knative services are not automatically reachable through the prokube `/serving/...` URL. To expose the `hello` service from the example, create an Istio `VirtualService` in your namespace:
+[Agent Gateway](../platform/agent_gateway.html) exposes every Knative service in the workspace automatically, with no extra routing resources:
 
-```yaml
-apiVersion: networking.istio.io/v1
-kind: VirtualService
-metadata:
-  name: expose-hello
-  namespace: <namespace>
-spec:
-  gateways:
-    - istio-system/cluster-local-gateway
-  hosts:
-    - <cluster-domain>
-  http:
-    - headers:
-        request:
-          set:
-            Host: hello.<namespace>.svc.cluster.local
-      match:
-        - uri:
-            exact: /serving/<namespace>/hello
-        - uri:
-            prefix: /serving/<namespace>/hello/
-      rewrite:
-        uri: /
-      route:
-        - destination:
-            host: knative-local-gateway.istio-system.svc.cluster.local
-            port:
-              number: 80
+```text
+https://<your-prokube-domain>/svc/serving/<workspace>/<service-name>
 ```
 
-Replace `<cluster-domain>` and `<namespace>` with your values. After applying, the service is reachable at `https://<cluster-domain>/serving/<namespace>/hello`.
+External requests need an [API key](../platform/api_keys.md) scoped to the service. On the **API Keys** page, create a key and select the Knative service under **Select Services**. Then call the `hello` service from the example:
+
+```sh
+curl "https://<your-prokube-domain>/svc/serving/<workspace>/hello" \
+  -H "Authorization: Bearer <api-key>"
+```
+
+If the key was created with the `x-api-key` format, send `-H "x-api-key: <api-key>"` instead.
 
 ## Access Notes
 
-Inside the cluster, call the Knative service directly through its internal URL (`<service-name>.<namespace>.svc.cluster.local`). From outside, requests to `/serving/*` require an API key. See [API Keys](../platform/api_keys.md) for details.
+Inside the cluster, call the Knative service directly through its internal URL (`<service-name>.<namespace>.svc.cluster.local`). From outside, requests to `/svc/serving/*` go through [Agent Gateway](../platform/agent_gateway.html) and require an API key. See [API Keys](../platform/api_keys.md) for details.
 
 From a Lab terminal, test the `hello` service with:
 
@@ -160,7 +140,7 @@ Common causes:
 - **Image pull errors** – verify the image reference and registry credentials.
 - **Container crash loop** – check pod logs from the **Logs** tab.
 - **Not becoming ready** – the container must listen on the port declared by `PORT`. Verify the application binds to `0.0.0.0` and the correct port.
-- **External URL returns 404** – verify the VirtualService path matches the request path and the `Host` header is correct.
+- **External URL returns 404** – verify the workspace and service name in the `/svc/serving/<workspace>/<service-name>` path, and that the service is **Ready**.
 - **External URL returns 401** – missing or invalid API key. See [API Keys](../platform/api_keys.md).
 
 ## Related Pages
