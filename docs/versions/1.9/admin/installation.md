@@ -16,13 +16,20 @@ Recommended baseline for a multi-user deployment:
 | CPU per node | 8 cores | 24 cores |
 | Storage per node | 100 GB | 1 TB |
 
-These values are starting points. Actual sizing depends on enabled product tracks, number of users, notebook and pipeline concurrency, model size, GPU use, retention periods, and whether platform databases and object storage run in the same cluster.
+These values are starting points. Actual sizing depends on:
+
+- enabled product tracks;
+- number of users;
+- notebook and pipeline concurrency;
+- model size and GPU use;
+- retention periods;
+- whether platform databases and file storage run in the same cluster.
 
 Before installation, confirm:
 
 - Kubernetes version and distribution are supported by the target prokube release;
 - nodes have enough CPU, memory, storage, and optional GPU capacity for the selected product tracks;
-- the cluster has a default StorageClass and any additional classes needed for object storage, notebooks, databases, and model-serving workloads;
+- the cluster has a default StorageClass and any additional classes needed for file storage, notebooks, databases, and model-serving workloads;
 - a CSI driver and snapshot support exist if backup workflows depend on volume snapshots;
 - administrators have `kubectl` and cluster-admin access for bootstrap and recovery.
 
@@ -41,7 +48,7 @@ prokube.example.com
 minio.prokube.example.com
 ```
 
-The exact hostnames depend on the deployment's ingress and object-storage configuration. Keep them stable after installation because login redirects, OIDC clients, API URLs, and generated links depend on them.
+The exact hostnames depend on the deployment's ingress and file-storage configuration. Keep them stable after installation because login redirects, OIDC clients, API URLs, and generated links depend on them.
 
 At minimum, decide:
 
@@ -59,7 +66,7 @@ Several platform services rely on browser redirects. Incorrect root URLs, missin
 
 ## Networking and Firewall
 
-The cluster needs outbound access for image pulls, package downloads, identity-provider endpoints, object-storage targets, and webhook integrations used by the deployment. Inbound access should be restricted to the gateways and admin access paths that are intentionally exposed.
+The cluster needs outbound access for image pulls, package downloads, identity-provider endpoints, file-storage targets, and webhook integrations used by the deployment. Inbound access should be restricted to the gateways and admin access paths that are intentionally exposed.
 
 For user traffic, allow access to:
 
@@ -70,7 +77,7 @@ For user traffic, allow access to:
 
 For administrator access, expose the Kubernetes API only through the deployment's approved access path, such as private networking, VPN, bastion, provider IAM, or a restricted load balancer. Do not expose cluster admin ports broadly to user networks.
 
-Self-managed clusters also need node-to-node traffic for Kubernetes control plane, kubelet, etcd or dqlite, CNI networking, and distribution-specific agents. Examples include API server, kubelet, controller-manager, scheduler, etcd peer/client, MicroK8s dqlite, and Calico VXLAN traffic. The exact ports depend on the Kubernetes distribution and CNI.
+Self-managed clusters also need node-to-node traffic for the Kubernetes control plane, the CNI network, and distribution-specific agents. The exact ports depend on the Kubernetes distribution and CNI.
 
 For self-managed clusters, use the distribution's firewall guide as the source of truth. The following ports are commonly relevant for MicroK8s-style or kubeadm-style installations and should be restricted to cluster nodes or administrator networks, not broadly exposed to users:
 
@@ -105,7 +112,7 @@ See [Identity Providers](identity_providers.md) for external IdP guidance.
 
 ## Registry and Source Repositories
 
-prokube workloads pull platform images, user images, pipeline component images, notebook images, and serving images. Users will often need to build and push their own images for custom notebooks, pipeline components, and model-serving containers.
+prokube workloads pull both platform images and images that users build and push themselves, typically for custom notebooks, pipeline components, and model-serving containers.
 
 Plan:
 
@@ -123,9 +130,14 @@ See [Workspace Defaults and Image Pull Secrets](operations_runbooks.md#workspace
 
 ## Storage Sizing
 
-Object storage, notebook volumes, MLflow artifacts, pipeline artifacts, and model files can grow quickly. Size MinIO tenants, databases, and persistent-volume storage before onboarding users.
+Storage use grows quickly with notebook volumes, MLflow and pipeline artifacts, and model files. Size MinIO tenants, databases, and persistent-volume storage before onboarding users.
 
-For production deployments, avoid accepting placeholder storage sizes from a demo installation. Define expected retention, dataset size, model size, pipeline concurrency, and backup requirements first.
+For production deployments, do not keep the placeholder storage sizes from a demo installation. Base the sizes on:
+
+- expected retention;
+- dataset and model size;
+- pipeline concurrency;
+- backup requirements.
 
 ## Related Pages
 

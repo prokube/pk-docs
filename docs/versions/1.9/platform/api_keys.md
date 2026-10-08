@@ -1,8 +1,10 @@
 # API Keys
 
-API keys provide scoped programmatic access to selected prokube services without a browser session. Use them for SDKs, automation, CI jobs, serving clients, sandbox clients, MCP clients, and external integrations.
+API keys provide scoped programmatic access to selected prokube services without a browser session. Use them wherever a script, CI job, or external client calls a prokube service.
 
-A key belongs to the workspace that was selected when it was created. prokube routes public API traffic through [Agent Gateway](../agentops/agent_gateway.html), the shared routing and policy layer for API clients, but you do not need to configure Agent Gateway to create a key.
+Each key can be scoped to specific services/workloads instead of the whole workspace, sent with either of two client authentication headers, and given an optional expiration date.
+
+A key belongs to the workspace that was selected when it was created. prokube routes public API traffic through [Agent Gateway](agent_gateway.html), the shared routing and policy layer for API clients, but you do not need to configure Agent Gateway to create a key.
 
 Use API keys when a workload or external client needs repeatable access without an interactive login. For browser-based work in the prokube UI, use your normal user session instead.
 
@@ -14,9 +16,7 @@ Regular users see only their own keys in the selected workspace. Administrators 
 
 ![API Keys list with filters and key metadata](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-list.png)
 
-The table shows key metadata, not the full key value.
-
-Visible metadata includes the key name, prefix, owner, status, expiration, authentication format, and scope summary. The prefix helps identify which key a client is using without exposing the secret value.
+The table shows each key's metadata, such as owner, status, expiration, and scopes, but never the full key value. The key prefix helps identify which key a client is using without exposing the secret.
 
 ## Ownership and Workspace Scope
 
@@ -43,11 +43,14 @@ Click **Create Key** and fill in the form:
 The service list is built from services available in the selected workspace. It can include:
 
 - **Models** for KServe and LLM endpoints.
-- **Sandbox API** for Agent Sandbox programmatic access.
 - **MCP servers** for tool access.
 - **Memory stores** exposed through MCP-compatible routes.
 - **A2A agents** for kagent agent-to-agent access.
 - **Knative services** exposed through gateway routes.
+
+Besides individual services, you can select aggregate scopes such as **All MCP servers** or **All AI models**. They also cover matching services created later. **Full workspace access** covers every service in the workspace. Keys with **All AI models**, **All external AI models**, or **Full workspace access** must use the Bearer format.
+
+Admin-granted [external models](../admin/external_models.html) are not listed as individual services. To reach them, use a Bearer-format key with **All external AI models**, **All AI models**, or **Full workspace access**. These scopes cover every granted model in the workspace; a key cannot be limited to one granted model.
 
 Select only the services the client needs. If no services are available, deploy or expose the service first, then create the key.
 
@@ -60,24 +63,33 @@ Choose the authentication format expected by the client:
 | Format | Use when |
 |---|---|
 | `Authorization: Bearer <key>` | The client is OpenAI-compatible or expects bearer authentication. This is the recommended format for LLM clients. |
-| `x-api-key: <key>` | The client uses existing prokube service examples for Sandboxes, MCP, A2A, or other non-OpenAI-style APIs. |
+| `x-api-key: <key>` | The client cannot set an `Authorization` header, or an existing integration already sends `x-api-key`. Not available for keys with **All AI models**, **All external AI models**, or **Full workspace access**. |
 
 Use the service page for the exact URL and request body. Examples:
 
-Sandbox-style APIs commonly use `x-api-key`:
+OpenAI-compatible model clients commonly use bearer authentication. For a model deployed through [LLM Serving](../agentops/llm_serving.html), `<route-id>` is the deployment name; for an admin-granted [external model](../admin/external_models.html), it is the route ID chosen in the grant:
 
 ```bash
-curl "https://<your-prokube-domain>/sandbox/<workspace>/sandboxes" \
-  -H "x-api-key: <api-key>"
-```
-
-OpenAI-compatible model clients commonly use bearer authentication:
-
-```bash
-curl "https://<your-prokube-domain>/ai/<workspace>/v1/chat/completions" \
+curl "https://<your-prokube-domain>/svc/ai/<workspace>/models/<route-id>/v1/chat/completions" \
   -H "Authorization: Bearer <api-key>" \
   -H "Content-Type: application/json" \
   -d '{"model":"<model>","messages":[{"role":"user","content":"Hello"}]}'
+```
+
+MCP clients take the key in their server configuration. The MCP server's **Overview** tab in the prokube UI shows a ready-to-copy configuration:
+
+```json
+{
+  "mcpServers": {
+    "<server>": {
+      "type": "http",
+      "url": "https://<your-prokube-domain>/svc/mcp/<workspace>/<server>",
+      "headers": {
+        "Authorization": "Bearer <api-key>"
+      }
+    }
+  }
+}
 ```
 
 ## Copy the Key Value
@@ -103,6 +115,54 @@ Rotating a key invalidates the old value immediately. Update every client or sec
 
 <img src="https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-edit-disable-rotate-menu.png" alt="API key action menu with edit, disable, rotate, and delete actions" style="max-width: 360px; width: 100%; height: auto;">
 
+## Usage Dashboard
+
+Switch to the **Usage** tab on the API Keys page to see how keys in the selected workspace are being used. The dashboard covers requests that Agent Gateway authenticated with a key. It does not cover internal in-mesh traffic (see [Agent Gateway: Public vs. Internal Traffic](agent_gateway.html#public-vs-internal-traffic)).
+
+![API key usage dashboard with request trend, estimated LLM usage, and per-key activity](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-usage-tab.png)
+
+### Time Window and Cohorts
+
+Choose a **time window** to control both the summary numbers and the request trend chart below them. Options are Last hour, Last 24 hours (default), Last 7 days, and Last 30 days.
+
+The dashboard shows up to three cohort cards, split by how a request was attributed:
+
+- **External attributed**: requests attributed to an authenticated key. This is the only cohort regular users see.
+- **Internal aggregate** and **Unattributed public**: aggregate-only counts, visible to administrators. These are never distributed across individual keys, so they cannot be used to identify which key or workload generated a given request.
+
+The **request trend** chart plots request volume per time bucket for the selected window. If Prometheus retained only part of the window, the dashboard shows a note that the trend is truncated rather than silently showing partial data as complete.
+
+### Token and Cost Estimate
+
+The **Estimated LLM usage** panel shows input tokens, output tokens, and an estimated cost for LLM traffic in the window. Estimated cost is derived from a model pricing catalog:
+
+- If pricing is missing for some models in the window, the panel notes that the estimate excludes those models.
+- If no pricing data is available at all, the panel says catalog pricing is unavailable rather than showing a misleading total.
+
+Token and cost figures apply only to LLM (`/svc/ai`) traffic. Other path families report request counts but not tokens or cost.
+
+### Usage by Key
+
+The **Usage by key** table lists per-key activity for the window:
+
+| Column | Meaning |
+|---|---|
+| Key | Key name. A deleted key that still has recorded usage shows as **Historical** rather than disappearing from the table. |
+| Owner | The user who created the key. |
+| Requests | Total requests attributed to the key in the window. |
+| Failed | Requests that failed (non-2xx/3xx) in the window. |
+| LLM tokens | Input + output tokens, for `/svc/ai` traffic only. |
+| Estimated cost | Estimated cost for the key's LLM traffic in the window. |
+| Last Active | Approximate time since the key's last recorded request, bounded by the selected window and its sampling granularity, not an exact last-used timestamp. |
+
+Regular users see **Keys owned by you**. Administrators see **All workspace keys**. Keys with no recorded activity in the window are omitted, except historical (deleted) keys that administrators can still see for auditing.
+
+### Reading the Numbers Correctly
+
+- Request counts, tokens, and cost are estimates for observability, not billing records.
+- Prometheus retention limits how far back the dashboard can report. Older activity outside the retention window will not appear even if the key was used.
+- If usage telemetry is not configured for the cluster, the dashboard shows a notice instead of numbers. Contact your administrator if you expect usage data and see this notice.
+
 ## Security Guidance
 
 - Prefer service-specific keys over broad workspace access.
@@ -124,7 +184,7 @@ Rotating a key invalidates the old value immediately. Update every client or sec
 
 ## Related Pages
 
-- [Sandboxes](../agentops/sandboxes.html)
+- [Agent Gateway](agent_gateway.html)
 - [MCP Servers](../agentops/mcp_servers.html)
 - [Model Serving](../mlops/model_serving.html)
 - [Serverless](../mlops/knative.html)

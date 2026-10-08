@@ -1,7 +1,7 @@
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import defineVersionedConfig from 'vitepress-versioning-plugin'
-import { developmentVersion, latestReleasedVersion, releasedVersions, visibleVersions } from './versions'
+import { latestReleasedVersion, visibleVersions } from './versions'
 
 const base = process.env.VITEPRESS_BASE ?? '/docs/'
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -36,11 +36,10 @@ const baseSidebar: SidebarItem[] = [
     items: [
       { text: 'Overview', link: '/agentops/' },
       { text: 'Agent Gateway', link: '/agentops/agent_gateway.html' },
-      { text: 'Agent Sandboxes', link: '/agentops/sandboxes.html', versions: [...releasedVersions] },
       { text: 'MCP Servers', link: '/agentops/mcp_servers.html' },
       { text: 'Memory Stores', link: '/agentops/memory_stores.html' },
       { text: 'Agents', link: '/agentops/agents.html' },
-      { text: 'LLM Serving', link: '/agentops/llm_serving.html', versions: [developmentVersion] }
+      { text: 'LLM Serving', link: '/agentops/llm_serving.html' }
     ]
   },
   {
@@ -63,12 +62,12 @@ const baseSidebar: SidebarItem[] = [
       { text: 'Overview', link: '/platform/' },
       { text: 'Workspaces', link: '/platform/workspaces.html' },
       { text: 'Kubernetes Resources', link: '/platform/kubernetes.html' },
-      { text: 'Object Storage', link: '/platform/object_storage.html' },
+      { text: 'File Storage', link: '/platform/file_storage.html' },
       { text: 'Platform Databases', link: '/platform/databases.html' },
       { text: 'Component Versions', link: '/platform/component_versions.html' },
       { text: 'Observability', link: '/platform/observability.html' },
       { text: 'System Status', link: '/platform/system_status.html' },
-      { text: 'Agent Gateway', link: '/platform/agent_gateway.html', versions: [developmentVersion] },
+      { text: 'Agent Gateway', link: '/platform/agent_gateway.html' },
       { text: 'API Keys', link: '/platform/api_keys.html' }
     ]
   },
@@ -83,7 +82,7 @@ const baseSidebar: SidebarItem[] = [
       { text: 'Network Policies', link: '/admin/network_policies.html' },
       { text: 'Application Networking', link: '/admin/application_networking.html' },
       { text: 'Application Authentication', link: '/admin/application_authentication.html' },
-      { text: 'External Models', link: '/admin/external_models.html', versions: [developmentVersion] },
+      { text: 'External Models', link: '/admin/external_models.html' },
       { text: 'Storage', link: '/admin/storage.html' },
       { text: 'GPU Administration', link: '/admin/gpu.html' },
       { text: 'Backup and Restore', link: '/admin/backup_restore.html' },
@@ -98,16 +97,10 @@ function sidebarFor(version: string): SidebarItem[] {
     ...section,
     items: section.items
       ?.filter((item) => !item.versions || item.versions.includes(version))
-      .map((item) => {
-        const versionedItem = version === developmentVersion && item.link === '/platform/object_storage.html'
-          ? { ...item, text: 'File Storage', link: '/platform/file_storage.html' }
-          : item
-
-        return {
-          ...versionedItem,
-          link: versionedItem.link ? `/${version}${versionedItem.link}` : versionedItem.link
-        }
-      })
+      .map((item) => ({
+        ...item,
+        link: item.link ? `/${version}${item.link}` : item.link
+      }))
   }))
 }
 

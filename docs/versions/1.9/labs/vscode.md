@@ -54,7 +54,13 @@ git clone <repository-url>
 kubectl get pods
 ```
 
-The exact tools available depend on the selected image. prokube-maintained images commonly include platform-oriented tooling such as `kubectl`, Git, shell utilities, Python tooling, SDKs, object-storage helpers, and Docker/Buildx support where applicable.
+The exact tools available depend on the selected image. prokube-maintained images commonly include:
+
+- `kubectl` and Git;
+- `rclone` with a preconfigured `minio` remote, and Python clients such as `s3fs`;
+- `uv`, the Kubeflow Pipelines SDK, and the MLflow client;
+- shell tools such as `tmux`, `ripgrep`, `fzf`, and `jq`;
+- the Docker CLI with Buildx for remote image builds.
 
 VS Code Labs use the same persistence and package-installation model as other Labs. See [Using Labs](index.md#persistence-and-package-installation) for the shared storage rules and [Custom Notebooks](custom_notebooks.md) for repeatable image-based environments.
 
@@ -68,8 +74,7 @@ Common workflows include:
 - developing model servers or inference helpers before moving them to model serving;
 - building container images for pipelines, model serving, MCP servers, or agent runtimes when the selected image includes [remote BuildKit support](index.md#building-container-images);
 - inspecting workspace resources with `kubectl`;
-- working with object storage through configured [CLIs or SDKs](index.md#object-storage-from-labs);
-- developing and testing code that later runs in [Agent Sandboxes](../agentops/sandboxes.md).
+- working with S3-backed file storage through configured [CLIs or SDKs](index.md#file-storage-from-labs).
 
 ## Attach Local VS Code to a Running Lab
 
@@ -115,7 +120,7 @@ Notebook kernel integration depends on the selected image and the VS Code extens
 
 Browser-based VS Code and RStudio Labs may not report idleness in the same way as JupyterLab. Do not rely on automatic idle shutdown unless your administrator has confirmed it for your environment.
 
-For start, stop, delete, recreate, and troubleshooting behavior, see [Managing Labs](index.md#managing-labs) and [Troubleshooting Labs](index.md#troubleshooting-labs).
+For start, stop, edit, delete, recreate, and troubleshooting behavior, see [Managing Labs](index.md#managing-labs) and [Troubleshooting Labs](index.md#troubleshooting-labs).
 
 ## Related Pages
 
@@ -123,4 +128,3 @@ For start, stop, delete, recreate, and troubleshooting behavior, see [Managing L
 - [JupyterLab](jupyterlab.md)
 - [OpenCode](opencode.md)
 - [Custom Notebooks](custom_notebooks.md)
-- [Agent Sandboxes](../agentops/sandboxes.md)

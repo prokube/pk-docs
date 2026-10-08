@@ -15,15 +15,15 @@ Upstream references:
 Use KServe InferenceServices when a trained model should be available as an API endpoint:
 
 - serve models trained or tracked in the same workspace;
-- deploy models from object storage (S3-compatible) or from the MLflow model registry;
+- deploy models from S3-compatible file storage or from the MLflow model registry;
 - scale inference replicas automatically based on request concurrency, QPS, or custom metrics;
 - test model behaviour interactively before integrating into production;
 - use the v2 inference protocol for framework-agnostic model access;
-- expose endpoints for external applications through the Agent Gateway with API key authentication.
+- expose endpoints for external applications through [Agent Gateway](../platform/agent_gateway.html) with API key authentication.
 
 Use [Labs](../labs/index.md) or [Pipelines](pipelines.md) for training and exporting models. Move to Model Serving when the model should become a reachable endpoint.
 
-This page covers classic KServe model serving: deploying sklearn, PyTorch, MLflow, and similar models as inference endpoints. For LLM-focused serving (vLLM, TGI, OpenAI-compatible APIs), see the [AgentOps documentation](../agentops/index.md) – large language models follow a different operational pattern and are documented separately there.
+This page covers classic KServe model serving: deploying sklearn, PyTorch, MLflow, and similar models as inference endpoints. For LLM-focused serving (vLLM and HuggingFace runtimes with OpenAI-compatible APIs), see [LLM Serving](../agentops/llm_serving.html) – large language models follow a different operational pattern and are documented separately there.
 
 ## Get Started
 
@@ -208,7 +208,7 @@ For a detailed KPA walkthrough and a manual KEDA/vLLM token-throughput example, 
 
 ### S3-compatible Storage
 
-InferenceServices access models in object storage through a `ServiceAccount` annotated with S3 endpoint details. The prokube workspace is preconfigured with S3-compatible storage; use the **Object Storage** page in the UI to see available buckets. See [Object Storage](../platform/object_storage.md) for storage browser, path, and client details.
+InferenceServices access models in S3-compatible file storage through a `ServiceAccount` annotated with S3 endpoint details. The prokube workspace is preconfigured with S3-compatible storage; use the **File Storage** page in the UI to see available buckets. See [File Storage](../platform/file_storage.md) for storage browser, path, and client details.
 
 For models stored in workspace buckets, the deployment wizard's **Browse S3** button selects the path directly. For `kubectl`-based deployment, a secret named `s3creds` with the correct KServe annotations already exists in the workspace namespace and grants access to the buckets the workspace can see. Reference it from the InferenceService via `spec.predictor.serviceAccountName`.
 
@@ -222,11 +222,11 @@ The URI format:
 - `mlflow://models/<model-name>/<stage>` – stage alias (`staging`, `production`, `latest`)
 - `mlflow://runs/<run-id>/<artifact-path>` – run artifact
 
-A custom [`mlflow-storage-initializer`](https://github.com/prokube/prokube-images/tree/main/mlflow-storage-initializer) init container resolves these URIs by fetching the model artifact through the MLflow API using namespace-scoped credentials (`MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME`, `MLFLOW_TRACKING_PASSWORD`). The wizard's **Import from MLflow** button handles the credential setup automatically.
+A custom [`mlflow-storage-initializer`](https://github.com/prokube/prokube-images/tree/main/mlflow-storage-initializer) init container resolves these URIs by fetching the model artifact through the MLflow API with the credentials from the workspace's `mlflow-credentials` secret. **Import from MLflow** checks that this secret exists but does not create it.
 
 ## External Access
 
-To call a model endpoint from outside the cluster, you need a workspace-scoped API key. Create one on the **API Keys** page under AI Gateway — keys can be scoped to a specific workspace or to individual services. See [API Keys](../platform/api_keys.md) for details.
+To call a model endpoint from outside the cluster, you need an API key. Create one on the **API Keys** page, under **Serving** in the sidebar, and scope it to the model or to all serving models in the workspace. See [API Keys](../platform/api_keys.md) for details. This external path is served by [Agent Gateway](../platform/agent_gateway.html), the same routing layer used across MLOps and AgentOps.
 
 Include the key in requests:
 
@@ -237,7 +237,7 @@ Authorization: Bearer <api-key>
 The inference URL follows this pattern:
 
 ```
-https://<cluster-domain>/serving/<namespace>/<inference-service-name>/v2/models/<model-name>/infer
+https://<cluster-domain>/svc/serving/<namespace>/<inference-service-name>/v2/models/<model-name>/infer
 ```
 
 The UI shows the exact URL for each protocol (V1 and V2) on the model detail page.
@@ -256,7 +256,7 @@ kubectl get pod <your-pod-name> -n <your-namespace> \
 
 Alternatively, ask your administrator for the current KServe version.
 
-To find library versions pinned in a runtime image, browse the KServe repository at the matching tag under `python/<runtime>/pyproject.toml`. See the upstream [version matching guide](https://kserve.github.io/website/) for details.
+To find library versions pinned in a runtime image, browse the [KServe repository](https://github.com/kserve/kserve) at the matching tag under `python/<runtime>/pyproject.toml`.
 
 Version matching is especially important for models serialized with `pickle`, `joblib`, or framework-native formats that load Python objects. A model trained with one scikit-learn, PyTorch, XGBoost, or Python version can fail during serving even when the artifact path and credentials are correct.
 
@@ -270,7 +270,7 @@ kubectl get servingruntime,clusterservingruntime -A
 
 Some KServe versions support local model cache resources for large S3-backed models. A local cache can reduce cold-start time by keeping model artifacts on selected nodes, but it is a cluster-level feature that requires administrator configuration and enough node-local storage.
 
-Use local cache only when the installed KServe version and platform configuration support it. Users should not assume that adding a large model to object storage automatically enables node-local caching.
+Use local cache only when the installed KServe version and platform configuration support it. Users should not assume that adding a large model to S3-compatible file storage automatically enables node-local caching.
 
 ## Troubleshooting
 
@@ -283,7 +283,7 @@ Common causes:
 - **Model not Ready** – check the Conditions tab for the failure reason. Common issues: invalid storage URI, missing credentials, insufficient resources.
 - **ModuleNotFoundError** – library version mismatch between training and serving runtime. See [Version Matching](#version-matching).
 - **Image pull errors** – verify the container image reference and registry credentials for custom predictors.
-- **401 Unauthorized** – missing or invalid API key. Create an API key from the user menu under **API Keys**.
+- **401 Unauthorized** – missing or invalid API key. Create an API key on the **API Keys** page, under **Serving** in the sidebar.
 - **Pods are running but the InferenceService is not ready** – check KServe conditions first. If the model and transformer pods look healthy but readiness does not progress, an administrator may need to inspect Knative Serving controller logs and route status.
 - **Model load timeout** – large models may need a longer Knative progress deadline or an administrator-configured local model cache. In YAML, set `serving.knative.dev/progress-deadline` under `spec.predictor.annotations` when supported by your cluster.
 - **Service IP range exhausted** – errors such as `failed to allocate a serviceIP: range is full` are cluster-level capacity issues. Ask an administrator to inspect stale Services, Knative revision garbage collection, and service CIDR capacity.
@@ -326,7 +326,7 @@ spec:
 ## Related Pages
 
 - [Labs](../labs/index.md)
-- [Object Storage](../platform/object_storage.md)
+- [File Storage](../platform/file_storage.md)
 - [MLflow](mlflow.md)
 - [Pipelines](pipelines.md)
 - [Model Serving Autoscaling](model_serving_autoscaling.md)

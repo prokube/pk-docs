@@ -4,7 +4,7 @@ OpenCode Labs run [OpenCode](https://github.com/anomalyco/opencode) inside a pro
 
 Because sessions run in the workspace, you can leave tasks running overnight, switch between multiple projects and sessions, and review changes before they reach Git or your local checkout.
 
-prokube uses the open-source [pk-opencode-webui project](https://github.com/prokube/pk-opencode-webui) to run OpenCode in Kubeflow Notebooks. prokube.ai open-sourced this prefix-aware Web UI and Notebook integration so OpenCode can be exposed correctly behind workspace URL prefixes such as Kubeflow Notebook routes. The integration adds the notebook image, URL-prefix handling, project picker, Git/SSH helpers, MCP management UI, Lab-specific defaults, and workspace integration needed for this deployment model.
+prokube uses the open-source [pk-opencode-webui project](https://github.com/prokube/pk-opencode-webui) to run OpenCode in Kubeflow Notebooks. prokube.ai open-sourced this web UI and notebook integration so that OpenCode works behind the workspace URL prefixes used by Kubeflow Notebook routes. The project also provides the OpenCode notebook image with Lab-specific defaults, and the UI features described on this page, such as the project picker, Git and SSH helpers, and the MCP manager.
 
 ::: info OpenCode documentation
 For OpenCode features that are not specific to prokube, use the upstream [OpenCode documentation](https://opencode.ai/docs/). For the prokube wrapper and notebook integration, see [`pk-opencode-webui`](https://github.com/prokube/pk-opencode-webui).
@@ -12,7 +12,7 @@ For OpenCode features that are not specific to prokube, use the upstream [OpenCo
 
 ## When to Use OpenCode Labs
 
-Use OpenCode Labs for fully agentic engineering workflows where code is mostly written, changed, and reviewed by AI agents. OpenCode is a good fit when agents should work iteratively: inspect the repository, propose changes, run commands or tests, react to feedback, and continue across longer sessions inside the workspace rather than on your laptop.
+Use OpenCode Labs for agentic engineering, where AI agents write, change, and review most of the code. OpenCode fits work that takes many iterations: the agent inspects the repository, proposes changes, runs commands or tests, and reacts to your feedback. Sessions continue in the workspace rather than on your laptop, so longer tasks keep running.
 
 Common uses include:
 
@@ -22,9 +22,7 @@ Common uses include:
 - configuring or testing MCP servers while developing agent workflows;
 - reviewing file changes and terminal output before committing to Git.
 
-Use [VS Code](vscode.md) when you want a full IDE. Use [JupyterLab](jupyterlab.md) when notebooks and exploratory analysis are the main workflow. Use [Agent Sandboxes](../agentops/sandboxes.md) for API-controlled execution environments used by agents and applications.
-
-You can also combine OpenCode with sandboxes through MCP. This is useful when you want OpenCode to plan, inspect, and orchestrate work from its Lab, but do not want it to execute untrusted code or shell commands directly in the OpenCode Lab pod. In that setup, OpenCode talks to an MCP server, and the MCP server runs the actual workload in an [Agent Sandbox](../agentops/sandboxes.md): OpenCode for interaction, sandboxes for isolated execution.
+Use [VS Code](vscode.md) when you want a full IDE. Use [JupyterLab](jupyterlab.md) when notebooks and exploratory analysis are the main workflow.
 
 ## Start an OpenCode Lab
 
@@ -72,7 +70,12 @@ In OpenCode, a project is the directory OpenCode works in. In practice this is u
 
 A session is a single agent conversation attached to a project. You can keep multiple sessions for the same project, for example one for debugging, one for a refactor, and one for documentation. You can also switch between projects without restarting the Lab.
 
-Within a session, you can switch model/provider settings, attach files, fork from earlier messages, and let OpenCode request permissions before file edits or shell commands.
+Within a session, you can:
+
+- switch the model or provider;
+- attach files;
+- fork from earlier messages;
+- have OpenCode ask for permission before file edits or shell commands.
 
 The UI also exposes features from the prokube wrapper around the OpenCode backend:
 
@@ -110,13 +113,11 @@ Useful upstream OpenCode references:
 
 OpenCode permissions are configured in `opencode.json`. Defaults can be permissive depending on the tool and environment, so explicitly set sensitive tools to `ask` or `deny` when you want review before edits, shell commands, task delegation, or MCP tool calls. OpenCode also supports tool patterns and MCP-tool wildcards; use those to allow only the operations a project actually needs.
 
-For coding-agent workflows, prokube disables broad Kubernetes and object-storage access by default where possible, and recommends granting only the narrow permissions required for the task. Do not assume `kubectl` access or S3-compatible object storage credentials are available in an OpenCode Lab.
+For coding-agent workflows, prokube disables broad Kubernetes and file-storage access by default where possible, and recommends granting only the narrow permissions required for the task. Do not assume `kubectl` access or S3-compatible file-storage credentials are available in an OpenCode Lab.
 
 The OpenCode image is not intended for local container image builds and does not include the Docker/Buildx workflow used by some other Labs.
 
 For stronger isolation, do not rely on a "read-only directory" convention as the main security boundary. Upstream OpenCode documents [references](https://opencode.ai/docs/references/) for adding external context, and read-only external directory behavior has been discussed upstream, for example in [anomalyco/opencode#18441](https://github.com/anomalyco/opencode/issues/18441). For real isolation, deny invasive OpenCode tools and avoid mounting sensitive directories or credentials into the OpenCode Lab in the first place.
-
-If OpenCode should only inspect or orchestrate work, run edits, tests, and command execution through an MCP server backed by an [Agent Sandbox](../agentops/sandboxes.md). In that setup, the OpenCode Lab is the interactive interface and the sandbox is the execution boundary.
 
 ## Use the Integrated Terminal
 
@@ -124,32 +125,26 @@ OpenCode Labs include an integrated terminal backed by the OpenCode PTY API. Use
 
 ![Integrated terminal](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/labs/opencode/terminal-and-todo-ui.png)
 
-The terminal runs inside the same Lab pod as OpenCode. It is useful for explicit manual commands, but it is not a separate sandbox. If you need package installation patterns or object-storage access in a Lab where those permissions are intentionally enabled, use the shared Labs guidance:
+The terminal runs inside the same Lab pod as OpenCode. It is useful for explicit manual commands, but it is not a separate execution boundary. If you need package installation patterns or file-storage access in a Lab where those permissions are intentionally enabled, use the shared Labs guidance:
 
-- [Object Storage](../platform/object_storage.md)
+- [File Storage](../platform/file_storage.md)
 - [Persistence and Package Installation](index.md#persistence-and-package-installation)
 
 ## Add MCP Servers
 
-OpenCode supports [Model Context Protocol](https://modelcontextprotocol.io/) servers. The prokube UI provides a graphical MCP manager for adding remote servers, connecting and disconnecting them, starting OAuth flows where supported, and seeing server status.
+OpenCode supports [Model Context Protocol](https://modelcontextprotocol.io/) servers. The prokube UI includes a graphical MCP manager. Use it to add remote servers, connect or disconnect them, and check their status. For servers that support OAuth, you can also start the OAuth flow there.
 
 ![Add MCP servers](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/labs/opencode/add-mcp-servers.png)
 
-Remote MCP entries can include a URL, optional Authorization header, custom HTTP headers, timeout, and OAuth settings. The UI writes MCP configuration through OpenCode's config APIs.
+Each remote MCP entry has a URL. Optional settings include an Authorization header, custom HTTP headers, a timeout, and OAuth settings. The UI writes MCP configuration through OpenCode's config APIs.
 
 ![OpenCode with MCP](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/labs/opencode/opencode-in-action-mcp.png)
 
 For hosting MCP servers on prokube, platform-managed MCP endpoints, and public routing, see [MCP Servers](../agentops/mcp_servers.md). For memory-backed MCP endpoints, see [Memory Stores](../agentops/memory_stores.md).
 
-## Relationship to Agent Sandboxes
-
-OpenCode Labs are interactive development environments for humans working with a coding agent. They are long-lived enough for development, inspection, and review, but they are still Labs: storage and lifecycle follow the Lab model.
-
-[Agent Sandboxes](../agentops/sandboxes.md) are API-managed execution environments for agents and applications. They can be created, claimed, paused, resumed, and controlled through APIs. Use OpenCode Labs to build and debug the code, then move operational agent execution into sandboxes or dedicated services when the workflow becomes repeatable.
-
 ## Operational Notes
 
-OpenCode Labs run as workspace pods. They inherit the same workspace access model, storage behavior, and operational limits as other Labs.
+OpenCode Labs are workspace pods and behave like any other Lab: the same access rules, storage, lifecycle, and resource limits apply. They are meant for a person working interactively with a coding agent.
 
 Important points:
 
@@ -166,7 +161,6 @@ For general lifecycle issues, storage attachment problems, image pull errors, an
 - [Using Labs](index.md)
 - [VS Code](vscode.md)
 - [JupyterLab](jupyterlab.md)
-- [Agent Sandboxes](../agentops/sandboxes.md)
 - [MCP Servers](../agentops/mcp_servers.md)
 - [pk-opencode-webui on GitHub](https://github.com/prokube/pk-opencode-webui)
 - [OpenCode upstream project](https://github.com/anomalyco/opencode)

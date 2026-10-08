@@ -19,7 +19,7 @@ Common platform roles are:
 - `pk-admin`: grants access to administrator views and platform administration workflows;
 - `pk:<workspace-name>`: grants access to a specific workspace namespace.
 
-Prefer assigning workspace access through the prokube UI. Direct role edits in Keycloak are easy to misapply and can affect Kubernetes, object-storage, and workload access.
+Prefer assigning workspace access through the prokube UI. Direct role edits in Keycloak are easy to misapply and can affect Kubernetes, file-storage, and workload access.
 
 ## Users
 
@@ -42,7 +42,7 @@ To delete a user, open the row action menu and choose **Delete**. Deleting a use
 
 ## Workspaces
 
-Open **User Management** > **Workspaces** to manage workspace namespaces. The table shows each workspace name, workspace type, member count, group access, security policy state, egress profile assignment, and available actions.
+Open **User Management** > **Workspaces** to manage workspace namespaces. The table lists every workspace, including its security policy state and egress profile assignment.
 
 ![Workspaces page](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/user-management/workspaces-page.png)
 
@@ -140,7 +140,7 @@ Prefer creating and deleting workspaces through the prokube UI. If you must mana
 - Prefer group-based access for teams instead of one-off user role assignments.
 - Treat shared workspace secrets as visible to users with sufficient workspace permissions.
 - Use service accounts or workload-specific credentials for shared automation instead of personal credentials.
-- Review workspace contents before deleting users or workspaces; Kubernetes resources may be deleted permanently while object-storage data may follow a separate archive policy.
+- Review workspace contents before deleting users or workspaces; Kubernetes resources may be deleted permanently while file-storage data may follow a separate archive policy.
 
 ## Related Pages
 

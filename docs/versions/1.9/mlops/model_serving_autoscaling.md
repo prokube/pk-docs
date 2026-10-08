@@ -21,6 +21,8 @@ KServe workloads in prokube commonly use one of these modes:
 
 Do not let KPA and KEDA control the same workload. If you create a KEDA `ScaledObject` manually, run the InferenceService in RawDeployment mode so KServe creates a normal Kubernetes `Deployment` instead of a Knative Revision.
 
+For models deployed through [LLM Serving](../agentops/llm_serving.html), these choices are part of the deploy and edit forms: **Serverless (Knative)** deployments scale with KPA, and **Raw Deployment** offers **HPA** or **KEDA** as the autoscaler mode. The manual steps on this page are for InferenceServices created outside LLM Serving, or for settings the forms do not expose.
+
 ## KPA Walkthrough
 
 KPA is the default autoscaler for many KServe deployments. It works well when concurrent request count or QPS is a useful proxy for load.
@@ -63,24 +65,24 @@ Wait until the InferenceService is ready:
 kubectl get isvc "${ISVC_NAME}" -n "${NAMESPACE}"
 ```
 
-Use the endpoint URL from the model detail page or from the resource status:
+Copy the endpoint URL from the model's **Overview** tab in the prokube UI. It shows two URLs for each protocol:
+
+- **Internal**: for callers in the same workspace, such as a Lab. No API key is needed.
+- **External**: for callers outside the cluster, under `/svc/serving/<workspace>/<name>/...`. Requires an [API key](../platform/api_keys.md) scoped to the model.
+
+This walkthrough generates load from a Lab in the same workspace, so it uses the internal **V1 Protocol** URL. Generate concurrent requests with a load-testing tool such as [`hey`](https://github.com/rakyll/hey):
 
 ```bash
-export MODEL_URL="$(kubectl get isvc "${ISVC_NAME}" -n "${NAMESPACE}" -o jsonpath='{.status.url}')"
-```
-
-Generate concurrent requests with a load-testing tool such as [`hey`](https://github.com/rakyll/hey). Use a prokube API key for external endpoint calls:
-
-```bash
-export API_KEY="<api-key>"
+export PREDICT_URL="<internal V1 URL from the Overview tab>"
 
 hey -z 30s -c 5 \
   -m POST \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer ${API_KEY}" \
   -d '{"instances":["MLOps is useful."]}' \
-  "${MODEL_URL}/v1/models/${MODEL_NAME}:predict"
+  "${PREDICT_URL}"
 ```
+
+To generate load from outside the cluster instead, use the external V1 URL and add `-H "Authorization: Bearer <api-key>"`.
 
 With `scaleMetric: concurrency` and `scaleTarget: 1`, KPA tries to keep roughly one in-flight request per replica. Cold starts can temporarily create more replicas than the visible concurrency level because requests accumulate while new pods pull images, download models, and become ready. This is expected for bursty traffic and large models.
 
@@ -123,6 +125,17 @@ For vLLM workloads, useful scaling signals include:
 - time to first token, primarily for monitoring and alerting.
 
 Avoid using time to first token as the first autoscaling trigger without testing. It can drop sharply after a replica is added, which may cause scale-up and scale-down oscillation. Token throughput is usually a safer starting point because it remains high while sustained demand remains high.
+
+### Configure KEDA in LLM Serving
+
+For a model deployed through LLM Serving, open **Advanced Configuration** in the deploy form. The deployment mode is fixed after creation, but you can change the autoscaler settings later with **Edit**.
+
+1. Set **Deployment Mode** to **Raw Deployment**.
+2. Set **Autoscaler Mode** to **KEDA**.
+3. Check the **Prometheus Metric Query**. The form pre-fills a prompt plus generation token-throughput query for the model.
+4. Set the **Scale Threshold**. The default of `100000` is intentionally high so the model does not scale up before calibration. Deploy the model, measure per-replica throughput under load, then lower the threshold as described in [Load Test and Calibrate](#_4-load-test-and-calibrate).
+
+Use the manual pattern below when the InferenceService is not managed by LLM Serving, or when you need settings the form does not expose, such as multiple triggers or custom scale-down behavior.
 
 ### Prerequisites
 
