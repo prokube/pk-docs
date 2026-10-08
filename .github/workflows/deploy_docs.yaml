@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - staging
+      - main
 
 permissions:
   contents: write
@@ -30,9 +31,10 @@ jobs:
       - name: Include Cloud Build config
         run: cp cloudbuild.yaml docs/.vitepress/dist/cloudbuild.yaml
 
-      - name: Deploy to gh-pages
+      # Cloud Build triggers on these branches sync them to prokube.cloud/docs and prokube.ai/docs.
+      - name: Deploy to generated-site branch
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
+          publish_branch: ${{ github.ref_name == 'main' && 'gh-pages-main' || 'gh-pages' }}
           publish_dir: docs/.vitepress/dist
