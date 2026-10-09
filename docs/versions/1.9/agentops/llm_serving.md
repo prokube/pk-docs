@@ -31,7 +31,8 @@ Click **Deploy Model** and choose a preset, or select **Deploy Custom Model** to
 
 - **Deployment Name**: unique name in the workspace.
 - **Model Type**: Text Generation, Embedding, Reranking, Text to Speech, or Speech to Text. Typing a HuggingFace-style model ID (`org/model`) auto-detects the type.
-- **Model ID**: a HuggingFace model ID, for example `meta-llama/Llama-2-7b-chat-hf`. HuggingFace is the only model source available in the form; use the YAML editor for other storage URIs.
+- **Model ID**: a HuggingFace model ID, for example `meta-llama/Llama-2-7b-chat-hf`.
+- **Model Weights Source**: **Download from Hugging Face** fetches the weights when the model starts. **Use cached weights (recommended)** appears when a [cache](#cache-model-weights) for the model is ready. **Advanced: use custom S3/PVC location** takes an `s3://` or `pvc://` location that you manage yourself.
 - **Runtime**: filtered to the runtimes that support the selected type.
 
 | Model type | Available runtimes |
@@ -46,7 +47,84 @@ vLLM and vLLM Omni require a custom ClusterServingRuntime.
 
 If the model is gated on HuggingFace, the form warns you before deploying: accept the license on huggingface.co, create an access token, and store it as a Kubernetes Secret named `storage-config` with key `HF_TOKEN` in the workspace (see [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets)). Deployment fails without it.
 
-Select **Or edit YAML manifest directly** if the form does not cover a setting you need, such as a custom storage URI or extra container arguments.
+Select **Or edit YAML manifest directly** if the form does not cover a setting you need, such as extra container arguments.
+
+## Cache Model Weights
+
+Without a cache, every model pod downloads its weights from Hugging Face when it starts. For large models, this is slow and depends on Hugging Face being reachable, and it repeats for every redeploy and every new replica. Managed model caching downloads a preset's weights once into storage in the cluster. Later deployments load them from there.
+
+Caching is available for curated presets with a Hugging Face model. For custom models, store the weights yourself and use **Advanced: use custom S3/PVC location**.
+
+### Choose a Destination
+
+| Destination | Behavior |
+|---|---|
+| **Workspace S3** (default) | Stores the weights in the workspace bucket under `model-cache/`, by default `s3://<workspace>-data/model-cache/...`. Each model pod still copies the weights at startup, but from in-cluster storage instead of Hugging Face. Any number of replicas can use the same cache. |
+| **Dedicated PVC** | Available only when an administrator has enabled it. See [Model Cache PVCs](../admin/storage.html#model-cache-pvcs). Creates a new PersistentVolumeClaim that holds only this cache. KServe mounts the claim read-only into the model pods instead of copying the weights. |
+
+For a PVC cache, the access mode decides where replicas can run:
+
+- `ReadWriteOnce`: the claim attaches to one node at a time. All replicas must run on that node; a replica scheduled on another node cannot start.
+- `ReadWriteOncePod`: only one pod can use the claim, so the model is limited to one replica.
+- `ReadWriteMany`: replicas can run on several nodes, if the StorageClass supports it.
+
+If a model needs replicas on several nodes and no `ReadWriteMany` option is offered, use workspace S3.
+
+### Cache a Preset
+
+1. Open **LLM Serving**, select **Deploy Model**, and find the preset. Each cacheable preset card shows its cache status.
+2. Select **Cache this model**. The dialog shows the model, the Hugging Face revision it resolved to, and the file format.
+3. Under **Storage destination**, choose **Workspace S3** or **Dedicated PVC**. For a PVC, select the StorageClass, access mode, and claim size within the displayed limits.
+4. For a gated model, select a **Hugging Face credential**.
+5. Select **Start caching**.
+
+![Cache dialog with Dedicated PVC selected, showing StorageClass, access mode, and claim size](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/llm-serving/model-cache-dialog-pvc.png)
+
+The download runs as a Kubernetes Job in the workspace. The cache dialog lists only workspace Secrets labeled `prokube.ai/credential-type=huggingface` that store the token under the key `HF_TOKEN`. It does not use the `storage-config` Secret that direct deployments use. Create a labeled Secret with `kubectl`:
+
+```bash
+kubectl create secret generic hf-token -n <workspace> --from-literal=HF_TOKEN=<token>
+kubectl label secret hf-token -n <workspace> prokube.ai/credential-type=huggingface
+```
+
+Deployments from a ready cache do not need the token.
+
+The status on the preset card shows the state of the cache:
+
+![Preset cards with a Cached status and estimated size, and Not cached presets with a Cache this model button](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/llm-serving/model-cache-preset-status.png)
+
+| Status | Meaning |
+|---|---|
+| **Caching** | The download Job is running. |
+| **Cached** | The cache is ready. The card shows its estimated size. |
+| **Cached revision is stale** | The preset now points to a newer Hugging Face revision. Deployments from the cache still use the cached revision. Cache the model again to get the new one. |
+| **Cache failed** | The download failed. Open the cache details to read the logs. |
+
+Select the status to open **Model cache details**. It shows the destination and revision, and offers **View logs**, **Cancel** for a running download, and **Copy URI** for a ready cache.
+
+![Model cache details for a ready S3 cache with Copy URI, Delete cached weights, and Deploy from cache actions](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/llm-serving/model-cache-details.png)
+
+### Deploy from a Cache
+
+Select **Deploy from cache** in the cache details. You can also open the preset as usual: when a ready cache exists, **Model Weights Source** defaults to **Use cached weights (recommended)**. If the model has more than one ready cache, for example one in S3 and one on a PVC, select the one to use.
+
+![Model Weights Source in the deploy form with a PVC cache selected under Use cached weights](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/llm-serving/model-weights-source-cached.png)
+
+### Delete Cached Weights
+
+Deleting a model does not delete its cached weights, so the next deployment can reuse them. To free the storage, open the cache details, select **Delete cached weights**, and type the cache ID to confirm.
+
+- Cleanup is blocked while a model still uses the cache. Delete those models or deploy them from another source first.
+- For a PVC cache, the whole claim is deleted. Whether the underlying volume and its data are removed depends on the StorageClass reclaim policy.
+- A failed or cancelled cache keeps its partial data and cannot be reused or overwritten. Delete its cached weights before you cache the model again.
+
+![Delete cached weights dialog blocked because a deployed model still uses the cache](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/llm-serving/model-cache-cleanup-blocked.png)
+
+For an S3 cache, cleanup runs as a Kubernetes Job in the workspace, and the dialog shows the Job status and logs. For a PVC cache, the dialog shows the status of the claim deletion.
+
+![Cleanup in progress with the cleanup Job status and logs](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/llm-serving/model-cache-cleanup-logs.png)
+
+If cleanup fails or cannot be confirmed, some objects may already be deleted. The cleanup details show the next steps; for S3 caches, remove the remaining objects under the cache's prefix before you confirm manual cleanup.
 
 ## Advanced Configuration
 

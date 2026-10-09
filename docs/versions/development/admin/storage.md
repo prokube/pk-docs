@@ -49,6 +49,32 @@ Typical storage choices:
 | Databases | Use storage with snapshot/backup support and predictable latency. |
 | Model Serving | Large models should live in S3-compatible file storage or MLflow, with optional cache support where configured. |
 
+## Model Cache PVCs
+
+[LLM Serving](../agentops/llm_serving.html#cache-model-weights) caches preset model weights in workspace S3 by default. Dedicated PVC caches are off by default. To offer them, enable them in the pk-ui Helm values and allowlist each StorageClass with the access modes and sizes that users may request:
+
+```yaml
+marathon:
+  modelCache:
+    pvc:
+      enabled: true
+      storageClasses:
+        - name: fast-rwo
+          accessModes: [ReadWriteOnce]
+          minSize: 10Gi
+          maxSize: 2Ti
+          defaultSize: 100Gi
+```
+
+Each cache gets its own new claim; pkui never reuses existing claims. When you choose StorageClasses and access modes:
+
+- pkui does not check which access modes a StorageClass supports. List only modes that the provisioner supports.
+- A `ReadWriteOnce` cache keeps all replicas of a model on one node. Offer a `ReadWriteMany` class if users need replicas on several nodes.
+- The cache Job writes as a non-root user and relies on `fsGroup` to get write access to the new volume. The CSI driver must apply `fsGroup` ownership for the listed access modes.
+- When a user deletes a PVC cache, pkui deletes the claim. With a `Retain` reclaim policy, the PersistentVolume and its data remain until you remove them.
+
+LLM Serving must be enabled for model caching. In GitOps deployments, set these values in the `pkui` Argo CD Application under `spec.source.helm.valuesObject` in the GitOps branch, so that the next sync does not revert them.
+
 ## Troubleshooting PVCs
 
 | Symptom | Check |

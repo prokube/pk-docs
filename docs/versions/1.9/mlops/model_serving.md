@@ -268,9 +268,11 @@ kubectl get servingruntime,clusterservingruntime -A
 
 ## Local Model Cache
 
-Some KServe versions support local model cache resources for large S3-backed models. A local cache can reduce cold-start time by keeping model artifacts on selected nodes, but it is a cluster-level feature that requires administrator configuration and enough node-local storage.
+KServe's [local model cache](https://kserve.github.io/website/docs/model-serving/generative-inference/modelcache/localmodel) pre-downloads a model from its storage URI to local disks on a group of nodes. InferenceService pods on those nodes then start from the local copy instead of downloading the model. Use it to cut startup time for large models that are redeployed often or scaled out to many replicas.
 
-Use local cache only when the installed KServe version and platform configuration support it. Users should not assume that adding a large model to S3-compatible file storage automatically enables node-local caching.
+The local model cache is a cluster-level feature and is off by default. Administrators enable the KServe LocalModel controller and its node agent, which runs as a privileged DaemonSet. They also define the node groups and the models to cache, and provide enough node-local storage. Ask your administrator whether it is available. Storing a large model in S3-compatible file storage does not enable node-local caching on its own.
+
+This is not the same as [managed model caching in LLM Serving](../agentops/llm_serving.html#cache-model-weights). Managed caching copies a preset's weights from Hugging Face into workspace S3 or a dedicated PVC, and workspace users start it from the UI.
 
 ## Troubleshooting
 
