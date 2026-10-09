@@ -69,7 +69,7 @@ marathon:
 Each cache gets its own new claim; pkui never reuses existing claims. When you choose StorageClasses and access modes:
 
 - pkui does not check which access modes a StorageClass supports. List only modes that the provisioner supports.
-- A `ReadWriteOnce` cache keeps all replicas of a model on one node. Offer a `ReadWriteMany` class if users need replicas on several nodes.
+- A `ReadWriteOnce` cache can be mounted on only one node at a time, and pkui does not schedule a model's replicas onto that node. Replicas that land on other nodes cannot start. Offer a `ReadWriteMany` class if users need several replicas.
 - The cache Job writes as a non-root user and relies on `fsGroup` to get write access to the new volume. The CSI driver must apply `fsGroup` ownership for the listed access modes.
 - When a user deletes a PVC cache, pkui deletes the claim. With a `Retain` reclaim policy, the PersistentVolume and its data remain until you remove them.
 
