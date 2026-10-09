@@ -164,6 +164,10 @@ Live view is only available for servers that declare live-view support in the ca
 
 ## Troubleshooting
 
+Most checks start on the server's details page: **Events** show scheduling and image pull problems, and **Logs** show startup and tool call errors.
+
+![Logs tab on the MCP server details page](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/playwright-details-logs.png)
+
 | Symptom | Check |
 |---|---|
 | Server stays `Pending` | Open the details page and check **Events** and **Logs**. Also verify image pull credentials and workspace quota. |
@@ -172,8 +176,6 @@ Live view is only available for servers that declare live-view support in the ca
 | Required configuration is missing | Check the catalog entry's required environment variables and provide direct values or Secret references. |
 | Client cannot connect | Confirm the server is `Running`, copy the current URL, and verify the API key is scoped to the MCP server. |
 | Tool calls fail after connecting | Check server logs, required upstream credentials, workspace network policy, and whether the tool depends on an external service. |
-
-![MCP server logs for a browser automation server](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/playwright-details-logs.png)
 
 ## Related Pages
 
