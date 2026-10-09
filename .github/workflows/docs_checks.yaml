@@ -1,0 +1,101 @@
+name: Docs Checks
+
+on:
+  pull_request:
+    paths:
+      - "docs/**"
+      - "scripts/**"
+      - ".vale.ini"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/docs_checks.yaml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # VitePress fails the build on dead internal links.
+      - name: Build documentation
+        run: npm run build
+
+  content:
+    name: Content checks
+    runs-on: ubuntu-latest
+    env:
+      VALE_VERSION: 3.24.0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Test enumeration scanner
+        run: node scripts/enumeration_stats.test.mjs
+
+      - name: Collect changed docs
+        id: changed
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git diff --name-only --diff-filter=AMR "origin/${BASE_REF}...HEAD" -- 'docs/*.md' 'docs/**/*.md' \
+            | grep -v '^docs/.vitepress/' > changed.txt || true
+          echo "count=$(wc -l < changed.txt | tr -d ' ')" >> "$GITHUB_OUTPUT"
+          cat changed.txt
+
+      - name: Install Vale
+        if: steps.changed.outputs.count != '0'
+        run: |
+          curl -sSfL "https://github.com/vale-cli/vale/releases/download/v${VALE_VERSION}/vale_${VALE_VERSION}_Linux_64-bit.tar.gz" \
+            | tar -xz -C /usr/local/bin vale
+          vale sync
+
+      - name: AI phrase guards
+        if: always() && steps.changed.outputs.count != '0'
+        run: |
+          mapfile -t files < changed.txt
+          vale --output=JSON "${files[@]}" > vale.json || true
+          jq -r 'to_entries[] | .key as $f | .value[]
+            | "::error file=\($f),line=\(.Line),col=\(.Span[0]),title=\(.Check)::\(.Message)"' vale.json
+          test "$(jq '[.[][]] | length' vale.json)" -eq 0
+
+      # Advisory only: some dense sentences are justified, e.g. a list of supported algorithms.
+      - name: Dense enumerations (advisory)
+        if: always() && steps.changed.outputs.count != '0'
+        run: |
+          mapfile -t files < changed.txt
+          node scripts/enumeration_stats.mjs --annotate "${files[@]}"
+          node scripts/enumeration_stats.mjs --json "${files[@]}" > enumerations.json
+          {
+            echo "## Inline enumerations in changed docs"
+            echo
+            echo "Prose only; bullets and tables are not counted. A sentence is **dense** when one list has 5+ items or it holds 2+ lists."
+            echo "Reference: human-written prokube v1.5.0 docs have about 0.3 dense sentences per 1000 prose words. Advisory, never fails."
+            echo
+            echo "| File | Prose sentences | With a list | Saturation | Dense |"
+            echo "|---|---:|---:|---:|---:|"
+            jq -r '.[] | "| `\(.file)` | \(.sentences) | \(.enumeratedSentences) | \(if .saturation == null then "-" else "\(.saturation | round)%" end) | \(.denseCount) |"' enumerations.json
+            echo
+            jq -r 'if any(.[]; .denseCount > 0) then "### Dense sentences\n" else empty end' enumerations.json
+            jq -r '.[] | .file as $f | .dense[] | "- `\($f):\(.line)` (\(.reason)): \(.sentence)"' enumerations.json
+          } >> "$GITHUB_STEP_SUMMARY"
