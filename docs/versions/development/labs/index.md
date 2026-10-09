@@ -14,9 +14,10 @@ In addition to preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md), 
 
 ## When to Use Labs
 
-Use a Lab when you need a browser IDE with workspace storage and credentials already set up, want to experiment on the same CPUs, GPUs, and volumes as production workloads, or want to test platform integrations before packaging them for repeatable use.
-
-Labs are also a controlled place for coding agents: agent-driven code changes run in the workspace instead of on your machine, and sessions keep running when your laptop is closed or disconnected.
+- You want a browser IDE with workspace storage and credentials already set up.
+- You want coding agents to change code in the workspace instead of on your machine, and keep running when your laptop is closed or disconnected.
+- You want to experiment on the same CPUs, GPUs, and volumes that production workloads use.
+- You want to test platform integrations before packaging them for repeatable use.
 
 ## Available Environments
 
@@ -97,7 +98,7 @@ For additional packages, prefer installs that write into the persistent home dir
 - use [Poetry in-project virtual environments](https://python-poetry.org/docs/configuration/#virtualenvsin-project) when working with Poetry projects;
 - use [conda environments with an explicit prefix](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#specifying-a-location-for-an-environment), for example under `/home/jovyan/envs` or your project directory.
 
-Keep dependency files such as `requirements.txt`, `pyproject.toml`, or `renv.lock` with your project. For team workflows or system-level dependencies, create a [Custom Notebook](custom_notebooks.md) image.
+Keep dependency files such as `requirements.txt`, `pyproject.toml`, `environment.yml`, or `renv.lock` with your project. For team workflows or system-level dependencies, create a [Custom Notebook](custom_notebooks.md) image.
 
 For large datasets, shared artifacts, pipeline outputs, and model files, prefer S3-compatible file storage over the workspace volume. Workspace volumes are useful for interactive work, but S3-backed storage is the better integration point for pipelines, MLflow, and model serving. For a platform-wide comparison, see [File Storage](../platform/file_storage.md).
 
