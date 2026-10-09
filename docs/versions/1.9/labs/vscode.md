@@ -38,14 +38,6 @@ After the Lab starts, open it from the Labs table. The browser session connects 
 
 ![VS Code Lab](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/labs/vscode/vs-code-welcome.png)
 
-### Browser Notes
-
-Browser-based VS Code needs the browser to forward editor shortcuts and terminal input to the web app. If shortcuts such as `Command+Shift+P` for the command palette do not reach VS Code, or if pasting into the integrated terminal behaves inconsistently, try Chrome. We have had the most reliable results with Chrome for browser-based VS Code Labs.
-
-In Firefox, disabling **Enhanced Tracking Protection** for the Lab page can help with terminal paste behavior and keyboard handling.
-
-<img class="pk-docs-small-screenshot" src="https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/labs/vscode/firefox-enhanced-tracing-prection.png" alt="Disable Firefox Enhanced Tracking Protection" />
-
 Typical first steps:
 
 ```bash
@@ -63,6 +55,14 @@ The exact tools available depend on the selected image. prokube-maintained image
 - the Docker CLI with Buildx for remote image builds.
 
 VS Code Labs use the same persistence and package-installation model as other Labs. See [Using Labs](index.md#persistence-and-package-installation) for the shared storage rules and [Custom Notebooks](custom_notebooks.md) for repeatable image-based environments.
+
+### Browser Notes
+
+Browser-based VS Code needs the browser to forward editor shortcuts and terminal input to the web app. If shortcuts such as `Command+Shift+P` for the command palette do not reach VS Code, or if pasting into the integrated terminal behaves inconsistently, try Chrome. We have had the most reliable results with Chrome for browser-based VS Code Labs.
+
+In Firefox, disabling **Enhanced Tracking Protection** for the Lab page can help with terminal paste behavior and keyboard handling.
+
+<img class="pk-docs-small-screenshot" src="https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/labs/vscode/firefox-enhanced-tracing-prection.png" alt="Disable Firefox Enhanced Tracking Protection" />
 
 ## Platform Workflows from VS Code
 
