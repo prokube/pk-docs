@@ -22,7 +22,7 @@ const baseSidebar: SidebarItem[] = [
     text: 'Labs',
     collapsed: false,
     items: [
-      { text: 'Using Labs', link: '/labs/' },
+      { text: 'Overview', link: '/labs/' },
       { text: 'JupyterLab', link: '/labs/jupyterlab.html' },
       { text: 'VS Code', link: '/labs/vscode.html' },
       { text: 'RStudio', link: '/labs/rstudio.html' },
