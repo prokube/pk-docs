@@ -38,7 +38,7 @@ In the prokube UI, click your user icon in the top-right corner and open the reg
 
 ![Registry credentials](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/labs/custom-image/registry-credentials-ui.png)
 
-Registry credentials are stored as Kubernetes `Secret`s in the workspace. Edit and view contributors of that workspace can read Kubernetes `Secret`s in the namespace, so use registry credentials intended for that workspace rather than personal or admin credentials.
+Registry credentials are stored as Kubernetes `Secret`s in the workspace. Workspace owners and edit contributors can read Kubernetes `Secret`s in the namespace, so use registry credentials intended for that workspace rather than personal or admin credentials.
 
 For the Kubernetes-level behavior of image pull credentials, see [Registry Credentials](../platform/kubernetes.md#registry-credentials).
 

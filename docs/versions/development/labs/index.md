@@ -45,7 +45,7 @@ The active workspace determines which namespace, storage, credentials, and acces
 ![Workspace selection](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/labs/labs-workspace-selection.png)
 
 ::: warning Secrets are workspace-visible
-Each workspace has its own Kubernetes namespace. Edit and view contributors can read Kubernetes `Secret`s in that namespace, including secrets used by Labs, PodDefaults, pipelines, model-serving workloads, or manually created `kubectl create secret ...` resources.
+Each workspace has its own Kubernetes namespace. Workspace owners and edit contributors can read Kubernetes `Secret`s in that namespace, including secrets used by Labs, PodDefaults, pipelines, model-serving workloads, or manually created `kubectl create secret ...` resources. View contributors cannot read `Secret`s.
 
 Do not put personal access tokens, admin credentials, cloud root keys, or other broad credentials into a workspace that other people can access. For team work, use a shared workspace with credentials intended for that team and workload.
 :::
