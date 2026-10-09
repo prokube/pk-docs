@@ -4,10 +4,6 @@ AgentOps in prokube covers the operational path for building, connecting, exposi
 
 Use [Labs](../labs/index.md) for interactive development and debugging. Use AgentOps when an agent should run as a managed workspace workload rather than inside an interactive session.
 
-::: info Roadmap
-The existing Sandbox integration is retired and is not a supported feature in prokube 1.9 or pkui 0.6.0. A from-scratch replacement is planned, but no timeline or UI, API, or deployment contract is established. See [pkui issue #4433](https://github.com/prokube/pkui/issues/4433).
-:::
-
 ## Main Workflows
 
 | Workflow | Use |
