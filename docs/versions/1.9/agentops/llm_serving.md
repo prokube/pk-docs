@@ -74,13 +74,19 @@ If a model needs replicas on several nodes and no `ReadWriteMany` option is offe
 
 1. Open **LLM Serving**, select **Deploy Model**, and find the preset. Each cacheable preset card shows its cache status.
 2. Select **Cache this model**. The dialog shows the model, the Hugging Face revision it resolved to, and the file format.
-3. Under **Storage destination**, choose **Workspace S3** or **Dedicated PVC**. For a PVC, select the StorageClass, access mode, and claim size within the displayed limits.
-4. For a gated model, select a **Hugging Face credential**.
+3. If an administrator has enabled PVC caches, the dialog shows **Storage destination**. Choose **Workspace S3** or **Dedicated PVC**. For a PVC, select the StorageClass, access mode, and claim size within the displayed limits. Otherwise, the cache goes to workspace S3.
+4. For a gated model, the dialog shows a **Hugging Face credential** field. Select the Secret that holds your token. See [Gated Models](#gated-models).
 5. Select **Start caching**.
 
 ![Cache dialog with Dedicated PVC selected, showing StorageClass, access mode, and claim size](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/llm-serving/model-cache-dialog-pvc.png)
 
-The download runs as a Kubernetes Job in the workspace. The cache dialog lists only workspace Secrets labeled `prokube.ai/credential-type=huggingface` that store the token under the key `HF_TOKEN`. It does not use the `storage-config` Secret that direct deployments use. Create a labeled Secret with `kubectl`:
+The download runs as a Kubernetes Job in the workspace.
+
+#### Gated Models
+
+Some Hugging Face models, such as Llama and Gemma, are gated: you must accept the model's license on huggingface.co, and downloads need an access token. Public models need no token, and the dialog does not show the credential field for them.
+
+To cache a gated model, store your token in a workspace Secret with the key `HF_TOKEN` and the label `prokube.ai/credential-type=huggingface`. The credential field lists only Secrets with this label. It does not offer the `storage-config` Secret that direct deployments from Hugging Face use. Create the Secret with `kubectl`:
 
 ```bash
 kubectl create secret generic hf-token -n <workspace> --from-literal=HF_TOKEN=<token>
