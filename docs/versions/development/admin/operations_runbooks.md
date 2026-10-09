@@ -4,6 +4,18 @@ This page collects operational procedures that are useful for administrators run
 
 Run these procedures only when you understand the deployment topology, GitOps setup, and backup state. Several steps are destructive if applied to the wrong namespace, tenant, or cluster.
 
+## Find a Runbook
+
+| Operational area | Tasks |
+| --- | --- |
+| MinIO storage | [Bucket policies](#buckets-and-policies), [lifecycle rules](#lifecycle-rules), [upload 413 errors](#large-uploads-and-413-errors) |
+| MinIO maintenance | [TLS certificates](#minio-tls-certificates), [tenant resize or storage migration](#tenant-resize-or-storageclass-migration) |
+| Identity and login | [Keycloak bootstrap](#keycloak-bootstrap-and-advanced-iam), [login 502 errors](#login-502-from-large-response-headers) |
+| Cluster certificates | [MicroK8s certificate maintenance](#microk8s-certificate-maintenance) |
+| Workspace defaults | [Global registry credentials](#global-registry-credentials), [resource quotas](#workspace-resource-quotas) |
+| Metrics and logs | [Grafana dashboards](#grafana), [Prometheus queries](#prometheus), [Loki log search](#loki) |
+| Alerts and workload failures | [Alert routing](#alertmanager), [KServe and Knative alerts](#kserve-and-knative-service-alerts), [Katib controller OOM](#katib-suggestion-controller-oom) |
+
 ## MinIO Administration
 
 For MinIO concepts and API details, use the upstream [MinIO documentation](https://docs.min.io/community/minio-object-store/). In prokube, user-facing file operations normally happen through the [File Storage](../platform/file_storage.md) page. Use the MinIO Console for administration tasks that the prokube UI does not expose.
