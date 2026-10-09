@@ -2,6 +2,10 @@
 
 Labs are browser-based development environments with access to the compute resources, storage, credentials, and platform tools available in your workspace.
 
+::: info Kubeflow Notebooks documentation
+Upstream reference: [Kubeflow Notebooks documentation](https://www.kubeflow.org/docs/components/notebooks/)
+:::
+
 You can work in a Lab without setting up a local development environment first. From a Lab, you reach other prokube tools programmatically through `kubectl`, SDKs, CLIs, and APIs. For example, you can launch pipelines, run hyperparameter tuning or distributed computing experiments, develop MCP servers, and test agent workflows.
 
 In addition to preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md), and [RStudio](rstudio.md) images, Labs support AI-assisted coding: GitHub Copilot in VS Code, and [OpenCode](opencode.md) as a dedicated coding agent.
@@ -10,10 +14,9 @@ In addition to preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md), 
 
 ## When to Use Labs
 
-- You want a browser IDE with workspace storage and platform credentials already available.
-- You want coding agents to run in a controlled workspace that keeps working when your laptop is closed or disconnected, instead of executing agent-driven code changes on your own machine.
-- You need to run experiments against the same cluster resources used by production workloads, including CPUs, GPUs, and persistent volumes.
-- You want to develop and test platform integrations from inside the workspace before packaging them for repeatable or production use.
+Use a Lab when you need a browser IDE with workspace storage and credentials already set up, want to experiment on the same CPUs, GPUs, and volumes as production workloads, or want to test platform integrations before packaging them for repeatable use.
+
+Labs are also a controlled place for coding agents: agent-driven code changes run in the workspace instead of on your machine, and sessions keep running when your laptop is closed or disconnected.
 
 ## Available Environments
 
@@ -29,12 +32,7 @@ In addition to preconfigured [JupyterLab](jupyterlab.md), [VS Code](vscode.md), 
 
 Labs are built on [Kubeflow Notebooks](https://www.kubeflow.org/docs/components/notebooks/) and run inside your [prokube workspace](../platform/workspaces.md). Each Lab gets its own [Kubernetes Pod](https://kubernetes.io/docs/concepts/workloads/pods/), resource limits, and mounted storage.
 
-On top of Kubeflow Notebooks, prokube adds:
-
-- **Curated images**: prokube-maintained `pk-*` images with tools such as `rclone` and Docker Buildx preinstalled.
-- **Platform credentials**: workspace settings such as the file storage configuration are available inside the Lab.
-- **Storage defaults**: the workspace volume is mounted as the Lab home directory.
-- **Workspace integration**: the Lab runs in the workspace namespace and can reach other workspace services through `kubectl`, SDKs, and APIs.
+prokube provides curated `pk-*` images with tools such as `rclone` and Docker Buildx preinstalled, mounts the workspace volume as the Lab home directory, and makes workspace settings such as the file storage configuration available inside the Lab.
 
 ## Workspaces
 
@@ -54,20 +52,12 @@ See [Workspaces](../platform/workspaces.md) for access levels and shared workspa
 
 ## Launch Options
 
-When you launch a Lab, the same basic options apply across all Lab types:
+All Lab types share the same launch options:
 
-- **Name**: identifies the Lab in your workspace.
 - **Image**: selects the IDE, language stack, preinstalled packages, and system tools.
-- **Compute resources**: configures CPU, memory, and GPU resources for the Lab pod.
-- **Storage**: attaches the workspace volume and optional data volumes.
-- **Configurations**: applies administrator-provided options such as environment variables, secrets, labels, tolerations, or node affinity settings.
-- **Security options**: enables the hardening options available in your platform installation.
-
-Key concepts apply across all Lab types:
-
-- **Workspace storage**: files under the Lab home directory are backed by a [persistent volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and survive restarts. In the default images this is the `jovyan` user's home directory, usually `/home/jovyan`. A persistent volume can be mounted by other Labs or other pods, but the default storage class is commonly `ReadWriteOnce`: in multi-node clusters, the same volume can usually only be mounted read-write by pods on one node at a time.
-- **Data volumes**: additional volumes can be mounted when you need shared datasets or larger working directories. Use S3-compatible file storage or a storage class with the required access mode when multiple pods need concurrent access across nodes.
-- **Ephemeral container state**: changes outside mounted volumes should be treated as temporary. If you need extra tools, install them into the persistent home directory with user-space package managers where available, or move them into a custom image.
+- **Compute resources**: CPU, memory, and GPU for the Lab pod.
+- **Storage**: the workspace volume, plus optional data volumes for shared datasets or larger working directories. See [Persistence and Package Installation](#persistence-and-package-installation) for what survives restarts and how volumes can be shared.
+- **Configurations** and **Security options**: administrator-provided pod settings. See [Advanced Configuration](#advanced-configuration).
 
 ## Managing Labs
 
@@ -77,8 +67,7 @@ Some deployments stop idle JupyterLab servers automatically, which is called not
 
 Common lifecycle operations:
 
-- **Stop**: stops the Lab pod and releases compute resources. Files on mounted persistent volumes remain.
-- **Start**: creates the Lab pod again from the configured image, resources, and volumes.
+- **Stop** and **Start**: Stop deletes the Lab pod and releases compute resources; Start creates it again from the same configuration. Files on mounted persistent volumes remain.
 - **Delete**: removes the Lab server object and pod. Mounted volumes are not necessarily deleted with it; delete unused volumes separately when you no longer need the data.
 - **Edit**: changes the image, compute resources, volumes, configurations, or security options of an existing Lab. A running Lab restarts to apply the change, so save your work first: files outside mounted volumes are lost.
 - **Recreate**: for changes that Edit does not cover, such as the Lab name or type, create a new Lab. To keep your home directory, attach the old Lab's persistent volume to the new one.
@@ -97,26 +86,22 @@ Administrators create these options with Kubeflow PodDefaults or equivalent note
 
 ## Persistence and Package Installation
 
-Files in the Lab home directory are backed by the workspace volume and survive Lab restarts. In the default images this is the `jovyan` user's home directory, usually `/home/jovyan`. This is the right place for notebooks, source code, configuration files, and cloned repositories.
+Files in the Lab home directory are backed by the workspace [persistent volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and survive Lab restarts. In the default images this is the `jovyan` user's home directory, usually `/home/jovyan`. This is the right place for notebooks, source code, configuration files, and cloned repositories.
 
-Changes outside mounted volumes are temporary. Whenever the Lab pod is recreated, including when you stop and start or edit the Lab, the following are lost:
-
-- Python packages installed into system locations
-- system packages installed inside the running container
-- background processes
+Changes outside mounted volumes are temporary. Whenever the Lab pod is recreated, including when you stop and start or edit the Lab, system-level Python and OS packages and running background processes are lost.
 
 For additional packages, prefer installs that write into the persistent home directory or project directory:
 
 - use pip's [user install mode](https://pip.pypa.io/en/stable/user_guide/#user-installs), for example `pip install --user`, for simple Python additions, provided the active Python environment loads user-site packages (isolated virtual environments usually do not);
 - use [uv project environments](https://docs.astral.sh/uv/concepts/projects/config/#project-environment-path) under the persistent workspace, for example the default `.venv` next to your project;
 - use [Poetry in-project virtual environments](https://python-poetry.org/docs/configuration/#virtualenvsin-project) when working with Poetry projects;
-- use [conda environments with an explicit prefix](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#specifying-a-location-for-an-environment), for example under `/home/jovyan/envs` or your project directory;
-- keep dependency files such as `requirements.txt`, `pyproject.toml`, `poetry.lock`, `environment.yml`, `package.json`, or `renv.lock` with your project;
-- create a [Custom Notebook](custom_notebooks.md) image for team workflows or system-level dependencies.
+- use [conda environments with an explicit prefix](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#specifying-a-location-for-an-environment), for example under `/home/jovyan/envs` or your project directory.
+
+Keep dependency files such as `requirements.txt`, `pyproject.toml`, or `renv.lock` with your project. For team workflows or system-level dependencies, create a [Custom Notebook](custom_notebooks.md) image.
 
 For large datasets, shared artifacts, pipeline outputs, and model files, prefer S3-compatible file storage over the workspace volume. Workspace volumes are useful for interactive work, but S3-backed storage is the better integration point for pipelines, MLflow, and model serving. For a platform-wide comparison, see [File Storage](../platform/file_storage.md).
 
-Do not use the same workspace volume from multiple running Labs at the same time unless your administrator has explicitly designed the storage setup for that pattern. Use separate data volumes or S3-compatible file storage for shared datasets and artifacts.
+The default storage class is commonly `ReadWriteOnce`: in multi-node clusters, a volume can usually be mounted read-write only by pods on one node at a time. Do not use the same workspace volume from multiple running Labs at the same time unless your administrator has designed the storage setup for that pattern. For shared datasets and artifacts, use S3-compatible file storage or a storage class with the required access mode.
 
 ## Installing Tools Without Root
 
