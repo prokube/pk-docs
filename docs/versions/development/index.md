@@ -7,7 +7,7 @@ pageClass: pk-docs-home-page
 
 Find the right prokube documentation for interactive development, agent workflows, ML workloads, and platform operations.
 
-prokube is a Kubernetes-native AI platform for teams that need to run AI workloads on infrastructure they control. It builds on [Kubeflow](https://www.kubeflow.org/) for notebooks, pipelines, and hyperparameter tuning, and adds open-source tools such as MLflow, KServe, and kagent. prokube integrates them into one platform with a common login, shared workspaces, storage, and observability. Administrators get tested upgrade paths for the whole stack.
+prokube is a Kubernetes-native AI platform for teams that need to run AI workloads on infrastructure they control. It builds on established open-source tools and integrates them into one platform with a common login, shared workspaces, storage, and observability. Administrators get tested upgrade paths for the whole stack.
 
 <div class="pk-docs-home-actions">
   <a href="./labs/" class="pk-docs-home-primary">Start with Labs</a>
