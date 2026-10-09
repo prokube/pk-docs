@@ -86,7 +86,7 @@ The download runs as a Kubernetes Job in the workspace.
 
 Some Hugging Face models, such as Llama and Gemma, are gated: you must accept the model's license on huggingface.co, and downloads need an access token. Public models need no token, and the dialog does not show the credential field for them.
 
-To cache a gated model, store your token in a workspace Secret with the key `HF_TOKEN` and the label `prokube.ai/credential-type=huggingface`. The credential field lists only Secrets with this label. It does not offer the `storage-config` Secret that direct deployments from Hugging Face use. Create the Secret with `kubectl`:
+To cache a gated model, store your token in a workspace Secret with the key `HF_TOKEN` and the label `prokube.ai/credential-type=huggingface`. The credential field lists only Secrets with this label, so the `storage-config` Secret that direct deployments from Hugging Face use does not appear unless you label it. Create the Secret with `kubectl`:
 
 ```bash
 kubectl create secret generic hf-token -n <workspace> --from-literal=HF_TOKEN=<token>
@@ -105,10 +105,10 @@ The status on the preset card shows the state of the cache:
 |---|---|
 | **Caching** | The download Job is running. |
 | **Cached** | The cache is ready. The card shows its estimated size. |
-| **Cached revision is stale** | The preset now points to a newer Hugging Face revision. Deployments from the cache still use the cached revision. Cache the model again to get the new one. |
+| **Cached revision is stale** | The preset now points to a newer Hugging Face revision. Models already deployed from the old cache keep running on it, but new deployments cannot use it. Select **Cache this model** to cache the current revision. |
 | **Cache failed** | The download failed. Open the cache details to read the logs. |
 
-Select the status to open **Model cache details**. It shows the destination and revision, and offers **View logs**, **Cancel** for a running download, and **Copy URI** for a ready cache.
+For **Caching**, **Cached**, and **Cache failed**, select the status to open **Model cache details**. It shows the destination and revision, and offers **View logs**, **Cancel** for a running download, and **Copy URI** for a ready cache.
 
 ![Model cache details for a ready S3 cache with Copy URI, Delete cached weights, and Deploy from cache actions](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/llm-serving/model-cache-details.png)
 
@@ -132,7 +132,7 @@ For an S3 cache, cleanup runs as a Kubernetes Job in the workspace, and the dial
 
 ![Cleanup in progress with the cleanup Job status and logs](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/llm-serving/model-cache-cleanup-logs.png)
 
-If cleanup fails or cannot be confirmed, some objects may already be deleted. The cleanup details show the next steps; for S3 caches, remove the remaining objects under the cache's prefix before you confirm manual cleanup.
+If cleanup fails, some objects may already be deleted. For a failed S3 cleanup, remove the remaining objects under the cache's prefix, then confirm manual cleanup in the dialog. If the dialog shows that the cleanup state is unknown, ask an administrator to check the cleanup Job and the cache record.
 
 ## Advanced Configuration
 
