@@ -198,9 +198,19 @@ docker buildx build \
   --push .
 ```
 
-The builder does not share registry credentials between users. Run `docker login` in your Lab before pushing. If platform workloads later need to pull the private image, add pull credentials to the workspace. See [Registry Credentials](../platform/kubernetes.md#registry-credentials).
+Run `docker login` in your Lab before pushing. The builder does not share your registry credentials with other users. If platform workloads later need to pull the private image, add pull credentials to the workspace. See [Registry Credentials](../platform/kubernetes.md#registry-credentials).
 
-The remote builder may cache build layers to speed up later builds. The cache is not a registry, so do not rely on it to keep images.
+The remote builder caches build layers to speed up later builds. The cache is not a registry, so do not rely on it to keep images.
+
+::: warning The builder is shared across workspaces
+All workspaces in the cluster use the same BuildKit service, and workspace boundaries do not apply to it:
+
+- Build history and build logs, including build arguments, image names, and push targets, can be listed and read from any workspace.
+- Layer caches and cache mounts (`RUN --mount=type=cache`) are shared between all users' builds. Another build that uses the same cache mount ID can read and change its contents.
+- Base images pulled with your registry credentials can stay in the cache and be reused by other users' builds.
+
+Do not put secrets into build arguments, Dockerfile instructions, or build output. Pass build-time credentials with `docker buildx build --secret`, which keeps their values out of the cache and the build history. Do not use the shared builder for source code, logs, or images that must stay hidden from other platform users.
+:::
 
 This setup is only for building and pushing images. It is not a container runtime: images cannot be started with `docker run` inside the Lab. Run workloads through Kubernetes resources, pipelines, model serving, or other platform runtimes instead.
 
