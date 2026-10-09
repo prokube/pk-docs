@@ -4,15 +4,33 @@ prokube bundles several upstream components. Use this page to find the versions 
 
 Do not assume that every prokube deployment runs the same component versions. Managed, self-managed, staging, and customer-specific deployments can differ.
 
-## Check the Platform Version
+## Release Defaults
 
-Many deployments expose the installed platform version through a `paas-version` ConfigMap:
+Component versions shipped with prokube 1.9:
+
+| Component | Version | `paas-version` key | Upstream docs |
+|---|---|---|---|
+| Kubeflow Manifests | 26.03.1 | `kubeflowManifestsVersion` | [Releases](https://github.com/kubeflow/manifests/releases) |
+| Kubeflow Pipelines backend | 2.16.1 | `kfpBackendVersion` | [Kubeflow Pipelines](https://www.kubeflow.org/docs/components/pipelines/) |
+| KFP SDK (recommended) | 2.15.0 | `kfpSdkVersion` | [KFP SDK](https://kubeflow-pipelines.readthedocs.io/) |
+| KServe | v0.18.0 | `kserveVersion` | [KServe](https://kserve.github.io/website/) |
+| MLflow | 3.10.0 | `mlflowVersion` | [MLflow](https://mlflow.org/docs/latest/) |
+
+The recommended KFP SDK version is pinned in the prokube notebook images. If you install a different version, make sure it is compatible with the KFP backend.
+
+These are release defaults. A deployment can differ, for example after an administrator switches the KServe source or upgrades a component separately. For releases before 1.9, see the [legacy component version matrix](https://docs.prokube.ai/latest/user_docs/component_versions/).
+
+## Check Your Deployment
+
+The prokube version is shown at the bottom of the pkui sidebar.
+
+The `paas-version` ConfigMap in the `prokube` namespace records the release defaults of the installed version. Reading it requires access to the `prokube` namespace, which usually only administrators have:
 
 ```bash
 kubectl get configmap paas-version -n prokube -o yaml
 ```
 
-If the namespace or ConfigMap is not present, ask your administrator for the deployment's release metadata. The source of truth is the deployment configuration and release artifacts used for that environment.
+If you cannot read it, ask your administrator.
 
 ## Check Component Versions
 
