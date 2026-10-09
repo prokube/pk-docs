@@ -8,13 +8,15 @@ Do not assume that every prokube deployment runs the same component versions. Ma
 
 Component versions shipped with prokube 1.9:
 
-| Component | Version | `paas-version` key | Upstream docs |
-|---|---|---|---|
-| Kubeflow Manifests | 26.03.1 | `kubeflowManifestsVersion` | [Releases](https://github.com/kubeflow/manifests/releases) |
-| Kubeflow Pipelines backend | 2.16.1 | `kfpBackendVersion` | [Kubeflow Pipelines](https://www.kubeflow.org/docs/components/pipelines/) |
-| KFP SDK (recommended) | 2.15.0 | `kfpSdkVersion` | [KFP SDK](https://kubeflow-pipelines.readthedocs.io/) |
-| KServe | v0.18.0 | `kserveVersion` | [KServe](https://kserve.github.io/website/) |
-| MLflow | 3.10.0 | `mlflowVersion` | [MLflow](https://mlflow.org/docs/latest/) |
+| Component | Version |
+|---|---|
+| [Kubeflow Manifests](https://github.com/kubeflow/manifests/releases) | 26.03.1 |
+| [Kubeflow Pipelines](https://www.kubeflow.org/docs/components/pipelines/) backend | 2.16.1 |
+| [KFP SDK](https://kubeflow-pipelines.readthedocs.io/) (recommended) | 2.15.0 |
+| [KServe](https://kserve.github.io/website/) | v0.18.0 |
+| [MLflow](https://mlflow.org/docs/latest/) | 3.10.0 |
+
+Each component name links to its upstream documentation.
 
 The recommended KFP SDK version is pinned in the prokube notebook images. If you install a different version, make sure it is compatible with the KFP backend.
 
@@ -30,7 +32,7 @@ The `paas-version` ConfigMap in the `prokube` namespace records the release defa
 kubectl get configmap paas-version -n prokube -o yaml
 ```
 
-If you cannot read it, ask your administrator.
+The prokube version is stored under `paasVersion`. The component keys match the table above, for example `kfpBackendVersion` and `kserveVersion`. If you cannot read the ConfigMap, ask your administrator.
 
 ## Check Component Versions
 
