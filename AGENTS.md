@@ -114,6 +114,12 @@ git worktree add worktrees/issue-<number> -b feature/issue-<number> origin/stagi
 - If creating a PR, include a short summary and the verification command that was run.
 - Only deploy manually when explicitly asked. A normal docs edit should end at build verification and, when requested, a PR.
 
+## Releases
+
+When cutting a docs version for a new prokube release, follow the release workflow in `README.md`, and also:
+
+- Update the **Release Defaults** table in `platform/component_versions.md` of the new version and of `development`. Take the values from `paas/prokube/base/paas_version_cm.yaml` in `prokube-release` at the release tag, and change the release number in the sentence above the table.
+
 ## Local Commands
 
 Use these from the repository root:
