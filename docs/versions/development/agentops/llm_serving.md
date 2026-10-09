@@ -95,6 +95,8 @@ kubectl label secret hf-token -n <workspace> prokube.ai/credential-type=huggingf
 
 Deployments from a ready cache do not need the token.
 
+### Monitor a Cache
+
 The status on the preset card shows the state of the cache:
 
 ![Preset cards with a Cached status and estimated size, and Not cached presets with a Cache this model button](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/llm-serving/model-cache-preset-status.png)
