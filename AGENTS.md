@@ -18,7 +18,8 @@ This repository contains the new public documentation site for prokube by prokub
 - Keep actual URLs unchanged, for example `https://prokube.ai/` and `https://docs.prokube.ai/`.
 - Use a sober, developer-friendly tone.
 - Be concise, specific, and information-dense; avoid marketing filler, AI buzzword-heavy phrasing, and non-value-adding side remarks.
-- Edit hard: remove throat-clearing, repetition, and sentences that do not help the reader act or decide.
+- Edit hard: remove throat-clearing and sentences that do not help the reader act or decide.
+- Write for human readers first. Repetition is acceptable when it keeps a section understandable on its own, such as a one-line reminder of a key constraint or a short recap before a task. Remove repetition that restates the same facts at length, or the same list in several places on a page; keep one full explanation and link to it.
 - Explain operational and security implications plainly.
 
 ## Content Guidelines
