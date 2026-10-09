@@ -222,7 +222,7 @@ The URI format:
 - `mlflow://models/<model-name>/<stage>` – stage alias (`staging`, `production`, `latest`)
 - `mlflow://runs/<run-id>/<artifact-path>` – run artifact
 
-A custom [`mlflow-storage-initializer`](https://github.com/prokube/prokube-images/tree/main/mlflow-storage-initializer) init container resolves these URIs by fetching the model artifact through the MLflow API with the credentials from the workspace's `mlflow-credentials` secret. **Import from MLflow** checks that this secret exists but does not create it.
+A custom `mlflow-storage-initializer` init container resolves these URIs by fetching the model artifact through the MLflow API with the credentials from the workspace's `mlflow-credentials` secret. **Import from MLflow** checks that this secret exists but does not create it.
 
 ## External Access
 
