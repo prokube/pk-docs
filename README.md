@@ -45,7 +45,7 @@ This site uses `vitepress-versioning-plugin` for documentation versions.
 
 - Full version snapshots live under `docs/versions/<version>/` and publish under `/docs/<version>/`.
 - The full docs trees are currently `docs/versions/development/` and `docs/versions/1.9/`.
-- The version selector currently lists `/docs/development/` and `/docs/1.9/`.
+- The version selector lists `/docs/development/`, `/docs/1.9/`, and a link for versions 1.8 and earlier at `https://docs.prokube.ai/`.
 - When switching versions, the selector keeps the current page path if that page exists in the target version, for example `/docs/development/labs/` switches to `/docs/1.9/labs/`.
 - `/docs/latest/` is an unlisted redirect-only alias to the latest released version, currently `/docs/1.9/`.
 - `/docs/` redirects to the latest released version, currently `/docs/1.9/`.
