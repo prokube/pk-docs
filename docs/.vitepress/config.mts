@@ -111,6 +111,7 @@ const versionSidebars = Object.fromEntries(
 export default defineVersionedConfig({
   title: 'prokube Docs',
   description: 'Documentation for prokube',
+  lang: 'en-CA',
   base,
   cleanUrls: false,
   lastUpdated: true,
@@ -124,6 +125,14 @@ export default defineVersionedConfig({
     }
   },
   themeConfig: {
+    lastUpdated: {
+      formatOptions: {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        forceLocale: true
+      }
+    },
     logo: {
       light: '/_static/prokube-logo-positive.svg',
       dark: '/_static/prokube-logo-negative.svg'
