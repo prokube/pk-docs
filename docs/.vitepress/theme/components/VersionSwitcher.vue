@@ -79,6 +79,9 @@ function targetFor(version: string) {
       >
         {{ version }}
       </a>
+      <a href="https://docs.prokube.ai/" target="_blank" rel="noopener noreferrer">
+        Versions 1.8 and earlier
+      </a>
     </div>
   </div>
 </template>
