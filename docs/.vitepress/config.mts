@@ -1,7 +1,7 @@
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import defineVersionedConfig from 'vitepress-versioning-plugin'
-import { latestReleasedVersion, visibleVersions } from './versions'
+import { developmentVersion, latestReleasedVersion, visibleVersions } from './versions'
 
 const base = process.env.VITEPRESS_BASE ?? '/docs/'
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -52,7 +52,8 @@ const baseSidebar: SidebarItem[] = [
       { text: 'Model Serving', link: '/mlops/model_serving.html' },
       { text: 'Serving Autoscaling', link: '/mlops/model_serving_autoscaling.html' },
       { text: 'Serverless', link: '/mlops/knative.html' },
-      { text: 'MLflow', link: '/mlops/mlflow.html' }
+      { text: 'MLflow', link: '/mlops/mlflow.html' },
+      { text: 'Feast', link: '/mlops/feast.html', versions: [developmentVersion] }
     ]
   },
   {
