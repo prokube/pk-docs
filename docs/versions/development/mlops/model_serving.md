@@ -224,6 +224,21 @@ The URI format:
 
 A custom `mlflow-storage-initializer` init container resolves these URIs by fetching the model artifact through the MLflow API with the credentials from the workspace's `mlflow-credentials` secret. **Import from MLflow** checks that this secret exists but does not create it.
 
+## In-Cluster Access
+
+Pods in the same workspace, such as a Lab, a pipeline step, or a transformer, can call a model directly by its Service name, without an API key:
+
+- Knative models (the default): `http://<inference-service-name>.<namespace>.svc.cluster.local`
+- Standard (RawDeployment) models: `http://<inference-service-name>-predictor.<namespace>.svc.cluster.local`
+
+Direct in-cluster calls are limited to the model's own workspace. prokube identifies the calling workspace from the pod's Istio sidecar, so:
+
+- pods in other workspaces get `403 forbidden: namespace mismatch` or `403 RBAC: access denied`;
+- pods without an Istio sidecar (`sidecar.istio.io/inject: "false"`) cannot call models directly, not even in their own workspace;
+- calls to a model pod's IP address are rejected; use the Service name.
+
+To call a model in another workspace, use the external URL with an API key, as described below.
+
 ## External Access
 
 To call a model endpoint from outside the cluster, you need an API key. Create one on the **API Keys** page, under **Serving** in the sidebar, and scope it to the model or to all serving models in the workspace. See [API Keys](../platform/api_keys.md) for details. This external path is served by [Agent Gateway](../platform/agent_gateway.html), the same routing layer used across MLOps and AgentOps.
@@ -286,6 +301,7 @@ Common causes:
 - **ModuleNotFoundError** – library version mismatch between training and serving runtime. See [Version Matching](#version-matching).
 - **Image pull errors** – verify the container image reference and registry credentials for custom predictors.
 - **401 Unauthorized** – missing or invalid API key. Create an API key on the **API Keys** page, under **Serving** in the sidebar.
+- **403 from an in-cluster call** – the caller is in another workspace, has no Istio sidecar, or calls a pod IP. See [In-Cluster Access](#in-cluster-access).
 - **Pods are running but the InferenceService is not ready** – check KServe conditions first. If the model and transformer pods look healthy but readiness does not progress, an administrator may need to inspect Knative Serving controller logs and route status.
 - **Model load timeout** – large models may need a longer Knative progress deadline or an administrator-configured local model cache. In YAML, set `serving.knative.dev/progress-deadline` under `spec.predictor.annotations` when supported by your cluster.
 - **Service IP range exhausted** – errors such as `failed to allocate a serviceIP: range is full` are cluster-level capacity issues. Ask an administrator to inspect stale Services, Knative revision garbage collection, and service CIDR capacity.
