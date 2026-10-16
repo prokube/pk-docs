@@ -107,6 +107,8 @@ If the key was created with the `x-api-key` format, send `-H "x-api-key: <api-ke
 
 Inside the cluster, call the Knative service directly through its internal URL (`<service-name>.<namespace>.svc.cluster.local`). From outside, requests to `/svc/serving/*` go through [Agent Gateway](../platform/agent_gateway.html) and require an API key. See [API Keys](../platform/api_keys.md) for details.
 
+The internal URL requires an Istio sidecar on the calling pod; pods with `sidecar.istio.io/inject: "false"` cannot reach it. Unlike [KServe models](model_serving.html#in-cluster-access), plain Knative services are not reliably isolated from pods in other workspaces. If a service handles sensitive data, add authentication in the service itself.
+
 From a Lab terminal, test the `hello` service with:
 
 ```sh
