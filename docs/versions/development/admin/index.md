@@ -21,6 +21,7 @@ Admin documentation is for people who install and operate a prokube deployment, 
 | [Application Networking](./application_networking.html) | Exposing custom applications through prokube gateways and Istio routing. |
 | [Application Authentication](./application_authentication.html) | Choosing gateway authentication or direct OIDC for custom applications. |
 | [External Models](./external_models.html) | Connecting centrally managed model providers and granting individual models to workspaces. |
+| [Sandboxes](./sandboxes.html) | Sandbox capacity, presets, default network rules, and platform admin access. |
 | [Storage](./storage.html) | Understanding StorageClasses, local storage, replicated storage, and PVC troubleshooting. |
 | [GPU Administration](./gpu.html) | Operating GPU nodes, NVIDIA GPU Operator, timeslicing, MIG, and GPU monitoring. |
 | [Backup and Restore](./backup_restore.html) | Disaster-recovery scope, backup storage, restore expectations, and validation. |
