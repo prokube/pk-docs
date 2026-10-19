@@ -92,7 +92,7 @@ Templates are immutable, and sandboxes keep the template they were created from.
 
 ## Access
 
-Every 30 seconds, the policy sync turns Keycloak roles into Substrate access policies, with one Atespace per workspace:
+The policy sync turns workspace roles and platform admins into Substrate access policies, with one Atespace per workspace. It reads them from the Kubeflow Profiles and Contributors and the ConfigMap `iam/platform-admins`, which the Keycloak event listener keeps in step with Keycloak, so a role change applies within about a second:
 
 | Who | Substrate role |
 |---|---|
@@ -101,7 +101,7 @@ Every 30 seconds, the policy sync turns Keycloak roles into Substrate access pol
 | Pods running as the workspace's `default-editor` service account | `editor` of the workspace's Atespace |
 | Platform admins: Keycloak role `realm-admin`, which the group `pk-admin` grants | global `owner`: every sandbox of every workspace |
 
-To make someone a platform admin, add them to `pk-admin` on the [User Management](./user_management.html) page. Users who lose the role, or are disabled or deleted, are removed again. The sync leaves other members of the global access policy alone, so grant service accounts, users of other login connectors, or global `viewer` access by hand with `kubectl ate get access-policy --global -o yaml` and `kubectl ate update access-policy --global -f <file>`.
+To make someone a platform admin, add them to `pk-admin` on the [User Management](./user_management.html) page. Users who lose the role or are deleted are removed again. The sync leaves other members of the global access policy alone, so grant service accounts, users of other login connectors, or global `viewer` access by hand with `kubectl ate get access-policy --global -o yaml` and `kubectl ate update access-policy --global -f <file>`.
 
 Every workspace member is also a `viewer` of the Atespace `sandbox-templates`, which holds the presets' templates. The policy sync overwrites manual changes to workspace Atespaces.
 
