@@ -8,7 +8,7 @@ For Agent Substrate concepts that are not specific to prokube, use the upstream 
 - [gVisor](https://gvisor.dev/)
 :::
 
-A sandbox is an isolated Linux environment in your workspace for running code and coding agents. It runs in gVisor and reaches only the network destinations you allow.
+A sandbox is an isolated Linux environment in your workspace for running code and coding agents. It runs in gVisor and reaches only the network destinations you allow. Creating a sandbox and resuming a suspended one typically take well under a second.
 
 Use a sandbox for agent-generated or untrusted code, for a coding agent that needs its own machine, or for short-lived environments that your code creates and deletes. Use [Labs](../labs/index.md) when you want an IDE or notebooks.
 
@@ -157,10 +157,41 @@ with SandboxClient() as client:      # the pod's own workspace
 
 The pod acts as the workspace's `default-editor` service account. It is an editor of its own workspace and has no access to other workspaces.
 
+## Give Agents Sandbox Tools over MCP
+
+`pk sandbox mcp` is an MCP server that gives agents tools to manage sandboxes, run commands, and read and write files. Locally it speaks stdio and uses your `pk login`. Add it to Claude Code:
+
+```bash
+claude mcp add sandbox -- pk sandbox mcp
+```
+
+Or to opencode, in `opencode.json`:
+
+```json
+{
+  "mcp": {
+    "sandbox": { "type": "local", "command": ["pk", "sandbox", "mcp"] }
+  }
+}
+```
+
+To offer the tools to agents in a workspace, run `pk sandbox mcp` there as an [MCP server](mcp_servers.md); the [`mcp-server` example](https://github.com/prokube/examples/tree/sandboxv3/main/sandboxes/mcp-server) has the manifest. Every caller then acts as the workspace, on its sandboxes only, and Agent Gateway decides who may call the server.
+
+## Examples
+
+The [sandbox examples](https://github.com/prokube/examples/tree/sandboxv3/main/sandboxes) in `prokube/examples`:
+
+- [`parallel-sandboxes`](https://github.com/prokube/examples/tree/sandboxv3/main/sandboxes/parallel-sandboxes): run a test in 20 sandboxes at once.
+- [`langgraph-data-analysis`](https://github.com/prokube/examples/tree/sandboxv3/main/sandboxes/langgraph-data-analysis): a LangGraph agent with sandbox tools built on the SDK.
+- [`mcp-server`](https://github.com/prokube/examples/tree/sandboxv3/main/sandboxes/mcp-server): the same tools over MCP, in the workspace and on a laptop.
+- [`claude-code-worker`](https://github.com/prokube/examples/tree/sandboxv3/main/sandboxes/claude-code-worker): Claude Code headless in a sandbox, with the API key injected at egress.
+- [`opencode-server`](https://github.com/prokube/examples/tree/sandboxv3/main/sandboxes/opencode-server): an opencode server in a sandbox, attached from a laptop.
+
 ## Related Pages
 
 - [Sandbox Administration](../admin/sandboxes.md)
 - [Workspaces](../platform/workspaces.md)
 - [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets)
+- [MCP Servers](mcp_servers.md)
 - [OpenCode](../labs/opencode.md)
 - [prokube-sdk on GitHub](https://github.com/prokube/prokube-sdk)
