@@ -143,6 +143,18 @@ with SandboxClient("https://<your-prokube-domain>", "<workspace>") as client:
 
 `AsyncSandboxClient` offers the same methods for `asyncio`.
 
+`set_network` replaces a sandbox's network rules, and `inject` adds a [credential](#credentials) from a labelled Secret:
+
+```python
+from prokube.sandbox import inject, passthrough
+
+key = client.secret_uri("openai", "api-key")
+client.set_network("demo", [
+    inject("api.openai.com", "Authorization", key, prefix="Bearer "),
+    passthrough("pypi.org", "files.pythonhosted.org"),
+])
+```
+
 ### From a Workspace Pod
 
 Notebooks, pipeline steps, and agents in a workspace can use its sandboxes without a login. Select **Allow access to sandboxes** under **Configurations** when you launch a Lab, or add the label `access-sandboxes: "true"` to other pods. Install the SDK with `pip install 'prokube-sdk @ git+https://github.com/prokube/prokube-sdk.git'`, then:
