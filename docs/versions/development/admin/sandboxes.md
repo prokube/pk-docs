@@ -92,48 +92,24 @@ Templates are immutable, and sandboxes keep the template they were created from.
 
 ## Access
 
-Every 30 seconds, the policy sync turns workspace roles from Keycloak into Substrate access policies, one Atespace per workspace:
+Every 30 seconds, the policy sync turns Keycloak roles into Substrate access policies, with one Atespace per workspace:
 
-| Workspace role (Keycloak role) | Substrate role in the workspace's Atespace |
+| Who | Substrate role |
 |---|---|
-| Owner (`pk:<workspace>`) or editor (`pk:edit:<workspace>`) | `editor`: create, change, and use sandboxes |
-| Viewer (`pk:view:<workspace>`) | `viewer`: list sandboxes and see their settings |
-| Pods running as the workspace's `default-editor` service account | `editor` |
+| Workspace owner (`pk:<workspace>`) or editor (`pk:edit:<workspace>`) | `editor` of the workspace's Atespace: create, change, and use sandboxes |
+| Workspace viewer (`pk:view:<workspace>`) | `viewer` of the workspace's Atespace: list sandboxes and see their settings |
+| Pods running as the workspace's `default-editor` service account | `editor` of the workspace's Atespace |
+| Platform admins: Keycloak role `realm-admin`, which the group `pk-admin` grants | global `owner`: every sandbox of every workspace |
 
-Every workspace member is also a `viewer` of the Atespace `sandbox-templates`, which holds the presets' templates. The policy sync overwrites manual changes to workspace Atespaces; grant additional access through the global access policy.
+To make someone a platform admin, add them to `pk-admin` on the [User Management](./user_management.html) page. Users who lose the role, or are disabled or deleted, are removed again. The sync leaves other members of the global access policy alone, so grant service accounts, users of other login connectors, or global `viewer` access by hand with `kubectl ate get access-policy --global -o yaml` and `kubectl ate update access-policy --global -f <file>`.
+
+Every workspace member is also a `viewer` of the Atespace `sandbox-templates`, which holds the presets' templates. The policy sync overwrites manual changes to workspace Atespaces.
 
 Sandboxes can use only the Secrets of their own workspace that carry the label `prokube.ai/sandbox-credential=true`.
 
 ## Admin View
 
-Members of the `pk-admin` group (Keycloak role `realm-admin`) with Substrate global `owner` open **Sandboxes** under **Admin** to see worker capacity and usage and to suspend, resume, or delete sandboxes of every workspace.
-
-## Grant Platform Admins Access
-
-Substrate does not know Keycloak's admin roles. Until the policy sync grants them automatically, add each platform admin to Substrate's global access policy as `owner` by hand. It takes effect on the admin's next request.
-
-1. Copy the admin's user ID from the Keycloak admin console (realm `prokube`, **Users**).
-2. Compute the subject that the platform login puts into the admin's token:
-
-   ```bash
-   python3 -c 'import base64, sys; i = sys.argv[1].encode(); print(base64.urlsafe_b64encode(b"\n" + bytes([len(i)]) + i + b"\x12\x08keycloak").rstrip(b"=").decode())' <keycloak-user-id>
-   ```
-
-3. Create the global access policy with that subject:
-
-   ```bash
-   cat > global-policy.yaml <<'EOF'
-   metadata:
-     name: default
-   bindings:
-   - role: owner
-     members:
-     - user:<subject from step 2>
-   EOF
-   kubectl ate create access-policy --global -f global-policy.yaml
-   ```
-
-   If the policy exists already, get it with `kubectl ate get access-policy --global -o yaml`, add the member, and apply it with `kubectl ate update access-policy --global -f global-policy.yaml`.
+Platform admins open **Sandboxes** under **Admin** to see worker capacity and usage and to suspend, resume, or delete sandboxes of every workspace.
 
 ## Use kubectl ate
 
