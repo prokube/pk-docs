@@ -99,11 +99,16 @@ The policy sync turns workspace roles and platform admins into Substrate access 
 | Workspace owner (`pk:<workspace>`) or editor (`pk:edit:<workspace>`) | `editor` of the workspace's Atespace: create, change, and use sandboxes |
 | Workspace viewer (`pk:view:<workspace>`) | `viewer` of the workspace's Atespace: list sandboxes and see their settings |
 | Pods running as the workspace's `default-editor` service account | `editor` of the workspace's Atespace |
+| [API keys](../agentops/sandboxes.md#with-an-api-key) with the scope **All sandboxes**, acting as the service account `<workspace>/pk-sandbox-api-key` | `editor` of the workspace's Atespace |
 | Platform admins: Keycloak role `realm-admin`, which the group `pk-admin` grants | global `owner`: every sandbox of every workspace |
 
 To make someone a platform admin, add them to `pk-admin` on the [User Management](./user_management.html) page. Users who lose the role or are deleted are removed again. The sync leaves other members of the global access policy alone, so grant service accounts, users of other login connectors, or global `viewer` access by hand with `kubectl ate get access-policy --global -o yaml` and `kubectl ate update access-policy --global -f <file>`.
 
 Every workspace member is also a `viewer` of the Atespace `sandbox-templates`, which holds the presets' templates. The policy sync overwrites manual changes to workspace Atespaces.
+
+Besides reacting to changes, the policy sync checks everything every 5 minutes. It logs each correction from that check as a `WARNING` in `pk-sandbox/policy-sync`: a missed update or a manual change in Substrate.
+
+An API key can do what a workspace editor can, including network rules that use the workspace's credentials. Treat keys like those Secrets.
 
 Sandboxes can use only the Secrets of their own workspace that carry the label `prokube.ai/sandbox-credential=true`.
 
@@ -121,13 +126,16 @@ kubectl ate get actors -A                                  # all sandboxes; sand
 kubectl ate get workers
 kubectl ate suspend actor sbx-demo -a <workspace>
 kubectl ate resume actor sbx-demo -a <workspace>
+kubectl ate revert actor sbx-demo -a <workspace>             # a crashed sandbox back to its last snapshot
 kubectl ate delete actor sbx-demo -a <workspace> --any-state
 kubectl ate get egress-policy sbx-demo -a <workspace> -o yaml
 kubectl ate logs actor sbx-demo -a <workspace>
 kubectl ate get actor-templates -a sandbox-templates       # presets' templates, each with a golden tag
 ```
 
-Anyone who may create tokens for the ServiceAccounts `ate-system/substrate-operator` or `pk-sandbox/policy-sync` is a Substrate global owner. Restrict `serviceaccounts/token` in these namespaces accordingly.
+Anyone who may create tokens for the ServiceAccounts `ate-system/substrate-operator` or `pk-sandbox/policy-sync` is a Substrate global owner. Restrict `serviceaccounts/token` in these namespaces accordingly. The data-plane check `pk-sandbox/dataplane-check` may create tokens for `pk-sandbox-api-key` only; ValidatingAdmissionPolicies limit it to workspace namespaces and to Substrate tokens of at most one hour.
+
+Running sandboxes crash when their node restarts. Users bring them back with `pk sandbox revert`, which returns a sandbox to its last snapshot, suspended.
 
 ## Related Pages
 
