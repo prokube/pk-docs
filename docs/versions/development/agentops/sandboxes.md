@@ -38,14 +38,14 @@ Each has a `-memory` variant, for example **Small, keeps memory** (`pk-default-s
 
 ## Suspend, Resume, and Persistence
 
-**Suspend** saves the sandbox to a snapshot and frees its CPU and memory. **Resume** restores it. Commands, SSH connections, port forwarding, and file transfers resume a suspended sandbox automatically. Suspend sandboxes you are not using.
+**Suspend** saves the sandbox to a snapshot and frees its CPU and memory. **Resume** restores it. Commands, port forwarding, file transfers, and the SDK resume a suspended sandbox automatically; plain `ssh` and IDEs do not (see [SSH and IDEs](#ssh-and-ides)). Suspend sandboxes you are not using.
 
 What survives a suspend depends on the preset:
 
 - **Small, Medium, Large**: only `/workspace`. Processes restart, and changes outside `/workspace`, such as packages installed with `apt`, are gone. Keep code, virtual environments, and data in `/workspace`; the home directory is already there.
 - **`-memory` variants**: `/workspace`, the memory, and running processes. A REPL, a server, or a tmux session continues where it stopped. Suspend and resume take longer the more memory is in use.
 
-If a sandbox crashed, for example because its node restarted, `pk sandbox revert <name>` returns it to its last snapshot, suspended. Changes since that snapshot are lost.
+If a sandbox crashed, for example because its node restarted, `pk sandbox revert <name>` or **Revert** in the dashboard returns it to its last snapshot, suspended. Changes since that snapshot are lost.
 
 **Resize** switches a sandbox to another size of the same group, for example from Small to Large. `/workspace`, network access, and credentials stay; running processes restart. **Delete** removes the sandbox together with its `/workspace`.
 
@@ -118,6 +118,8 @@ ssh pk.<workspace>.demo
 ```
 
 The CLI copies your public key into the sandbox through the platform API and pins the sandbox's host key.
+
+`ssh` and IDEs do not resume a suspended sandbox, so an IDE that reconnects on its own does not wake it; the connection fails with `Run: pk sandbox resume demo`. To let them resume it, write the entry with `pk sandbox ssh-config demo --resume`.
 
 ### Reach a Server in a Sandbox
 
