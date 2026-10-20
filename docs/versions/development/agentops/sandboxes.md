@@ -45,6 +45,8 @@ What survives a suspend depends on the preset:
 - **Small, Medium, Large**: only `/workspace`. Processes restart, and changes outside `/workspace`, such as packages installed with `apt`, are gone. Keep code, virtual environments, and data in `/workspace`; the home directory is already there.
 - **`-memory` variants**: `/workspace`, the memory, and running processes. A REPL, a server, or a tmux session continues where it stopped. Suspend and resume take longer the more memory is in use.
 
+If a sandbox crashed, for example because its node restarted, `pk sandbox revert <name>` returns it to its last snapshot, suspended. Changes since that snapshot are lost.
+
 **Resize** switches a sandbox to another size of the same group, for example from Small to Large. `/workspace`, network access, and credentials stay; running processes restart. **Delete** removes the sandbox together with its `/workspace`.
 
 ## Network Access
@@ -102,6 +104,7 @@ pk sandbox cp demo:/workspace/model.pt .
 pk sandbox resize demo --preset pk-default-large
 pk sandbox suspend demo
 pk sandbox resume demo
+pk sandbox revert demo                               # after a crash: back to the last snapshot
 pk sandbox delete demo
 ```
 
