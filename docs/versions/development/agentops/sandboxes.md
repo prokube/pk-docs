@@ -169,6 +169,19 @@ with SandboxClient() as client:      # the pod's own workspace
 
 The pod acts as the workspace's `default-editor` service account. It is an editor of its own workspace and has no access to other workspaces.
 
+### With an API Key
+
+For CI jobs, servers, and agents outside the platform, create a key in the dashboard under **AI Gateway Keys**: pick the workspace, the scope **All sandboxes**, and the format `x-api-key`. The CLI and the SDK then need no login:
+
+```bash
+export PROKUBE_URL=https://<your-prokube-domain>
+export PROKUBE_WORKSPACE=<workspace>
+export PROKUBE_API_KEY=<key>
+pk sandbox create ci-run
+```
+
+`SandboxClient()` reads the same variables, or takes `api_key=`. A key can do what a workspace editor can, in its own workspace only, and sandboxes it creates show the workspace's `pk-sandbox-api-key` service account as their creator. A key can also set network rules that inject the workspace's [credentials](#credentials), so keep it as safe as those Secrets. Disable or delete the key in the dashboard to revoke it.
+
 ## Give Agents Sandbox Tools over MCP
 
 `pk sandbox mcp` is an MCP server that gives agents tools to manage sandboxes, run commands, and read and write files. Locally it speaks stdio and uses your `pk login`. Add it to Claude Code:
