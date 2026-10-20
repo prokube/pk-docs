@@ -114,7 +114,7 @@ Sandboxes can use only the Secrets of their own workspace that carry the label `
 
 ## Admin View
 
-Platform admins open **Sandboxes** under **Admin** to see worker capacity and usage and to suspend, resume, or delete sandboxes of every workspace.
+Platform admins open **Sandboxes** under **Admin** to see worker capacity and the sandbox history, as panels of the Grafana dashboard **Agent Substrate**, and to suspend, resume, revert, or delete sandboxes of every workspace.
 
 ## Use kubectl ate
 
@@ -135,7 +135,7 @@ kubectl ate get actor-templates -a sandbox-templates       # presets' templates,
 
 Anyone who may create tokens for the ServiceAccounts `ate-system/substrate-operator` or `pk-sandbox/policy-sync` is a Substrate global owner. Restrict `serviceaccounts/token` in these namespaces accordingly. The data-plane check `pk-sandbox/dataplane-check` may create tokens for `pk-sandbox-api-key` only; ValidatingAdmissionPolicies limit it to workspace namespaces and to Substrate tokens of at most one hour.
 
-Running sandboxes crash when their node restarts. Users bring them back with `pk sandbox revert`, which returns a sandbox to its last snapshot, suspended.
+Running sandboxes crash when their node restarts. Users bring them back with `pk sandbox revert` or **Revert** in the dashboard, which returns a sandbox to its last snapshot, suspended.
 
 ## Related Pages
 
