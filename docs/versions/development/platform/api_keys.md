@@ -50,6 +50,8 @@ The service list is built from services available in the selected workspace. It 
 
 Besides individual services, you can select aggregate scopes such as **All MCP servers** or **All AI models**. They also cover matching services created later. **Full workspace access** covers every service in the workspace. Keys with **All AI models**, **All external AI models**, or **Full workspace access** must use the Bearer format.
 
+**All sandboxes** lets the `pk` CLI and the Python SDK manage and use the workspace's [sandboxes](../agentops/sandboxes.html#with-an-api-key). Such keys must use the `x-api-key` format; **Full workspace access** does not include sandboxes.
+
 Admin-granted [external models](../admin/external_models.html) are not listed as individual services. To reach them, use a Bearer-format key with **All external AI models**, **All AI models**, or **Full workspace access**. These scopes cover every granted model in the workspace; a key cannot be limited to one granted model.
 
 Select only the services the client needs. If no services are available, deploy or expose the service first, then create the key.
@@ -63,7 +65,7 @@ Choose the authentication format expected by the client:
 | Format | Use when |
 |---|---|
 | `Authorization: Bearer <key>` | The client is OpenAI-compatible or expects bearer authentication. This is the recommended format for LLM clients. |
-| `x-api-key: <key>` | The client cannot set an `Authorization` header, or an existing integration already sends `x-api-key`. Not available for keys with **All AI models**, **All external AI models**, or **Full workspace access**. |
+| `x-api-key: <key>` | The client cannot set an `Authorization` header, or an existing integration already sends `x-api-key`. Required for **All sandboxes**. Not available for keys with **All AI models**, **All external AI models**, or **Full workspace access**. |
 
 Use the service page for the exact URL and request body. Examples:
 
