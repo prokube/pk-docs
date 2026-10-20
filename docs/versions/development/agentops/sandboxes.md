@@ -180,7 +180,7 @@ export PROKUBE_API_KEY=<key>
 pk sandbox create ci-run
 ```
 
-`SandboxClient()` reads the same variables, or takes `api_key=`. A key can do what a workspace editor can, in its own workspace only, and sandboxes it creates show the workspace's `pk-sandbox-api-key` service account as their creator. Disable or delete the key in the dashboard to revoke it.
+`SandboxClient()` reads the same variables, or takes `api_key=`. A key can do what a workspace editor can, in its own workspace only, and sandboxes it creates show the workspace's `pk-sandbox-api-key` service account as their creator. A key can also set network rules that inject the workspace's [credentials](#credentials), so keep it as safe as those Secrets. Disable or delete the key in the dashboard to revoke it.
 
 ## Give Agents Sandbox Tools over MCP
 
