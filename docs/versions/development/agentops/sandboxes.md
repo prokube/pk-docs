@@ -128,7 +128,7 @@ Forward a local port to a server in the sandbox, for example `opencode serve`, J
 ```bash
 pk sandbox connect demo                              # in the sandbox: opencode serve --port 4096
 pk sandbox forward demo 4096                         # second terminal; Ctrl-C stops it
-opencode attach http://localhost:4096                # third terminal
+opencode --server http://localhost:4096              # third terminal (opencode 2)
 ```
 
 ## Use the Python SDK
