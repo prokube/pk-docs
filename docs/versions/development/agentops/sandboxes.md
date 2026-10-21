@@ -126,9 +126,9 @@ The CLI copies your public key into the sandbox through the platform API and pin
 Forward a local port to a server in the sandbox, for example `opencode serve`, Jupyter, or a dev server:
 
 ```bash
-pk sandbox connect demo                              # in the sandbox: opencode serve --port 4096
+pk sandbox connect demo                              # in the sandbox: OPENCODE_PASSWORD=<password> opencode serve --port 4096
 pk sandbox forward demo 4096                         # second terminal; Ctrl-C stops it
-opencode --server http://localhost:4096              # third terminal (opencode 2)
+OPENCODE_PASSWORD=<password> opencode --server http://localhost:4096   # third terminal
 ```
 
 ## Use the Python SDK
