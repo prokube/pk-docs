@@ -12,6 +12,7 @@ Use [Labs](../labs/index.md) for interactive development and debugging. Use Agen
 | [LLM Serving](llm_serving.md) | Deploy self-hosted OpenAI-compatible models for agents and other LLM clients, including tool-calling support where available. |
 | [MCP Servers](mcp_servers.md) | Run governed MCP tool servers in a workspace and expose their tools to agents, OpenCode, and external MCP clients. |
 | [Memory Stores](memory_stores.md) | Provide workspace-scoped state and retrieval capabilities for agent workflows. |
+| [Sandboxes](sandboxes.md) | Run code and coding agents in isolated, suspendable environments with controlled network access. |
 | [Agent Gateway](agent_gateway.md) | Expose models, MCP servers, agents, and serving endpoints to external clients through scoped API keys. |
 
 ## Typical Flow
