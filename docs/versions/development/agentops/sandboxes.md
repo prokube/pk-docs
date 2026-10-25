@@ -26,7 +26,7 @@ pk sandbox create demo --connect
 
 Open **Sandboxes** under **AgentOps**, select the workspace, and click **Create Sandbox**. Enter a **Name**, pick a **Preset**, and click **Create**. **Network access** is prefilled with the platform's default rules, and [Credentials](#credentials) are optional. The sandbox starts right away unless you clear **Start the sandbox after creating it**.
 
-The default presets run the same Debian image with Python 3, Node.js, git, and opencode. The terminal and SSH log in as `developer`, with the home directory `/workspace/home`; `pk sandbox exec` and the SDK run commands as `root`.
+The default presets run the same Debian image with Python 3, Node.js, git, opencode, and Claude Code. Everything in a sandbox runs as `root`: the terminal, SSH, `pk sandbox exec`, and the SDK. Commands start in `/workspace`, the home directory is `/workspace/home`, and packages install with `apt` directly, without `sudo`. Claude Code runs with `--dangerously-skip-permissions`.
 
 | Preset | Size |
 |---|---|
@@ -80,7 +80,7 @@ The receiving API sees the real key, so add credentials only for hosts you trust
 
 Besides **Overview** and **Network**, a sandbox's detail page has:
 
-- **Terminal**: a shell as `developer` in `/workspace/home`, inside a tmux session. Closing the browser tab keeps the session; reconnecting attaches to it. For a suspended sandbox, click **Resume and connect**.
+- **Terminal**: a shell as `root` in `/workspace`, inside a tmux session. Closing the browser tab keeps the session; reconnecting attaches to it. For a suspended sandbox, click **Resume and connect**.
 - **Files**: upload files into a folder under `/workspace`, or drag them in, and download a file by its full path. Up to 100 MiB per file.
 
 The **Overview** tab shows ready-to-copy snippets for the `pk` CLI, SSH, and the Python SDK.
