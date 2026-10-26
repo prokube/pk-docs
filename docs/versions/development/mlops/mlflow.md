@@ -37,7 +37,7 @@ In the MLflow UI, open the OIDC permissions page and create an access key. Copy 
 
 ![Generate a personal access token in MLflow](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/mlops/mlflow/generate-pat-ui.png)
 
-A user can have one active personal access token. Creating a new token invalidates the previous one.
+Each token has a name and expires after at most one year. You can hold several tokens, for example one per Lab or pipeline; creating a new token does not revoke the others. Revoke tokens you no longer need.
 
 ### Configure the MLflow Client
 
@@ -190,7 +190,7 @@ The workspace namespace must contain an `mlflow-credentials` secret with `MLFLOW
 | Creating an experiment or model fails with a permission error | The name may already exist globally and belong to another user or team. Use a different name or ask an MLflow admin for access. |
 | Pipeline task cannot authenticate to MLflow | Check that the `mlflow-credentials` secret exists in the same workspace namespace as the pipeline run and contains all required keys. |
 | KServe cannot import an `mlflow://` model | Check the `mlflow-credentials` secret and confirm that the cluster has the MLflow storage initializer enabled. |
-| A client stops working after token rotation | Creating a new personal access token invalidates the previous one. Update all notebooks, secrets, and workloads that still use the old token. |
+| A client stops working after some time | The token expired or was revoked. Create a new token and update all notebooks, secrets, and workloads that still use the old one. |
 | Model is not found in the registry | Model names are global. Verify the exact registered model name, version or alias, and your permissions. |
 
 ## Garbage Collection
