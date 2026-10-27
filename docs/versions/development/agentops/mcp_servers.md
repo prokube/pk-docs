@@ -116,8 +116,6 @@ Select **Save changes**. prokube accepts the new configuration, then updates the
 
 If someone else changed the server after you opened the editor, saving fails. Reload the configuration, review the latest version, and apply your changes again.
 
-![Edit MCP server dialog showing the Applied state after saving](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/edit-server-applied.png)
-
 ## Connect Clients
 
 The **Deployed Servers** table shows each server's status and, when available, its URL. Open a server to see its connection details on the **Overview** tab.

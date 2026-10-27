@@ -146,6 +146,8 @@ The **Advanced Configuration** section is collapsed by default. It covers:
 
 Raw deployments can use [HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) for CPU or memory-based scaling, or [KEDA](https://keda.sh/docs/latest/concepts/scaling-deployments/) for custom Prometheus metrics such as vLLM token throughput. KEDA requires a PromQL query and a scale threshold calibrated against observed traffic. KEDA is configured on the model itself: KServe creates and removes the `ScaledObject` `<deployment-name>-predictor`. See [Configure KEDA in LLM Serving](../mlops/model_serving_autoscaling.html#configure-keda-in-llm-serving) for the details and calibration.
 
+![Deployment form for all-MiniLM-L6-v2 with the TEI runtime, KEDA selected, and a calibration notice](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/llm-serving/deploy-model-keda-autoscaler.png)
+
 ## Set Runtime Environment Variables
 
 Use **Environment Variables** for settings passed to the model container, for example `VLLM_LOGGING_LEVEL=DEBUG` for a vLLM runtime.
@@ -194,9 +196,7 @@ The **Configuration** tab summarizes the model's settings and endpoints. For a K
 
 From the model list or detail page, select **Edit** to change Model Type, Quantization, Data Type, tool-calling settings, [Environment Variables](#set-runtime-environment-variables), resource requests and limits, or auto-scaling. Model ID, runtime, and deployment mode are read-only in this form. To use a different deployment mode, deploy a new model. Use **View YAML** for advanced settings, not as a deployment-mode conversion workflow.
 
-For a Standard (Raw) deployment, **Autoscaler Mode** can switch between HPA and **External (user-managed)**. **External (user-managed)** is offered only for models that already use it. Switching into or out of KEDA is not possible in place, so the edit form disables those choices. The query and threshold of a KEDA model stay editable. To change to or from KEDA, redeploy the model or ask an administrator to coordinate the autoscaler handoff.
-
-![Edit Model dialog with the HPA choice disabled for a KEDA model](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/llm-serving/edit-model-keda-autoscaler.png)
+For a Standard (Raw) deployment, scroll below **Resources** and **Auto-Scaling** to find **Autoscaler Mode**. **External (user-managed)** is offered only for models that already use it. Switching into or out of KEDA is not possible in place, so the edit form disables those choices. The query and threshold of a KEDA model stay editable. To change to or from KEDA, redeploy the model or ask an administrator to coordinate the autoscaler handoff.
 
 ## External Access
 
