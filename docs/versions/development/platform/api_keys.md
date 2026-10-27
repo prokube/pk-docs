@@ -119,7 +119,7 @@ Rotating a key invalidates the old value immediately. Update every client or sec
 
 Switch to the **Usage** tab on the API Keys page to see how keys in the selected workspace are being used. The dashboard covers only requests that Agent Gateway authenticated with a key of this workspace. It does not cover internal in-mesh traffic (see [Agent Gateway: Public vs. Internal Traffic](agent_gateway.html#public-vs-internal-traffic)) or requests without a valid key. Administrators find platform-wide numbers for both under [System Status](system_status.html#ai-gateway-traffic).
 
-![API key usage dashboard with request summary, estimated LLM usage, and usage by key](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-usage-tab-activity.png)
+![API key usage dashboard with request summary, estimated LLM usage, and usage by key](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-usage-dashboard-framed.png)
 
 ### Time Window and Summary
 
@@ -166,7 +166,7 @@ Regular users see **Keys owned by you**. Administrators see **All workspace keys
 
 Select **Activity** in a key's row to open a list of the individual requests that Agent Gateway authenticated with that key. Regular users can open Activity for their own keys; administrators for any current key in the workspace. Historical (deleted) keys cannot open Activity.
 
-![Request activity for an API key with filters, request rows, and CSV export](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-activity.png)
+![Request activity for an API key with filters, request rows, and CSV export](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-request-activity-framed.png)
 
 Narrow the list with:
 
