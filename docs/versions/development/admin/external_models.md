@@ -4,13 +4,13 @@ The **AI Gateway** admin page connects centrally managed model providers to prok
 
 Use this workflow when you need to:
 
-- offer Mistral AI, Azure OpenAI, GitHub Models, or a custom OpenAI-compatible endpoint;
+- offer Mistral AI, Azure OpenAI, or a custom OpenAI-compatible endpoint;
 - share a centrally managed provider credential without copying it into workspace Secrets;
 - control which workspaces can use each external model.
 
 For OpenAI, Anthropic, or Gemini, workspace users can instead create their own Model Configuration backed by a workspace Kubernetes Secret. See [Agents](../agentops/agents.html#_2-choose-or-create-a-model-configuration).
 
-![AI Gateway page with provider catalog and platform-wide usage summary](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/ai-gateway-overview.png)
+![AI Gateway catalog with Anthropic, OpenAI, Mistral AI, Azure OpenAI, and custom OpenAI-compatible providers](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/ai-gateway-provider-catalog.png)
 
 ## Provider Options
 
@@ -20,10 +20,9 @@ The admin-managed provider catalog supports:
 - OpenAI;
 - Mistral AI;
 - Azure OpenAI;
-- GitHub Models;
 - custom OpenAI-compatible endpoints.
 
-Anthropic uses its native protocol. The other provider types use an OpenAI-compatible protocol. Custom and Azure OpenAI providers require an upstream host and path prefix.
+Anthropic uses its native protocol. The other provider types use an OpenAI-compatible protocol. Custom and Azure OpenAI providers require an upstream host; the path prefix selects the API path on that host.
 
 ## Connect a Provider
 
@@ -32,10 +31,26 @@ Open **AI Gateway** under **Admin**, then select **Add Provider**. Configure:
 - **Provider**: select an entry from the provider catalog.
 - **Provider name**: unique name for the provider connection.
 - **Provider API key**: credential stored centrally by prokube.
-- **Upstream host** and **Path prefix**: required for custom and Azure OpenAI providers.
-- **Models**: optional comma- or newline-separated model IDs to add immediately.
+- **Upstream host** and **Path prefix**: configure the endpoint for custom and Azure OpenAI providers. The host is required; Azure defaults to `/openai/v1` for the path prefix.
+- **Models**: discover model IDs or add them manually. Add at least one model before saving.
 
 Provider API keys are write-only. To rotate one later, edit the provider and enter a **Replacement API key**.
+
+### Azure OpenAI
+
+Enter your Azure resource host in **Upstream host**. **Path prefix** defaults to `/openai/v1`. Authentication uses the resource API key.
+
+Only the Azure OpenAI v1 API is supported. Classic deployment URLs with an `api-version` parameter and Microsoft Entra ID sign-in aren't supported.
+
+Add models manually using **Deployment name**: enter the deployment name from your Azure resource, not the underlying model ID. Discovery cannot enumerate deployment names.
+
+### Custom Endpoint Discovery and Testing
+
+For **Custom OpenAI-compatible**, **Discover models** requires HTTPS and a public DNS host. **Test model access** also permits private DNS hosts explicitly allowed by the platform administrator. Neither supports raw IP addresses, localhost, HTTP endpoints, or cluster-internal hosts.
+
+**Test model access** sends a minimal request for one chosen model and capability, which may incur a provider charge. It doesn't test every selected model or evaluate output quality.
+
+For an endpoint that cannot be tested, add model IDs manually. Select **Add Provider**, review the warning, then explicitly select **Add without successful test**. This saves the provider without verifying runtime connectivity or model access. Discovery alone doesn't verify model access either.
 
 ## Add Models
 
@@ -44,7 +59,7 @@ Open a provider and switch to its **Models** tab. Models can be added in two way
 - **Discover models** queries the provider and lets you select one or more returned model IDs.
 - **Add manually** registers a model ID directly.
 
-The main **Models** table shows each model's provider, API protocol, workspace-access count, and base URL. A model cannot be deleted while a workspace grant still references it. Revoke those grants first.
+The main **Models** table shows each model's provider, API protocol, workspace-access count, and base URL. A model cannot be deleted while a workspace grant still references it, including an orphaned grant. When deletion is blocked, the dialog lists each blocking workspace, ModelConfig, and grant health. Select **Open Workspace Access to revoke these grants**, revoke the listed grants, then retry deletion.
 
 ## Grant Workspace Access
 
@@ -61,6 +76,19 @@ The grant creates a Model Configuration in the target workspace. It appears auto
 ![Granted external model shown as an AI Gateway Model Configuration](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/grant-workspace-access-agents-tab.png)
 
 The central provider credential is not exposed to the workspace. Revoke the grant from **Workspace Access** when the workspace should no longer use the model.
+
+### Workspace Access Health
+
+The health shown in **Workspace Access** describes the grant's resources, not the status of a grant or revoke operation:
+
+| Health | Meaning |
+|---|---|
+| **Healthy** | All expected grant resources are present. |
+| **Degraded** | Some grant resources are missing or inconsistent. |
+| **Orphaned** | The workspace ModelConfig is missing, but the grant remains and still blocks model deletion. Revoke access to remove it. |
+| **Unknown** | Grant health could not be determined. Managed access can still be revoked. |
+
+You can revoke orphaned grants as well as grants with unknown health; neither requires a healthy ModelConfig first.
 
 ### Grant and Revoke Status
 
