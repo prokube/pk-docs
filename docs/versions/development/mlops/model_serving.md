@@ -208,7 +208,7 @@ For a detailed KPA walkthrough and a manual KEDA/vLLM token-throughput example, 
 
 ### S3-compatible Storage
 
-InferenceServices access models in S3-compatible file storage through a `ServiceAccount` annotated with S3 endpoint details. The prokube workspace is preconfigured with S3-compatible storage; use the **File Storage** page in the UI to see available buckets. See [File Storage](../platform/file_storage.md) for storage browser, path, and client details.
+InferenceServices access models in S3-compatible file storage through a `ServiceAccount` annotated with S3 endpoint details. The prokube workspace is preconfigured with S3-compatible storage; use the **Object Storage** page in the UI to see available buckets. See [File Storage](../platform/file_storage.md) for storage browser, path, and client details.
 
 For models stored in workspace buckets, the deployment wizard's **Browse S3** button selects the path directly. For `kubectl`-based deployment, a secret named `s3creds` with the correct KServe annotations already exists in the workspace namespace and grants access to the buckets the workspace can see. Reference it from the InferenceService via `spec.predictor.serviceAccountName`.
 
