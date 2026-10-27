@@ -127,7 +127,7 @@ Select **Show default prices** to browse the built-in prices of the deployed Age
 
 Saving an override changes only your custom prices; the default prices stay unchanged. If the platform does not publish a snapshot, the view shows **Default prices are not published by the platform.**
 
-![Default model prices with release version, snapshot date, and an overridden model](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/model-pricing-default-prices.png)
+![Default model prices with release version and snapshot date, filtered by a search](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/model-pricing-default-prices-release-snapshot.png)
 
 ### Pricing and Historical Usage
 
