@@ -78,6 +78,7 @@ const baseSidebar: SidebarItem[] = [
       { text: 'Overview', link: '/admin/' },
       { text: 'Installation Planning', link: '/admin/installation.html' },
       { text: 'User Management', link: '/admin/user_management.html' },
+      { text: 'Platform Settings', link: '/admin/platform_settings.html', versions: ['development'] },
       { text: 'Identity Providers', link: '/admin/identity_providers.html' },
       { text: 'Network Policies', link: '/admin/network_policies.html' },
       { text: 'Application Networking', link: '/admin/application_networking.html' },
