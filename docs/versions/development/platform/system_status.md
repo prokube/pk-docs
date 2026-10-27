@@ -12,7 +12,7 @@ Open the user menu in the prokube UI and select **System Status**.
 
 The page may also be available directly at `/system-status`.
 
-All authenticated users can open the page to inspect workspace pod quota. The **Component Health** and **Backend Info** sections are visible only to realm administrators.
+All authenticated users can open the page to inspect workspace pod quota. The **AI Gateway traffic**, **Component Health**, and **Backend Info** sections are visible only to realm administrators.
 
 ## Workspace Pod Quota
 
@@ -41,6 +41,21 @@ This action deletes completed Argo Workflows / Kubeflow Pipelines pod resources 
 Use this when completed pipeline pods are consuming workspace pod quota and blocking new work.
 
 ![Delete Completed Pipeline Pods dialog](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/system-status/system-status-cleanup-dialog.png)
+
+## AI Gateway Traffic
+
+When the AI Gateway module is enabled, realm administrators also see **AI Gateway traffic**. It shows Agent Gateway requests that no workspace's [API Key Usage Dashboard](api_keys.html#usage-dashboard) attributes to a key. Counts cover all workspaces.
+
+![AI Gateway traffic panel with in-cluster traffic and requests without a valid key](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/system-status/system-status-ai-gateway-traffic.png)
+
+Select Last hour, Last 24 hours (default), Last 7 days, or Last 30 days. The panel has two cards:
+
+- **In-cluster traffic**: keyless calls from agents, notebooks, pipelines, and other workloads inside the cluster through the internal gateway path. These requests use no API key, so they cannot be attributed to one. See [Public vs. Internal Traffic](agent_gateway.html#public-vs-internal-traffic).
+- **Requests without a valid key**: public requests with a missing, invalid, or revoked key. Most are rejected with `401`.
+
+Each card shows the request count, the failed count, LLM tokens when there are any, and a request trend. If Prometheus usage telemetry is not configured, the panel shows **Traffic telemetry unavailable**.
+
+A sudden rise in requests without a valid key usually means a client still uses a revoked or rotated key.
 
 ## Admin Component Health
 
@@ -96,7 +111,7 @@ When a user reports that workloads cannot start:
 
 - Workspace pod quota cards show only workspaces you can access.
 - Quota details are loaded per workspace, not all at once.
-- Component health checks are administrator-only.
+- Component health checks and AI Gateway traffic are administrator-only.
 - The page checks backend components and integrations, not every workload in every workspace.
 - A healthy component status means the health check passed; it does not guarantee that all user workflows are healthy.
 - A disabled status can be expected when a module is intentionally not enabled in a deployment.

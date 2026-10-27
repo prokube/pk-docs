@@ -117,27 +117,31 @@ Rotating a key invalidates the old value immediately. Update every client or sec
 
 ## Usage Dashboard
 
-Switch to the **Usage** tab on the API Keys page to see how keys in the selected workspace are being used. The dashboard covers requests that Agent Gateway authenticated with a key. It does not cover internal in-mesh traffic (see [Agent Gateway: Public vs. Internal Traffic](agent_gateway.html#public-vs-internal-traffic)).
+Switch to the **Usage** tab on the API Keys page to see how keys in the selected workspace are being used. The dashboard covers only requests that Agent Gateway authenticated with a key of this workspace. It does not cover internal in-mesh traffic (see [Agent Gateway: Public vs. Internal Traffic](agent_gateway.html#public-vs-internal-traffic)) or requests without a valid key. Administrators find platform-wide numbers for both under [System Status](system_status.html#ai-gateway-traffic).
 
-![API key usage dashboard with request trend, estimated LLM usage, and per-key activity](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-usage-tab.png)
+![API key usage dashboard with request summary, estimated LLM usage, and usage by key](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-usage-tab-activity.png)
 
-### Time Window and Cohorts
+### Time Window and Summary
 
 Choose a **time window** to control both the summary numbers and the request trend chart below them. Options are Last hour, Last 24 hours (default), Last 7 days, and Last 30 days.
 
-The dashboard shows up to three cohort cards, split by how a request was attributed:
+Two summary cards cover the keys you can see:
 
-- **External attributed**: requests attributed to an authenticated key. This is the only cohort regular users see.
-- **Internal aggregate** and **Unattributed public**: aggregate-only counts, visible to administrators. These are never distributed across individual keys, so they cannot be used to identify which key or workload generated a given request.
+- **Requests**: all requests authenticated by these keys. Administrators see the total across all workspace keys, regular users across the keys they own.
+- **Failed requests**: HTTP 4xx and 5xx responses.
+
+If none of these keys recorded requests or LLM tokens in the window, the dashboard shows **No visible key usage**.
 
 The **request trend** chart plots request volume per time bucket for the selected window. If Prometheus retained only part of the window, the dashboard shows a note that the trend is truncated rather than silently showing partial data as complete.
 
 ### Token and Cost Estimate
 
-The **Estimated LLM usage** panel shows input tokens, output tokens, and an estimated cost for LLM traffic in the window. Estimated cost is derived from a model pricing catalog:
+The **Estimated LLM usage** panel shows input tokens, output tokens, and an estimated cost for LLM traffic in the window. Agent Gateway computes the cost of each request from its model price catalog:
 
 - If pricing is missing for some models in the window, the panel notes that the estimate excludes those models.
 - If no pricing data is available at all, the panel says catalog pricing is unavailable rather than showing a misleading total.
+
+Self-hosted models have no built-in price. Administrators can add prices under [Model Pricing](../admin/external_models.html#model-pricing). A new price applies only to requests served afterward; earlier requests stay unpriced, so the estimate can stay incomplete for windows that include them. See [Pricing and Historical Usage](../admin/external_models.html#pricing-and-historical-usage).
 
 Token and cost figures apply only to LLM (`/svc/ai`) traffic. Other path families report request counts but not tokens or cost.
 
@@ -154,12 +158,46 @@ The **Usage by key** table lists per-key activity for the window:
 | LLM tokens | Input + output tokens, for `/svc/ai` traffic only. |
 | Estimated cost | Estimated cost for the key's LLM traffic in the window. |
 | Last Active | Approximate time since the key's last recorded request, bounded by the selected window and its sampling granularity, not an exact last-used timestamp. |
+| Activity | Opens the key's individual requests. See [Request Activity](#request-activity). |
 
 Regular users see **Keys owned by you**. Administrators see **All workspace keys**. Keys with no recorded activity in the window are omitted, except historical (deleted) keys that administrators can still see for auditing.
+
+### Request Activity
+
+Select **Activity** in a key's row to open a list of the individual requests that Agent Gateway authenticated with that key. Regular users can open Activity for their own keys; administrators for any current key in the workspace. Historical (deleted) keys cannot open Activity.
+
+![Request activity for an API key with filters, request rows, and CSV export](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-activity.png)
+
+Narrow the list with:
+
+- **Time window**: Last hour, Last 24 hours, Last 7 days, or Last 10 days.
+- **HTTP status (exact)**: one status code, for example `429`. Leave it empty for all statuses.
+- **Request model (exact)**: the model ID the client requested.
+
+Select **Apply filters** to load the filtered list and **Refresh** to reload it. Use **Older** and **Newer** to page through the results. A page can contain fewer rows than usual, because requests with the same timestamp are always kept on one page.
+
+Each row shows:
+
+| Column | Content |
+|---|---|
+| Time (UTC) | When the gateway served the request. |
+| Status | HTTP status code. |
+| Request | Method, path, and path family. For MCP traffic, also the MCP method and tool. |
+| Model | Requested model, and the response model when it differs. |
+| Tokens in / out | Input and output tokens. |
+| Cost (USD) | Estimated cost of the request. |
+| Duration (ms) | Request duration. |
+
+Fields that do not apply, such as tokens for MCP calls, show a dash.
+
+**Export CSV** downloads the current page with the active filters, not the full history.
+
+Activity is built from Agent Gateway access logs, which are kept for 10 days. It is an operational view, not a durable audit or billing record. It shows request metadata only: prompts, responses, tool arguments, and credentials are not logged. If the logs cannot be read, the view shows **Activity unavailable** with a **Retry** action.
 
 ### Reading the Numbers Correctly
 
 - Request counts, tokens, and cost are estimates for observability, not billing records.
+- Cost covers only requests whose model had a price when the request was served.
 - Prometheus retention limits how far back the dashboard can report. Older activity outside the retention window will not appear even if the key was used.
 - If usage telemetry is not configured for the cluster, the dashboard shows a notice instead of numbers. Contact your administrator if you expect usage data and see this notice.
 
