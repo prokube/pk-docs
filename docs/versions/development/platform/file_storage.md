@@ -48,7 +48,7 @@ To create a bucket:
 
 Creating a bucket doesn't create or change workspace access policies. Configure access separately if a workspace needs to use it.
 
-![Create Bucket dialog with the required bucket name](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/file-storage/object-storage-create-bucket.png)
+![Create Bucket dialog with the required bucket name](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/file-storage/object-storage-create-bucket-framed.png)
 
 To delete a bucket:
 
