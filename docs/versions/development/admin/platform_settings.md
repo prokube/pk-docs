@@ -8,7 +8,7 @@ These are deployment-wide settings for all users and workspaces, not personal pr
 
 The **Shown in portal** section has **MLOps** and **AgentOps** suite controls above the individual feature switches. Only features enabled in the deployment appear; unavailable features do not affect suite counts or checkbox state.
 
-![Shown in portal settings with MLOps and AgentOps suite controls and individual feature switches](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/platform-settings-shown-in-portal.png)
+![Shown in portal settings with MLOps and AgentOps suite controls and individual feature switches](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/platform-settings-shown-in-portal-framed.png)
 
 | Membership | Features |
 |---|---|
