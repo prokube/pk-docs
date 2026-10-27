@@ -46,7 +46,7 @@ Use this when completed pipeline pods are consuming workspace pod quota and bloc
 
 When the AI Gateway module is enabled, realm administrators also see **AI Gateway traffic**. It shows Agent Gateway requests that no workspace's [API Key Usage Dashboard](api_keys.html#usage-dashboard) attributes to a key. Counts cover all workspaces.
 
-![AI Gateway traffic panel with in-cluster traffic and requests without a valid key](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/system-status/system-status-ai-gateway-traffic.png)
+![AI Gateway traffic panel with in-cluster traffic and requests without a valid key](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/system-status/system-status-ai-gateway-traffic-framed.png)
 
 Select Last hour, Last 24 hours (default), Last 7 days, or Last 30 days. The panel has two cards:
 
