@@ -117,7 +117,7 @@ Optional sections (collapsible):
 
 ### YAML Tab
 
-Paste a raw KServe `InferenceService` manifest, optionally with a `ScaledObject` separated by `---`. Use **Load Example** to populate the editor with a valid template:
+Paste a raw KServe `InferenceService` manifest. The editor accepts exactly one InferenceService; additional documents separated by `---`, such as a KEDA `ScaledObject`, are rejected. For KEDA autoscaling, configure it on the InferenceService or apply your own scaler separately; see [Model Serving Autoscaling](model_serving_autoscaling.md#configure-keda-in-llm-serving). Use **Load Example** to populate the editor with a valid template:
 
 ```yaml
 apiVersion: serving.kserve.io/v1beta1
