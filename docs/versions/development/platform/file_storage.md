@@ -10,15 +10,15 @@ For MinIO concepts and client reference that are not specific to prokube, use th
 - [MinIO documentation](https://docs.min.io/community/minio-object-store/)
 :::
 
-## File Storage Browser
+## Object Storage Browser {#file-storage-browser}
 
-Open **File Storage** in the prokube UI to inspect and manage the buckets available to your workspace. **The File Storage browser uses S3-compatible object storage in the background.** It uses your platform session and shows only storage you are allowed to access.
+Open **Object Storage** in the prokube sidebar to inspect and manage S3-compatible buckets and objects. The browser uses your platform session and shows only storage you are allowed to access.
 
 The browser is intended for routine interactive file operations. Use it to browse buckets and folders, find files, upload or download data, and inspect object metadata. It also covers path copying and simple organization tasks such as creating folders, moving objects, deleting objects, and generating temporary share links.
 
 If you are already working in a notebook, the [JupyterLab S3 browser](../labs/jupyterlab.md#file-storage-in-jupyterlab) provides similar access from the JupyterLab sidebar.
 
-![File Storage upload](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/file-storage/object-storage-upload.png)
+![Object Storage upload](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/file-storage/object-storage-upload.png)
 
 ::: tip Large transfers
 For large transfers, repeatable commands, or automation, use a Lab terminal with `rclone` or another S3-compatible client.
@@ -32,9 +32,33 @@ Many prokube workflows expect S3-compatible file paths in this form.
 s3://<bucket>/<path>/<object>
 ```
 
-Use these paths as stable references to data, independent of the tool that created or consumes it. Copy paths from the File Storage browser when possible. This avoids mistakes in bucket names, prefixes, and model artifact locations.
+Use these paths as stable references to data, independent of the tool that created or consumes it. Copy paths from the Object Storage browser when possible. This avoids mistakes in bucket names, prefixes, and model artifact locations.
 
-![File Storage object actions](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/file-storage/object-storage-object-actions.png)
+![Object Storage object actions](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/file-storage/object-storage-object-actions.png)
+
+### Create and Delete Buckets
+
+Bucket creation and deletion require the configured Keycloak administrator role (`realm-admin` by default), not just workspace administrator access. These controls appear on the **Object Storage** page, not in embedded bucket pickers. Both actions use your current S3 permissions, so the storage service must also allow the operation.
+
+To create a bucket:
+
+1. Open **Object Storage** and click the plus button labeled **Create bucket** beside the bucket list.
+2. In **Create Bucket**, enter the required **Bucket name**, the form's only field. Use 3 to 63 lowercase letters, numbers, dots, or hyphens. Start and end with a letter or number. Don't use consecutive dots or a name formatted as an IP address.
+3. Click **Create Bucket**. The browser refreshes the bucket list and selects the new bucket.
+
+Creating a bucket doesn't create or change workspace access policies. Configure access separately if a workspace needs to use it.
+
+![Create Bucket dialog with the required bucket name](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/file-storage/object-storage-create-bucket.png)
+
+To delete a bucket:
+
+1. Select the bucket in **Object Storage**.
+2. Click **Delete Bucket** in the toolbar.
+3. Type the bucket's exact name in the confirmation dialog, then click **Delete Bucket**.
+
+::: warning Bucket deletion requires an empty bucket
+**Delete Bucket** doesn't empty the bucket for you. A non-empty bucket is rejected. Remove its contents only if you intend to delete that data, then retry. Deleting a folder removes all objects inside it, while bulk **Delete** removes selected file objects, not folder contents. These are separate destructive actions, not a bucket-deletion shortcut. Bucket deletion cannot be undone.
+:::
 
 ## Access S3-Backed Files
 
@@ -225,13 +249,13 @@ The R example uses `use_https = FALSE` for the preconfigured internal MinIO endp
 
 ### When to Use the MinIO UI?
 
-The prokube File Storage browser covers the everyday file operations listed under [File Storage Browser](#file-storage-browser).
+The prokube Object Storage browser covers the everyday file operations listed under [Object Storage Browser](#file-storage-browser), including [bucket creation and deletion](#create-and-delete-buckets) for platform administrators.
 
 Use the MinIO UI only when you need account-level or storage-administration functions that are not exposed in the prokube browser:
 
 - creating or managing personal S3 access keys for external clients, if enabled;
 - reviewing MinIO-specific account settings;
-- performing bucket or policy administration tasks allowed by your administrator.
+- performing storage-administration tasks not exposed in Object Storage, such as managing access policies, where permitted.
 
 ## Troubleshooting
 
