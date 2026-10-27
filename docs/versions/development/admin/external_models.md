@@ -10,7 +10,7 @@ Use this workflow when you need to:
 
 For OpenAI, Anthropic, or Gemini, workspace users can instead create their own Model Configuration backed by a workspace Kubernetes Secret. See [Agents](../agentops/agents.html#_2-choose-or-create-a-model-configuration).
 
-![AI Gateway catalog with Anthropic, OpenAI, Mistral AI, Azure OpenAI, and custom OpenAI-compatible providers](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/ai-gateway-provider-catalog.png)
+![AI Gateway catalog with Anthropic, OpenAI, Mistral AI, Azure OpenAI, and custom OpenAI-compatible providers](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/ai-gateway-provider-catalog-framed.png)
 
 ## Provider Options
 
@@ -126,7 +126,7 @@ Agent Gateway computes the cost of each LLM request from its model price catalog
 
 Agent Gateway ships with built-in prices for common hosted models. Use the **Model pricing** panel on the **AI Gateway** admin page to price models it does not know, such as self-hosted models, or to set negotiated prices.
 
-![Model pricing panel with a custom price for one model](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/model-pricing-panel.png)
+![Model pricing panel with a custom price for one model](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/model-pricing-panel-framed.png)
 
 ### Add or Edit a Price
 
@@ -143,7 +143,7 @@ New requests use the price within a few minutes, without a gateway restart. **De
 
 If another administrator changed pricing at the same time, saving fails with a conflict message and keeps your draft. Cancel, select **Reload pricing**, review the current values, and save again.
 
-![Add model price dialog with provider, model, and token rates](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/model-pricing-add-price.png)
+![Add model price dialog with provider, model, and token rates](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/model-pricing-add-price-framed.png)
 
 ### Start from Default Prices
 
@@ -155,7 +155,7 @@ Select **Show default prices** to browse the built-in prices of the deployed Age
 
 Saving an override changes only your custom prices; the default prices stay unchanged. If the platform does not publish a snapshot, the view shows **Default prices are not published by the platform.**
 
-![Default model prices with release version and snapshot date, filtered by a search](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/model-pricing-default-prices-release-snapshot.png)
+![Default model prices with release version and snapshot date, filtered by a search](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/model-pricing-default-prices-framed.png)
 
 ### Pricing and Historical Usage
 
