@@ -13,7 +13,7 @@ Run these procedures only when you understand the deployment topology, GitOps se
 | Identity and login | [Keycloak bootstrap](#keycloak-bootstrap-and-advanced-iam), [login 502 errors](#login-502-from-large-response-headers) |
 | Cluster certificates | [MicroK8s certificate maintenance](#microk8s-certificate-maintenance) |
 | Workspace defaults | [Global registry credentials](#global-registry-credentials), [resource quotas](#workspace-resource-quotas) |
-| Metrics and logs | [Grafana dashboards](#grafana), [Prometheus queries](#prometheus), [Loki log search](#loki) |
+| Metrics and logs | [Grafana dashboards](#grafana), [Prometheus queries](#prometheus), [Loki log search](#loki), [LLM usage audit](#auditing-llm-usage) |
 | Alerts and workload failures | [Alert routing](#alertmanager), [KServe and Knative alerts](#kserve-and-knative-service-alerts), [Katib controller OOM](#katib-suggestion-controller-oom) |
 
 ## MinIO Administration
@@ -411,6 +411,33 @@ Example namespace and app-label query:
 Use `.*` in regular expressions. A bare `*` is not a valid replacement for regex wildcard matching.
 
 Be careful with shared dashboards and broad Explore access. Depending on permissions, a Grafana dashboard or Loki query can expose logs from multiple namespaces. Do not publish log dashboards broadly unless namespace scoping and access controls have been verified.
+
+### Auditing LLM Usage
+
+Agent Gateway writes one access-log line per request. Use these logs to find out who used which model, for example when a key shows unexpected cost. Users can inspect the requests of their own keys under [API Keys: Request Activity](../platform/api_keys.md#request-activity); the logs cover every key and internal traffic.
+
+Query the logs in Grafana Explore with Loki. The identity fields are not Loki labels, so parse them with `logfmt` and filter after parsing:
+
+```text
+{namespace="agentgateway-system", container="agentgateway"} |= "gen_ai.request.model" | logfmt | key_id="<key-uuid>"
+```
+
+Replace the last filter to search by owner, `key_owner="<user>"`, or by calling workload, `caller=~".*/ns/<namespace>/sa/<service-account>"`.
+
+| Field | Content |
+|---|---|
+| `key_id` | ID of the API key that authenticated the request, or `none`. |
+| `workspace` | Workspace of that key, or `none`. |
+| `key_owner` | Owner of that key, or `none`. |
+| `traffic_class` | `external_key` for requests with a valid key, `internal` for in-cluster calls, `unattributed` for public requests without a valid key. |
+| `caller` | For internal requests, the Kubernetes ServiceAccount of the calling workload, as `<trust-domain>/ns/<namespace>/sa/<service-account>`. `none` for public requests. |
+
+Each line also contains the route, path, status, model, token counts, duration, and cost (`agw.ai.usage.cost.total`).
+
+- Prompts, responses, tool arguments, and API keys are never logged.
+- `key_owner` is personal data, such as an email address. Restrict who can read these logs.
+- Logs are retained for 10 days by default. They are an operational audit trail, not a billing record.
+- For an agent, `caller` is the agent's ServiceAccount, not the user who started the conversation.
 
 ### Alertmanager
 
