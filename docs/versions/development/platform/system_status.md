@@ -1,6 +1,6 @@
 # System Status
 
-The **System Status** page is available from the prokube user menu. It shows workspace pod quota for workspaces you can access. For administrators, it also shows live backend component health checks.
+The **System Status** page is available from the prokube user menu. It shows workspace pod quota for workspaces you can access. For administrators, it also shows live backend component health checks and realtime delivery diagnostics.
 
 Use this page to inspect pod quota pressure before starting new workloads, clean up completed pipeline pods, and perform a quick platform health check when you have administrator privileges.
 
@@ -12,7 +12,7 @@ Open the user menu in the prokube UI and select **System Status**.
 
 The page may also be available directly at `/system-status`.
 
-All authenticated users can open the page to inspect workspace pod quota. The **AI Gateway traffic**, **Component Health**, and **Backend Info** sections are visible only to realm administrators.
+All authenticated users can open the page to inspect workspace pod quota. The **AI Gateway traffic**, **Component Health**, **Realtime Operations**, and **Backend Info** sections are visible only to realm administrators.
 
 ## Workspace Pod Quota
 
@@ -81,6 +81,43 @@ The summary bar counts healthy, degraded, unhealthy, and disabled components.
 
 ![Admin Component Health](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/system-status/system-status-admin-health.png)
 
+## Realtime Operations
+
+Realm administrators see **Realtime Operations** once the system-status request has returned data. The panel separates server delivery health from **Current admin browser** observations. Missing server diagnostics are shown as unavailable or missing data, not healthy.
+
+### Server Diagnostics
+
+The panel covers resource streams for **Volumes**, **Dev Labs**, **KServe**, and **LLM**. Kubernetes Event diagnostics apply to Dev Labs, KServe, and LLM. It is not a status view for every feature, workload, or log stream.
+
+- **Transport**: current connections and their limit, queued events, buffered bytes and their limit, cumulative reconnects, drops, and recoveries. Its P95 measures the server enqueue-to-stream boundary, not browser receipt or rendering latency.
+- **Authorization cache**: watch and active LIST counts, cache generation and age, plus cumulative reconnects, HTTP 410 recoveries, and API failures.
+- **Diagnostics Event watches**: watches and subscribers against their limits, plus cumulative delivered events, drops, and capacity rejections.
+- **Family cache health**: per-family status and reasons, object counts, oldest cache age, and diagnostics availability. Each resource kind shows readiness, watch/LIST activity, generation, age, and recovery activity. Event diagnostics with no current subscribers are not applicable, not a family failure.
+
+| State | Interpretation |
+|---|---|
+| **healthy** | Required caches and watches are fresh and current capacity is available. |
+| **reconnecting** | A watch is disconnected but its previously usable cache is still within its freshness bound. |
+| **recovering** | A replacement LIST is active while the previous state remains safe. |
+| **stale** | Cached data is no longer safe to serve; realtime delivery is degraded. |
+| **capacity limited** | A current connection, buffer, watch, or subscriber limit has been reached. |
+| **unavailable** | Required authorization, cache, or transport is unavailable, or the family is disabled or not deployed. |
+
+Recovery activity does not make stale or unavailable data healthy. Cumulative counters cover one realtime process lifetime, not a selected time range. Compare increases only while **Process generation** is unchanged; a restart invalidates comparisons across generations. An old nonzero reconnect or drop count alone is not a current incident.
+
+### Current Admin Browser
+
+The connection badge reports this browser's server-sent events (SSE) connection. Resource and diagnostics fallback scheduler rows describe only this tab's locally retained observations, not backend health or cluster-wide polling rates. A disconnected stream alone does not prove fallback is active.
+
+**active** means a scheduler observation is within 1.5 polling intervals; **recent** means it is older but within ten minutes; **none** means no retained observation; **missing** means browser storage is unavailable or malformed. There is no diagnostics fallback row for Volumes. These observations do not prove a successful resource refresh.
+
+### Reconnect And Stale-Data Checks
+
+1. Use **Run All Checks** in Component Health to refresh the server snapshot, or enable **Auto-refresh** for 30-second updates. The realtime panel has no separate reconnect or reset button.
+2. Check authorization-cache health, then the affected family's reason, cache age, and watch/LIST activity. Persistent reconnecting, recovering, or stale state warrants checking realtime-service readiness and Kubernetes API connectivity and latency.
+3. Watch whether recovery finishes with a fresh cache generation and healthy state. For capacity issues, compare current usage with its limit and check whether drops or rejections continue increasing.
+4. Check the current browser connection separately. Use the affected feature's refresh control where available; if the session has expired, reload or sign in again. Fallback observations can remain recent after reconnection and do not prove that other users have recovered.
+
 ## Admin Backend Info
 
 Realm administrators also see **Backend Info**, including backend version and enabled backend modules.
@@ -93,7 +130,7 @@ Use this to confirm which backend version and modules are active in the current 
 
 Click **Run All Checks** to rerun administrator health checks manually.
 
-Enable **Auto-refresh** when you want the page to rerun checks periodically while watching a rollout or investigating an incident. Auto-refresh runs every 30 seconds.
+Enable **Auto-refresh** when you want the page to rerun checks periodically while watching a rollout or investigating an incident. Auto-refresh runs every 30 seconds and also updates the Realtime Operations server snapshot. These controls do not refresh workspace quota cards or change a feature's fallback scheduler.
 
 Use manual refresh for normal checks. Use auto-refresh only while actively monitoring; for long-running observability, use Grafana, Prometheus, and alerting instead.
 
@@ -111,7 +148,7 @@ When a user reports that workloads cannot start:
 
 - Workspace pod quota cards show only workspaces you can access.
 - Quota details are loaded per workspace, not all at once.
-- Component health checks and AI Gateway traffic are administrator-only.
+- Component health checks, Realtime Operations, and AI Gateway traffic are administrator-only.
 - The page checks backend components and integrations, not every workload in every workspace.
 - A healthy component status means the health check passed; it does not guarantee that all user workflows are healthy.
 - A disabled status can be expected when a module is intentionally not enabled in a deployment.
