@@ -16,7 +16,7 @@ Admin documentation is for people who install and operate a prokube deployment, 
 |---|---|
 | [Installation Planning](./installation.html) | Planning Kubernetes, DNS, TLS, identity, registry, and storage prerequisites before installation. |
 | [User Management](./user_management.html) | Managing users, workspaces, groups, workspace access, and workspace security policy settings. |
-| [Platform Settings](./platform_settings.html) | Choosing deployment-wide feature visibility with MLOps, AgentOps, and individual feature controls. |
+| [Platform Settings](./platform_settings.html) | Choosing which features appear in the prokube portal for all users. |
 | [Identity Providers](./identity_providers.html) | Connecting external SSO providers to Keycloak and troubleshooting login/group mapping. |
 | [Network Policies](./network_policies.html) | Defining reusable egress profiles and assigning outbound network restrictions to workspaces. |
 | [Application Networking](./application_networking.html) | Exposing custom applications through prokube gateways and Istio routing. |
