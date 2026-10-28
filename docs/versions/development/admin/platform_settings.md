@@ -1,48 +1,40 @@
 # Platform Settings
 
-Use **Admin > Platform Settings** to choose which deployment-enabled features appear in the prokube portal. Access requires the Keycloak `realm-admin` realm role; workspace administrator access alone is not sufficient.
+Use **Admin > Platform Settings** to choose which features appear in the prokube portal. The settings apply to all users and workspaces. Access requires the Keycloak `realm-admin` role.
 
-These are deployment-wide settings for all users and workspaces, not personal preferences. They persist across pod restarts.
+## Choose Visible Features
 
-## Feature Visibility
-
-The **Shown in portal** section has **MLOps** and **AgentOps** suite controls above the individual feature switches. Only features enabled in the deployment appear; unavailable features do not affect suite counts or checkbox state.
+Under **Shown in portal**, switch individual features on or off, or use the **MLOps** and **AgentOps** suite controls to switch a whole group. Only features installed in the deployment are listed.
 
 ![Shown in portal settings with MLOps and AgentOps suite controls and individual feature switches](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/platform-settings-shown-in-portal-framed.png)
 
-| Membership | Features |
+| Suite | Features |
 |---|---|
-| MLOps only | Labs, Hparam Search, MLflow, Pipelines, Volumes |
-| AgentOps only | LLM Serving, MCP Servers, Agents, Memory, Sandboxes |
-| Shared by both | Models, Serverless, API Keys, Object Storage, AI Gateway |
+| MLOps | Labs, Hparam Search, MLflow, Pipelines, Volumes |
+| AgentOps | LLM Serving, MCP Servers, Agents, Memory, Sandboxes |
+| Both | Models, Serverless, API Keys, Object Storage, AI Gateway |
 
-Suite controls reflect the current feature selection:
+Features in both suites stay visible while either suite is on. For example, turning off **AgentOps** hides Agents and Memory, but Models and API Keys stay visible because **MLOps** is still on. When both suites are off, these shared features are hidden and can't be switched on individually.
 
-- **Checked**: all deployment-enabled members are shown.
-- **Mixed**: some members are hidden, but the suite is still active. Selecting the mixed control shows all its members; it does not turn the suite off.
-- **Unchecked / off**: no members are shown, or all deployment-enabled exclusive features are hidden. Shared features can still be shown through the other active suite, as explained by the status text.
+A suite control is shown as mixed when only some of its features are visible. Selecting it shows all of them again.
 
-Clearing a checked suite hides its exclusive features but keeps shared features shown while the other suite is active. Turning both suites off hides their shared features too. Selecting an unchecked suite shows all its deployment-enabled members.
-
-Use individual switches for finer control. Hiding a shared feature can make both active suites mixed. When both suites have exclusive features and are off, hidden shared switches are disabled until a suite is turned on. If a suite has only shared features in this deployment, its suite control is disabled and those features remain individually editable.
-
-**Logs** and **User Management** cannot be hidden when deployment-enabled; User Management still requires administrator authorization. **Platform Settings** and **System Status** also remain available as recovery surfaces.
+**Logs**, **User Management**, **Platform Settings**, and **System Status** can't be hidden.
 
 ## Save Changes
 
-1. Adjust the suite controls or individual switches under **Shown in portal**.
-2. Select **Save settings**. Toggling a control only changes the draft; it does not save immediately.
-3. Wait for the success message. The current portal's navigation and pages refresh without a redeploy. Reload other open sessions to pick up the saved presentation; reload this page if it reports **Settings saved; refresh needed**.
+Changes take effect only after you select **Save settings**. Your portal updates right away, without a redeploy; other users see the change after reloading. If the page shows **Settings saved; refresh needed**, reload it.
 
-If another administrator saved first, use **Review latest changes**, compare the latest revision with your preserved draft, and save again only after reviewing it.
+If another administrator saved in the meantime, select **Review latest changes**, compare their version with your draft, and save again.
 
-## Scope And Limits
+## What Hiding Does
 
-Visibility changes presentation only. They do not install or uninstall components, enable deployment-disabled capabilities, disable backend APIs, or replace RBAC and other security controls. Use deployment configuration and backend authorization to disable or restrict functionality.
+Hiding a feature removes it from navigation, and its pages show as unavailable. Hiding doesn't uninstall components, disable backend APIs, or change permissions, so users can still reach a hidden feature through its API. To restrict access, use RBAC or the deployment configuration.
 
-Hidden features disappear from navigation and their portal routes show an unavailable page. Hiding **MLflow** also removes **Import from MLflow** and its picker from the **Models** create flow; MLflow's backend APIs and access controls are unchanged.
+Hiding **MLflow** also removes **Import from MLflow** from the **Models** create flow.
 
-**Reset to deployment defaults** requires confirmation and shows all deployment-enabled features again. It also clears runtime branding overrides and the uploaded logo, so do not use it as a visibility-only reset.
+::: warning Reset also clears branding
+**Reset to deployment defaults** shows all features again, but also removes custom branding and the uploaded logo.
+:::
 
 ## Related Pages
 
