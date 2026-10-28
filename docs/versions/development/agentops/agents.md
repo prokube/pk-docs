@@ -47,12 +47,13 @@ If no suitable configuration exists, select **Create ModelConfig**. The **Provid
 | Internal - Ollama | In-cluster | No |
 
 - For an **external** provider, select the Secret and the secret key created in step 1, and enter the model name.
+- For **OpenAI (external)**, **Create ModelConfig** and the **Edit** form also offer an optional **Base URL**. Set it for Groq, Together, OpenRouter, or an authenticated custom OpenAI-compatible endpoint, and enter that provider's model name. Leave it blank to use OpenAI's default endpoint. A workspace API-key Secret is still required when you set a custom URL.
 - For **Internal - OpenAI-compatible**, either pick a **Ready** model deployed through [LLM Serving](llm_serving.html) in the workspace, or enter a custom in-cluster OpenAI-compatible base URL and model name manually.
 - For **Internal - Ollama**, enter the in-cluster Ollama host, for example `http://ollama.<workspace>.svc.cluster.local:11434`.
 
-The structured form covers the common presets above. For another kagent-supported provider, open the Model Configuration YAML editor and define its provider-specific fields. OpenAI-compatible services can use the `OpenAI` provider with an `openAI.baseUrl` and a workspace Secret containing the API key; Azure OpenAI uses its dedicated kagent provider configuration. This keeps the endpoint and credential within the workspace configuration.
+The structured form covers the common presets above. For another kagent-supported provider, open the Model Configuration YAML editor and define its provider-specific fields. Azure OpenAI uses its dedicated kagent provider configuration.
 
-When provider credentials and model access are managed centrally, administrators can configure Azure OpenAI, Mistral AI, GitHub Models, or another OpenAI-compatible endpoint through Agent Gateway. Granted models then appear in the workspace as **AI Gateway** Model Configurations. See [External Models](../admin/external_models.html) for the administrator workflow.
+When provider credentials and model access are managed centrally, administrators can configure Azure OpenAI, Mistral AI, or another OpenAI-compatible endpoint through Agent Gateway. Granted models then appear in the workspace as **AI Gateway** Model Configurations. See [External Models](../admin/external_models.html) for the administrator workflow.
 
 ::: info Tool calling with internal models
 For a self-hosted text-generation model used with MCP tools, enable **automatic tool calling** in [LLM Serving: Enable Tool Calling for Agents](llm_serving.html#enable-tool-calling-for-agents) and select the parser that matches the model. This option is available for the vLLM and HuggingFace runtimes.

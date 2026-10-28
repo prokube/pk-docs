@@ -117,7 +117,7 @@ Optional sections (collapsible):
 
 ### YAML Tab
 
-Paste a raw KServe `InferenceService` manifest, optionally with a `ScaledObject` separated by `---`. Use **Load Example** to populate the editor with a valid template:
+Paste a raw KServe `InferenceService` manifest. The editor accepts exactly one InferenceService; additional documents separated by `---`, such as a KEDA `ScaledObject`, are rejected. For KEDA autoscaling, configure it on the InferenceService or apply your own scaler separately; see [Model Serving Autoscaling](model_serving_autoscaling.md#configure-keda-in-llm-serving). Use **Load Example** to populate the editor with a valid template:
 
 ```yaml
 apiVersion: serving.kserve.io/v1beta1
@@ -208,7 +208,7 @@ For a detailed KPA walkthrough and a manual KEDA/vLLM token-throughput example, 
 
 ### S3-compatible Storage
 
-InferenceServices access models in S3-compatible file storage through a `ServiceAccount` annotated with S3 endpoint details. The prokube workspace is preconfigured with S3-compatible storage; use the **File Storage** page in the UI to see available buckets. See [File Storage](../platform/file_storage.md) for storage browser, path, and client details.
+InferenceServices access models in S3-compatible file storage through a `ServiceAccount` annotated with S3 endpoint details. The prokube workspace is preconfigured with S3-compatible storage; use the **Object Storage** page in the UI to see available buckets. See [File Storage](../platform/file_storage.md) for storage browser, path, and client details.
 
 For models stored in workspace buckets, the deployment wizard's **Browse S3** button selects the path directly. For `kubectl`-based deployment, a secret named `s3creds` with the correct KServe annotations already exists in the workspace namespace and grants access to the buckets the workspace can see. Reference it from the InferenceService via `spec.predictor.serviceAccountName`.
 
