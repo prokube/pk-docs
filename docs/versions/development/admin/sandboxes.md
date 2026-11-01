@@ -1,6 +1,6 @@
 # Sandbox Administration
 
-[Sandboxes](../agentops/sandboxes.md) run on [Agent Substrate](https://github.com/kagent-dev/substrate/tree/v0.6.0-alpha2), release `v0.6.0-alpha2`. Administrators decide how much capacity sandboxes get, which presets users can pick, and which network destinations new sandboxes reach.
+[Sandboxes](../agentops/sandboxes.md) run on [Agent Substrate](https://github.com/kagent-dev/substrate/tree/v1.0.0-rc1), release `v1.0.0-rc1`. Administrators decide how much capacity sandboxes get, which presets users can pick, and which network destinations new sandboxes reach.
 
 ## Requirements
 
@@ -12,7 +12,7 @@
 
   ```bash
   ATE_ASSET=kubectl-ate-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')
-  curl -fsSLO "https://github.com/kagent-dev/substrate/releases/download/v0.6.0-alpha2/$ATE_ASSET"
+  curl -fsSLO "https://github.com/kagent-dev/substrate/releases/download/v1.0.0-rc1/$ATE_ASSET"
   shasum -a 256 "$ATE_ASSET"     # compare with the digest on the release page
   install -m 0755 "$ATE_ASSET" ~/.local/bin/kubectl-ate && rm "$ATE_ASSET"
   export ATE_CLIENT_SERVICE_ACCOUNT=substrate-operator
@@ -37,7 +37,7 @@ Sandboxes run on worker pods of a Substrate `WorkerPool`. A worker's resource li
 All capacity settings are in `paas/substrate/base/workers/capacity.yaml`. To change them, edit the file in the deployment's GitOps branch, commit, push, and sync the Argo CD Application `substrate-workers`.
 
 ```yaml
-apiVersion: ate.dev/v1alpha1
+apiVersion: ate.dev/v1
 kind: WorkerPool
 metadata:
   name: default
@@ -118,7 +118,7 @@ Platform admins open **Sandboxes** under **Admin** to see worker capacity and th
 
 ## Use kubectl ate
 
-Sandboxes do not depend on the prokube UI. Administrators manage them with [`kubectl ate`](https://github.com/kagent-dev/substrate/blob/v0.6.0-alpha2/cmd/kubectl-ate/README.md), set up as in [Requirements](#requirements):
+Sandboxes do not depend on the prokube UI. Administrators manage them with [`kubectl ate`](https://github.com/kagent-dev/substrate/blob/v1.0.0-rc1/docs/reference/kubectl-ate.md), set up as in [Requirements](#requirements):
 
 ```bash
 kubectl ate get atespaces                                  # one per workspace, plus sandbox-templates
@@ -127,7 +127,7 @@ kubectl ate get workers
 kubectl ate suspend actor sbx-demo -a <workspace>
 kubectl ate resume actor sbx-demo -a <workspace>
 kubectl ate revert actor sbx-demo -a <workspace>             # a crashed sandbox back to its last snapshot
-kubectl ate delete actor sbx-demo -a <workspace> --any-state
+kubectl ate delete actor sbx-demo -a <workspace>
 kubectl ate get egress-policy sbx-demo -a <workspace> -o yaml
 kubectl ate logs actor sbx-demo -a <workspace>
 kubectl ate get actor-templates -a sandbox-templates       # presets' templates, each with a golden tag

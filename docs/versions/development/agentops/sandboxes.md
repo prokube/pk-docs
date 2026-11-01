@@ -3,8 +3,8 @@
 ::: info Upstream documentation
 For Agent Substrate concepts that are not specific to prokube, use the upstream documentation of the release prokube deploys:
 
-- [Agent Substrate](https://github.com/kagent-dev/substrate/tree/v0.6.0-alpha2)
-- [Substrate documentation](https://github.com/kagent-dev/substrate/tree/v0.6.0-alpha2/docs)
+- [Agent Substrate](https://github.com/kagent-dev/substrate/tree/v1.0.0-rc1)
+- [Substrate documentation](https://github.com/kagent-dev/substrate/tree/v1.0.0-rc1/docs)
 - [gVisor](https://gvisor.dev/)
 :::
 
