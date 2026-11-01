@@ -34,7 +34,7 @@ Sandboxes, templates, and access policies live in Substrate's database, not in K
 
 Sandboxes run on worker pods of a Substrate `WorkerPool`. A worker's resource limits are a budget that its sandboxes share; Substrate places a sandbox only on a worker with enough budget left.
 
-All capacity settings are in `paas/substrate/base/workers/capacity.yaml`. To change them, edit the file in the deployment's GitOps branch, commit, push, and sync the Argo CD Application `substrate-workers`.
+All capacity settings are in `paas/substrate/base/workers/capacity.yaml`. To change them, edit the file in the deployment's GitOps branch, commit, push, and sync the Argo CD Application `substrate-workers`. A later deploy renders the GitOps branch anew and drops such edits, so repeat them after a redeploy.
 
 ```yaml
 apiVersion: ate.dev/v1
@@ -50,19 +50,29 @@ spec:
     resources:
       limits:                          # budget per worker
         cpu: "4"
-        memory: 8Gi
+        memory: 8256Mi                 # 8Gi for sandboxes plus the 64Mi Substrate keeps
       requests:                        # what Kubernetes reserves per worker
         cpu: 250m
         memory: 1Gi
 ```
 
-The defaults fit a single-node installation: two workers hold eight Small sandboxes at a time.
+The defaults fit a single-node installation: two workers hold eight Small or four Medium sandboxes at a time. Substrate keeps 64Mi of each worker's memory for itself, so give a worker the memory of the sandboxes it should hold plus 64Mi.
 
-- **More sandboxes**: raise `replicas` or the per-worker limits.
+- **More sandboxes**: raise `replicas`, see [When capacity runs short](#when-capacity-runs-short).
 - **Dedicated nodes**: label the nodes, set the label as `template.nodeSelector`, and taint the nodes with `ate.dev/sandboxClass=gvisor:NoSchedule`. Workers tolerate this taint.
 - **Workers of another size or on other nodes**: add another `WorkerPool` with its own `prokube.ai/sandbox-pool` label, and set that label as `pool` of the sizes that should run there.
 
 Changing a pool's `template` replaces all its workers, and lowering `replicas` removes some. Sandboxes on a removed worker must be suspended within 30 minutes, or they lose their state since the last snapshot. Suspend them before the change.
+
+### When capacity runs short
+
+When no worker has room for a sandbox, creating or resuming it fails with HTTP 503, and the data-plane check `pk-sandbox/dataplane-check` logs `RESOURCE_EXHAUSTED no worker has room for the actor`. **Worker capacity** in the [admin view](#admin-view) shows each worker's reserved CPU and memory against its budget, and the panel **Scheduling outcomes** of the Grafana dashboard **Agent Substrate** counts resumes that ended in `no_capacity`.
+
+1. **Free capacity**: suspend sandboxes that run but are not in use, in the admin view or with [`kubectl ate suspend`](#use-kubectl-ate). A suspended sandbox holds no CPU or memory on a worker, and its user resumes it later. Delete sandboxes nobody needs.
+2. **Add workers**: raise `replicas` in `capacity.yaml`. New workers join, and running sandboxes stay where they are. Sandboxes can use their memory up to their limit, so the nodes need allocatable memory for `replicas` times the per-worker memory limit.
+3. **Add nodes** when the nodes are full, or move the workers to dedicated sandbox nodes as described above.
+
+Larger per-worker limits only help for larger sandbox sizes, and changing them replaces all workers.
 
 ## Snapshots
 
