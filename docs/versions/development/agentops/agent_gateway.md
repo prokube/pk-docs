@@ -67,7 +67,7 @@ External access is configured through service-scoped API keys, not on this page.
 
 ## Observability
 
-Traffic routed through Agent Gateway provides a common collection point for request metrics, logs, and traces. The currently documented user-facing view is the [API Key Usage Dashboard](../platform/api_keys.html#usage-dashboard), which covers requests authenticated with an API key and does not represent all internal agent traffic.
+Traffic routed through Agent Gateway provides a common collection point for request metrics, logs, and traces. The [API Key Usage Dashboard](../platform/api_keys.html#usage-dashboard) covers requests authenticated with an API key, including the individual requests of each key. Administrators see internal agent traffic in aggregate under [System Status](../platform/system_status.html#ai-gateway-traffic) and can trace requests to a key or calling workload in the gateway logs. See [Auditing LLM Usage](../admin/operations_runbooks.html#auditing-llm-usage). For an agent, the logs identify its ServiceAccount, not the user who started the conversation.
 
 For workload logs, Kubernetes events, metrics, and currently available tracing workflows, see [Observability](../platform/observability.html). The underlying agentgateway data plane supports OpenTelemetry-based metrics and tracing integrations.
 

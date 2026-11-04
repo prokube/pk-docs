@@ -16,6 +16,7 @@ Admin documentation is for people who install and operate a prokube deployment, 
 |---|---|
 | [Installation Planning](./installation.html) | Planning Kubernetes, DNS, TLS, identity, registry, and storage prerequisites before installation. |
 | [User Management](./user_management.html) | Managing users, workspaces, groups, workspace access, and workspace security policy settings. |
+| [Platform Settings](./platform_settings.html) | Choosing which features appear in the prokube portal for all users. |
 | [Identity Providers](./identity_providers.html) | Connecting external SSO providers to Keycloak and troubleshooting login/group mapping. |
 | [Network Policies](./network_policies.html) | Defining reusable egress profiles and assigning outbound network restrictions to workspaces. |
 | [Application Networking](./application_networking.html) | Exposing custom applications through prokube gateways and Istio routing. |
@@ -26,6 +27,6 @@ Admin documentation is for people who install and operate a prokube deployment, 
 | [Backup and Restore](./backup_restore.html) | Disaster-recovery scope, backup storage, restore expectations, and validation. |
 | [Upgrading](./upgrading.html) | Planning release upgrades, GitOps-driven rollout, and post-upgrade validation. |
 | [Operations Runbooks](./operations_runbooks.html) | Administrator runbooks for MinIO, Keycloak bootstrap, and observability operations. |
-| [System Status](../platform/system_status.html) | Checking administrator-only backend component health and backend metadata; the same page also shows workspace pod quota to all users. |
+| [System Status](../platform/system_status.html) | Checking administrator-only backend health, realtime operations, and backend metadata; the same page also shows workspace pod quota to all users. |
 
 Platform-wide monitoring is an administrator topic. Use [System Status](../platform/system_status.html) for quick backend health checks. For dashboards, alerts, and log retention, use the deployment's Grafana, Prometheus, Alertmanager, and Loki.
