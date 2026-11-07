@@ -1,6 +1,6 @@
 # Sandbox Administration
 
-[Sandboxes](../agentops/sandboxes.md) run on [Agent Substrate](https://github.com/kagent-dev/substrate/tree/v1.0.0-rc1), release `v1.0.0-rc1`. Administrators decide how much capacity sandboxes get, which presets users can pick, and which network destinations new sandboxes reach.
+[Sandboxes](../agentops/sandboxes.md) run on [Agent Substrate](https://github.com/kagent-dev/substrate/tree/v1.0.0), release `v1.0.0`. Administrators decide how much capacity sandboxes get, which presets users can pick, and which network destinations new sandboxes reach.
 
 ## Requirements
 
@@ -12,7 +12,7 @@
 
   ```bash
   ATE_ASSET=kubectl-ate-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')
-  curl -fsSLO "https://github.com/kagent-dev/substrate/releases/download/v1.0.0-rc1/$ATE_ASSET"
+  curl -fsSLO "https://github.com/kagent-dev/substrate/releases/download/v1.0.0/$ATE_ASSET"
   shasum -a 256 "$ATE_ASSET"     # compare with the digest on the release page
   install -m 0755 "$ATE_ASSET" ~/.local/bin/kubectl-ate && rm "$ATE_ASSET"
   export ATE_CLIENT_SERVICE_ACCOUNT=substrate-operator
@@ -128,7 +128,7 @@ Platform admins open **Sandboxes** under **Admin** to see worker capacity and th
 
 ## Use kubectl ate
 
-Sandboxes do not depend on the prokube UI. Administrators manage them with [`kubectl ate`](https://github.com/kagent-dev/substrate/blob/v1.0.0-rc1/docs/reference/kubectl-ate.md), set up as in [Requirements](#requirements):
+Sandboxes do not depend on the prokube UI. Administrators manage them with [`kubectl ate`](https://github.com/kagent-dev/substrate/blob/v1.0.0/docs/reference/kubectl-ate.md), set up as in [Requirements](#requirements):
 
 ```bash
 kubectl ate get atespaces                                  # one per workspace, plus sandbox-templates
