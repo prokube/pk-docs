@@ -4,6 +4,8 @@ An agent reaches its model and its connected tools (MCP servers) without further
 
 The same rules apply to code the agent runs in its sandboxes (see [Run code](#run-code)).
 
+The example [`github-agent`](https://github.com/prokube/examples/tree/kagentv1/main/agents/github-agent) sets this up for an agent that calls the GitHub API with a token it never sees and installs packages from PyPI.
+
 ## Allow Hosts
 
 Open the agent on the **Agents** page, go to **Overview**, and click **Edit** in **Network & credentials**. Enter one host per line:
