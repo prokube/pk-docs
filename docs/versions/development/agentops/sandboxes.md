@@ -38,6 +38,18 @@ The [`prokube/examples`](https://github.com/prokube/examples/tree/main/sandboxes
 | [`claude-code-worker`](https://github.com/prokube/examples/tree/main/sandboxes/claude-code-worker) | You want to run a coding agent headless on a repository, with its API key injected at egress so it never enters the sandbox. |
 | [`opencode-server`](https://github.com/prokube/examples/tree/main/sandboxes/opencode-server) | You want an agent to work in a sandbox while you follow and steer it from opencode on your laptop. |
 
+## Agent Sessions and Agent Sandboxes
+
+The **Sandboxes** page also lists what [agents](agents.md) run in the workspace. Filter by type:
+
+| Filter | Shows |
+|---|---|
+| **My sandboxes** | Sandboxes created on this page, with the CLI, or with the SDK |
+| **Agent sessions** | One per agent conversation |
+| **Agent sandboxes** | Sandboxes agents start with **Run code** |
+
+Agent sessions and agent sandboxes link to their agent; change their network settings there.
+
 ## Create a Sandbox
 
 Open **Sandboxes** under **AgentOps** in the prokube UI, select the workspace, and click **Create Sandbox**. Enter a **Name**, pick a **Preset**, and click **Create**.
