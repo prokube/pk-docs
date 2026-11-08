@@ -82,7 +82,7 @@ This keeps code out of the agent: a sandbox has its own image and network rules 
 | kagent | Most agents | Supports **Run code** |
 | Codex | Coding tasks with OpenAI models | Needs an OpenAI model; has its own shell inside the agent, so **Run code** is not needed |
 | Claude | Coding tasks with Anthropic models | Needs an Anthropic model; has its own shell inside the agent |
-| Own image | An agent you built yourself, for example with LangGraph | Your image must speak A2A |
+| Own image | An agent you built yourself | Your image must implement kagent's runtime contract, for example with `kagent-adk` |
 
 Create a runtime on the **Harnesses** tab, then select it in **Runs on**. For Codex and Claude, the agent's network settings apply to everything its shell does.
 
@@ -92,7 +92,7 @@ External applications call an agent over A2A through Agent Gateway at `/svc/a2a/
 
 ## Examples
 
-The [kagent examples](https://github.com/prokube/examples/tree/kagentv1/main/kagent) go from a basic agent to tools, delegation, your own image, calling an agent over A2A, and an agent with injected API credentials.
+The [kagent examples](https://github.com/prokube/examples/tree/kagentv1/main/kagent) go from a basic agent to tools, delegation, calling an agent over A2A, an agent with injected API credentials, and tracing.
 
 ## Related Pages
 
