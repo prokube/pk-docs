@@ -41,6 +41,7 @@ const baseSidebar: SidebarItem[] = [
       { text: 'Agents', link: '/agentops/agents.html' },
       { text: 'Sandboxes', link: '/agentops/sandboxes.html', versions: ['development'] },
       { text: 'Network and Credentials', link: '/agentops/network_and_credentials.html', versions: ['development'] },
+      { text: 'Agent Tracing', link: '/agentops/agent_tracing.html', versions: ['development'] },
       { text: 'LLM Serving', link: '/agentops/llm_serving.html' }
     ]
   },
@@ -86,6 +87,7 @@ const baseSidebar: SidebarItem[] = [
       { text: 'Application Authentication', link: '/admin/application_authentication.html' },
       { text: 'External Models', link: '/admin/external_models.html' },
       { text: 'Sandboxes', link: '/admin/sandboxes.html', versions: ['development'] },
+      { text: 'Agents', link: '/admin/agents.html', versions: ['development'] },
       { text: 'Storage', link: '/admin/storage.html' },
       { text: 'GPU Administration', link: '/admin/gpu.html' },
       { text: 'Backup and Restore', link: '/admin/backup_restore.html' },

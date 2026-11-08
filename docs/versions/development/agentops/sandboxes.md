@@ -48,6 +48,18 @@ The default presets run the same Debian image with Python 3, Node.js, git, openc
 
 Each has a `-memory` variant, for example **Small, keeps memory** (`pk-default-small-memory`), that also keeps running processes across a suspend. Administrators can change the presets; `pk sandbox preset list` shows the presets of your platform.
 
+## Agent Sessions and Agent Sandboxes
+
+The **Sandboxes** page also lists what [agents](agents.md) run in the workspace. Filter by type:
+
+| Filter | Shows |
+|---|---|
+| **My sandboxes** | Sandboxes created on this page, with the CLI, or with the SDK |
+| **Agent sessions** | One per agent conversation |
+| **Agent sandboxes** | Sandboxes agents start with **Run code** |
+
+Agent sessions and agent sandboxes link to their agent; change their network settings there.
+
 ## Suspend, Resume, and Persistence
 
 **Suspend** saves the sandbox to a snapshot and frees its CPU and memory. **Resume** restores it. Commands, port forwarding, file transfers, and the SDK resume a suspended sandbox automatically; plain `ssh` and IDEs do not (see [SSH and IDEs](#ssh-and-ides)). Suspend sandboxes you are not using.

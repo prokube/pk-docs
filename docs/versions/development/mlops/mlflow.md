@@ -224,6 +224,10 @@ The workspace namespace must contain an `mlflow-credentials` secret with `MLFLOW
 | A client stops working after some time | The token expired or was deleted. Create a new token and update all notebooks, secrets, and workloads that still use the old one. |
 | Model is not found in the registry | Model names are global. Verify the exact registered model name, version or alias, and your permissions. |
 
+## Agent Traces
+
+Agents can send their traces to an MLflow experiment in the workspace. The traces appear on the experiment's **Traces** tab. See [Agent Tracing](../agentops/agent_tracing.md).
+
 ## Garbage Collection
 
 Deleting MLflow experiments, runs, registered models, or model versions in the UI is usually a soft delete. Names and artifacts can remain in the backend until an administrator runs MLflow garbage collection for the deployment.

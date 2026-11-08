@@ -53,9 +53,11 @@ See [Agents](agents.html) for the UI workflow and [MCP Servers](mcp_servers.html
 
 ## Agent-to-Agent Routes
 
-prokube creates an A2A route for each supported kagent Agent. Other workloads can use that route to invoke the Agent without depending on its backing Pod or Service address.
+prokube exposes each kagent Agent over A2A at `/svc/a2a/<workspace>/<agent>`. Callers need an API key scoped to that Agent; a key for another agent is rejected, and a key from another workspace does not find the agent. Conversations started with a key belong to the key's owner.
 
-Workloads in the same workspace can use the internal route with their workload identity and do not need an API key. Calls from other workspace or cluster namespaces are denied. External clients use the public `/svc/a2a/<workspace>/<agent>` path and an API key scoped to that Agent.
+Use streaming calls (`SendStreamingMessage`) to start a conversation. The agent card lists the cluster-internal address of the agent; clients should call the gateway URL above instead.
+
+Agents call each other inside the platform without a key: add another agent as a sub-agent in **What the agent does**. Workloads in the workspace, such as Labs and pipelines, use the gateway route with a key like external clients.
 
 ## External Clients
 
