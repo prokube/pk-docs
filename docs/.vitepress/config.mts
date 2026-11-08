@@ -40,6 +40,7 @@ const baseSidebar: SidebarItem[] = [
       { text: 'Memory Stores', link: '/agentops/memory_stores.html' },
       { text: 'Agents', link: '/agentops/agents.html' },
       { text: 'Sandboxes', link: '/agentops/sandboxes.html', versions: ['development'] },
+      { text: 'Network and Credentials', link: '/agentops/network_and_credentials.html', versions: ['development'] },
       { text: 'LLM Serving', link: '/agentops/llm_serving.html' }
     ]
   },
