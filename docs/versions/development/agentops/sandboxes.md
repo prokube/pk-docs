@@ -16,11 +16,11 @@ Use a sandbox for agent-generated or untrusted code, for a coding agent that nee
 
 ```bash
 pip install 'prokube-sdk[cli] @ git+https://github.com/prokube/prokube-sdk.git'
-pk login https://<your-prokube-domain> --workspace <workspace>
+pk auth login https://<your-prokube-domain> --workspace <workspace>
 pk sandbox create demo --connect
 ```
 
-`pk login` opens your browser for the platform login. The last command creates the sandbox and opens an SSH session in it.
+`pk auth login` opens your browser for the platform login; `pk auth workspace set <workspace>` changes the default workspace later. The last command creates the sandbox and opens an SSH session in it.
 
 ## Create a Sandbox
 
@@ -34,7 +34,7 @@ The default presets run the same Debian image with Python 3, Node.js, git, openc
 | **Medium** (`pk-default-medium`) | 2 CPU, 4 GiB |
 | **Large** (`pk-default-large`) | 3 CPU, 6 GiB |
 
-Each has a `-memory` variant, for example **Small, keeps memory** (`pk-default-small-memory`), that also keeps running processes across a suspend. Administrators can change the presets; `pk preset list` shows the presets of your platform.
+Each has a `-memory` variant, for example **Small, keeps memory** (`pk-default-small-memory`), that also keeps running processes across a suspend. Administrators can change the presets; `pk sandbox preset list` shows the presets of your platform.
 
 ## Suspend, Resume, and Persistence
 
@@ -94,7 +94,7 @@ Workspace editors and owners can create, change, and use sandboxes; viewers can 
 Install the CLI and log in as in the [Quickstart](#quickstart), then:
 
 ```bash
-pk preset list                                       # presets, default marked
+pk sandbox preset list                               # presets, default marked
 pk sandbox create agent --preset pk-default-small-memory
 pk sandbox list
 pk sandbox connect demo                              # SSH session
@@ -117,7 +117,7 @@ pk sandbox ssh-config demo --install
 ssh pk.<workspace>.demo
 ```
 
-The CLI copies your public key into the sandbox through the platform API and pins the sandbox's host key.
+On first use the CLI creates its own SSH key, `~/.config/prokube/ssh/id_ed25519`, copies the public key into the sandbox through the platform API, and pins the sandbox's host key. The host entry names that key, so `ssh` and IDEs use it too.
 
 `ssh` and IDEs do not resume a suspended sandbox, so an IDE that reconnects on its own does not wake it; the connection fails with `Run: pk sandbox resume demo`. To let them resume it, write the entry with `pk sandbox ssh-config demo --resume`.
 
@@ -133,7 +133,7 @@ OPENCODE_PASSWORD=<password> opencode --server http://localhost:4096   # third t
 
 ## Use the Python SDK
 
-The SDK reuses the login from `pk login`:
+The SDK reuses the login from `pk auth login`:
 
 ```python
 from prokube.sandbox import SandboxClient
@@ -176,7 +176,7 @@ The pod acts as the workspace's `default-editor` service account. It is an edito
 
 ### With an API Key
 
-For CI jobs, servers, and agents outside the platform, create a key in the dashboard under **AI Gateway Keys**: pick the workspace, the scope **All sandboxes**, and the format `x-api-key`. The CLI and the SDK then need no login:
+For CI jobs, servers, and agents outside the platform, create a key in the dashboard under **AI Gateway Keys**: pick the workspace, the scope **All sandboxes**, and the format **Bearer**. The CLI and the SDK then need no login:
 
 ```bash
 export PROKUBE_URL=https://<your-prokube-domain>
@@ -189,7 +189,7 @@ pk sandbox create ci-run
 
 ## Give Agents Sandbox Tools over MCP
 
-`pk sandbox mcp` is an MCP server that gives agents tools to manage sandboxes, run commands, and read and write files. Locally it speaks stdio and uses your `pk login`. Add it to Claude Code:
+`pk sandbox mcp` is an MCP server that gives agents tools to manage sandboxes, run commands, and read and write files. Locally it speaks stdio and uses your `pk auth login`. Add it to Claude Code:
 
 ```bash
 claude mcp add sandbox -- pk sandbox mcp
