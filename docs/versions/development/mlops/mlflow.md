@@ -39,6 +39,8 @@ In the MLflow UI, click **Permissions**, open the **Tokens** tab, and click **Cr
 
 Each token has a name and expires after at most one year. You can hold several tokens, for example one per Lab or pipeline; creating a new token does not invalidate the others. Delete tokens you no longer need from the **Tokens** tab; a deleted token stops working immediately.
 
+Tokens that existed before the upgrade to mlflow-oidc-auth 11 appear on the **Tokens** tab as `default`, marked *Carried over*, and keep working. A carried-over token that had no expiry date now expires one year after the upgrade; replace it in notebooks, secrets, and workloads before then.
+
 ### Configure the MLflow Client
 
 Set these variables before using the MLflow Python client:
@@ -158,6 +160,34 @@ def add_mlflow_env(task: dsl.PipelineTask) -> dsl.PipelineTask:
 
 For a complete pipeline example, see [`mlflow/mlflow-kfp-example.ipynb`](https://github.com/prokube/examples/blob/main/mlflow/mlflow-kfp-example.ipynb).
 
+## Send Traces
+
+MLflow records traces of LLM and agent applications in experiments. For instrumentation, see the upstream [MLflow Tracing](https://mlflow.org/docs/latest/genai/tracing/) documentation.
+
+With the MLflow client configured as in [Configure the MLflow Client](#configure-the-mlflow-client), MLflow's own tracing APIs log traces to the central MLflow instance. Applications instrumented with OpenTelemetry can export traces to MLflow directly:
+
+| Setting | Value |
+|---|---|
+| Endpoint | `https://<your-prokube-domain>/mlflow/v1/traces` |
+| Protocol | OTLP/HTTP with protobuf or JSON payloads; OTLP/gRPC is not supported |
+| Authentication | HTTP Basic auth with your MLflow username and a [personal access token](#create-a-personal-access-token) |
+| Target experiment | `x-mlflow-experiment-id` header with the experiment ID; required |
+
+The token's user needs **EDIT** or **MANAGE** permission on the target experiment. Find the experiment ID on the experiment page in the MLflow UI, or with `mlflow.get_experiment_by_name("my-experiment").experiment_id`.
+
+For OpenTelemetry SDKs that read the standard environment variables:
+
+```bash
+AUTH=$(printf '%s:%s' "$MLFLOW_TRACKING_USERNAME" "$MLFLOW_TRACKING_PASSWORD" | base64 | tr -d '\n')
+export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="https://<your-prokube-domain>/mlflow/v1/traces"
+export OTEL_EXPORTER_OTLP_TRACES_PROTOCOL="http/protobuf"
+export OTEL_EXPORTER_OTLP_TRACES_HEADERS="Authorization=Basic%20${AUTH},x-mlflow-experiment-id=<experiment-id>"
+```
+
+Header values in `OTEL_EXPORTER_OTLP_TRACES_HEADERS` are URL-encoded, so the space after `Basic` is written as `%20`. In Python, install `opentelemetry-exporter-otlp-proto-http` and use its `OTLPSpanExporter`, which reads these variables.
+
+For shared or long-running services, use an MLflow service-account token instead of a personal token; see [Permissions and Naming](#permissions-and-naming).
+
 ## Deploy MLflow Models with KServe
 
 prokube can deploy models tracked in MLflow through KServe using `mlflow://` storage URIs. In the prokube UI, open **Models**, click **Deploy Model**, and use **Import from MLflow** to select a model from the MLflow registry or a run artifact.
@@ -190,6 +220,7 @@ The workspace namespace must contain an `mlflow-credentials` secret with `MLFLOW
 | Creating an experiment or model fails with a permission error | The name may already exist globally and belong to another user or team. Use a different name or ask an MLflow admin for access. |
 | Pipeline task cannot authenticate to MLflow | Check that the `mlflow-credentials` secret exists in the same workspace namespace as the pipeline run and contains all required keys. |
 | KServe cannot import an `mlflow://` model | Check the `mlflow-credentials` secret and confirm that the cluster has the MLflow storage initializer enabled. |
+| OpenTelemetry export returns `403 Forbidden` | Check that the `x-mlflow-experiment-id` header is set and names an existing experiment, and that the token's user has **EDIT** or **MANAGE** permission on it. |
 | A client stops working after some time | The token expired or was deleted. Create a new token and update all notebooks, secrets, and workloads that still use the old one. |
 | Model is not found in the registry | Model names are global. Verify the exact registered model name, version or alias, and your permissions. |
 
