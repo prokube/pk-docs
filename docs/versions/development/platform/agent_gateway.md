@@ -26,7 +26,7 @@ Agent Gateway exposes one public path family per service type. Each path is work
 
 | Family | Path pattern | Backed by |
 |---|---|---|
-| `/svc/ai` | `/svc/ai/<workspace>/models/<route-id>/v1/...` | OpenAI-compatible LLM traffic (chat completions, embeddings, rerank): self-hosted models deployed through [LLM Serving](../agentops/llm_serving.html), and [external models](../admin/external_models.html) granted by an administrator. Classic (non-LLM) KServe models never use this family. |
+| `/svc/ai` | `/svc/ai/<workspace>/models/<route-id>/v1/...` | OpenAI-compatible LLM traffic (chat completions, embeddings, rerank, and the Responses API for external OpenAI models): self-hosted models deployed through [LLM Serving](../agentops/llm_serving.html), and [external models](../admin/external_models.html) granted by an administrator. Classic (non-LLM) KServe models never use this family. |
 | `/svc/serving` | `/svc/serving/<workspace>/<name>` | Classic KServe InferenceServices (V1/V2 predict protocol) and Knative Services. Both share this one path family: `<name>` resolves against whichever resource matches. |
 | `/svc/mcp` | `/svc/mcp/<workspace>/<server>` | MCP servers and MCP-compatible memory stores |
 | `/svc/a2a` | `/svc/a2a/<workspace>/<agent>` | kagent agent-to-agent access |
