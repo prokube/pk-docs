@@ -4,7 +4,7 @@ An agent reaches its model and its connected tools (MCP servers) without further
 
 The same rules apply to code the agent runs in its sandboxes (see [Run code](#run-code)).
 
-The example [`github-agent`](https://github.com/prokube/examples/tree/kagentv1/main/kagent/github-agent) sets this up for an agent that calls the GitHub API with a token it never sees and installs packages from PyPI.
+The examples [`allowed-hosts`](https://github.com/prokube/examples/tree/kagentv1/main/kagent/allowed-hosts) and [`injected-credentials`](https://github.com/prokube/examples/tree/kagentv1/main/kagent/injected-credentials) set this up step by step: an agent that may reach three hosts, and then logs in to an API with a password it never sees.
 
 ## Allow Hosts
 
