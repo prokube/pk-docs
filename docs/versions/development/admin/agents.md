@@ -29,6 +29,10 @@ The policy sync then lets the kagent controller manage actors in that workspace'
 
 Agent sessions and sandboxes share the worker pool `ate-workers/default`. Each running agent session takes 1 CPU and 1 GiB from a worker; each agent sandbox takes the size of its template. Idle sessions are suspended to snapshots and use no worker. Size the pool for both, see [Sandbox Administration: Capacity](sandboxes.md#capacity).
 
+## Agent Images
+
+The workers pull the images of agents, harnesses, and sandbox templates themselves, without Kubernetes pull secrets. Users' own images must therefore be in a registry that allows anonymous pulls. The platform's registry login is used only for prokube's own sandbox image.
+
 ## Security Model
 
 - **Configuration** is Kubernetes RBAC: workspace editors create agents and their resources in their namespace; readers see them.

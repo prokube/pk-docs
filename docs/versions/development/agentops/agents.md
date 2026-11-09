@@ -79,12 +79,22 @@ This keeps code out of the agent: a sandbox has its own image and network rules 
 
 | Runtime | Use it for | Notes |
 |---|---|---|
-| kagent | Most agents | Supports **Run code** |
-| Codex | Coding tasks with OpenAI models | Needs an OpenAI model; has its own shell inside the agent, so **Run code** is not needed |
-| Claude | Coding tasks with Anthropic models | Needs an Anthropic model; has its own shell inside the agent |
-| Own image | An agent you built yourself | Your image must implement kagent's runtime contract, for example with `kagent-adk` |
+| kagent | Most agents | The `default` harness; supports **Run code** |
+| Claude | Coding tasks with Claude Code | Needs an Anthropic model configuration with your own key; has its own shell (`bash`, `wget`, no Python) |
+| Codex | Coding tasks with OpenAI Codex | Needs an OpenAI model configuration with the API format **Responses**; AI Gateway models do not support it yet |
+| Own image | Agents you build yourself, for example with LangGraph | See [Own Images](#own-images) |
 
-Create a runtime on the **Harnesses** tab, then select it in **Runs on**. For Codex and Claude, the agent's network settings apply to everything its shell does.
+Create a runtime on the **Harnesses** tab, then select it in **Runs on**. Claude and Codex run commands in their own shell, so **Run code** is not needed; the agent's network settings apply to everything the shell does. The [`harnesses` example](https://github.com/prokube/examples/tree/kagentv1/main/kagent/harnesses) creates one agent on each.
+
+### Own Images
+
+An own image runs your agent code instead of the kagent runtime. It must:
+
+- serve kagent's agent interface and store its tasks in kagent. The kagent Python packages provide the building blocks: `kagent-core` with `kagent-adk`, `kagent-langgraph`, `kagent-openai` or `kagent-crewai`. Their version must match the platform's kagent version.
+- be referenced by digest (`registry/image@sha256:...`) in a Harness of type `byo`, with the command that starts it.
+- be in a registry that allows anonymous pulls. The workers pull images without Kubernetes pull secrets.
+
+The image gets its model and settings from the agent's template; API keys are added on the way out, as for other agents. The [`own-image` example](https://github.com/prokube/examples/tree/kagentv1/main/kagent/own-image) runs a LangGraph workflow this way.
 
 ## Call an Agent from Applications
 
@@ -92,7 +102,7 @@ External applications call an agent over A2A through Agent Gateway at `/svc/a2a/
 
 ## Examples
 
-The [kagent examples](https://github.com/prokube/examples/tree/kagentv1/main/kagent) go from a basic agent to tools, delegation, calling an agent over A2A, an agent with injected API credentials, and tracing.
+The [kagent examples](https://github.com/prokube/examples/tree/kagentv1/main/kagent) show one capability per step: a basic agent, MCP tools, running code, allowed hosts, injected credentials, Claude Code and Codex, an own LangGraph image, delegation, calling an agent over A2A, and tracing.
 
 ## Related Pages
 
