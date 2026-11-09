@@ -81,8 +81,10 @@ This keeps code out of the agent: a sandbox has its own image and network rules 
 |---|---|---|
 | kagent | Most agents | The `default` harness; supports **Run code** |
 | Claude | Coding tasks with Claude Code | Needs an Anthropic model configuration with your own key; has its own shell (`bash`, `wget`, no Python) |
-| Codex | Coding tasks with OpenAI Codex | Needs an OpenAI model configuration with the API format **Responses**; AI Gateway models do not support it yet |
+| Codex | Coding tasks with OpenAI Codex | Needs an OpenAI model configuration with **API format** set to **Responses** (see below) |
 | Own image | Agents you build yourself, for example with LangGraph | See [Own Images](#own-images) |
+
+For Codex with an OpenAI model from AI Gateway, create a second model configuration next to the granted one: provider **OpenAI or OpenAI-compatible**, the same model name, base URL and API key Secret, and **API format** **Responses**. Models from Anthropic providers and self-hosted models do not offer the Responses API.
 
 Create a runtime on the **Harnesses** tab, then select it in **Runs on**. Claude and Codex run commands in their own shell, so **Run code** is not needed; the agent's network settings apply to everything the shell does. The [`harnesses` example](https://github.com/prokube/examples/tree/kagentv1/main/kagent/harnesses) creates one agent on each.
 
