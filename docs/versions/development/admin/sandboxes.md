@@ -34,7 +34,7 @@ Sandboxes, templates, and access policies live in Substrate's database, not in K
 
 Sandboxes run on worker pods of a Substrate `WorkerPool`. A worker's resource limits are a budget that its sandboxes share; Substrate places a sandbox only on a worker with enough budget left.
 
-All capacity settings are in `paas/substrate/base/workers/capacity.yaml`. To change them, edit the file in the deployment's GitOps branch, commit, push, and sync the Argo CD Application `substrate-workers`. A later deploy renders the GitOps branch anew and drops such edits, so repeat them after a redeploy.
+All capacity settings are in `paas/pk-sandbox/workers/capacity.yaml`. To change them, edit the file in the deployment's GitOps branch, commit, push, and sync the Argo CD Application `pk-sandbox-workers`. A later deploy renders the GitOps branch anew and drops such edits, so repeat them after a redeploy.
 
 ```yaml
 apiVersion: ate.dev/v1
@@ -86,17 +86,17 @@ Users pick a preset; a preset has a size and a snapshot type. The defaults are l
 
 | What | File in the GitOps branch | Argo CD Application |
 |---|---|---|
-| Sizes: CPU, memory, and pool of each size | `paas/substrate/base/gateway/sizes.json` | `substrate-gateway` |
-| Preset list shown to users, and the [default network rules](../agentops/sandboxes.md#network-access) (`network`) | `paas/substrate/base/gateway/presets.json` | `substrate-gateway` |
-| One Substrate template per preset | `paas/substrate/base/templates/<template>.yaml` | `substrate-templates` |
+| Sizes: CPU, memory, and pool of each size | `paas/pk-sandbox/gateway/sizes.json` | `pk-sandbox-gateway` |
+| Preset list shown to users, and the [default network rules](../agentops/sandboxes.md#network-access) (`network`) | `paas/pk-sandbox/gateway/presets.json` | `pk-sandbox-gateway` |
+| One Substrate template per preset | `paas/pk-sandbox/templates/<template>.yaml` | `pk-sandbox-templates` |
 
 Every size must fit the per-worker limits of its pool, or its sandboxes never start. A preset's template carries its size, so changing a size that a preset uses also needs a new template version, see below. Changes to the default network rules apply to sandboxes created afterwards.
 
 Templates are immutable, and sandboxes keep the template they were created from. To change a preset:
 
 1. Add a new version of its template, for example `pk-default-small-v2.yaml`.
-2. List it in `paas/substrate/base/templates/kustomization.yaml` instead of the old file, and point the preset's `template` in `presets.json` at it.
-3. Sync `substrate-templates` and `substrate-gateway`. The policy sync creates the template, and Substrate boots it once to take the snapshot that new sandboxes start from.
+2. List it in `paas/pk-sandbox/templates/kustomization.yaml` instead of the old file, and point the preset's `template` in `presets.json` at it.
+3. Sync `pk-sandbox-templates` and `pk-sandbox-gateway`. The policy sync creates the template, and Substrate boots it once to take the snapshot that new sandboxes start from.
 4. Delete the old template once no sandbox uses it: `kubectl ate delete actor-template pk-default-small-v1 -a sandbox-templates`.
 
 
@@ -110,9 +110,9 @@ The policy sync turns workspace roles and platform admins into Substrate access 
 | Workspace viewer (`pk:view:<workspace>`) | `viewer` of the workspace's Atespace: list sandboxes and see their settings |
 | Pods running as the workspace's `default-editor` service account | `editor` of the workspace's Atespace |
 | [API keys](../agentops/sandboxes.md#with-an-api-key) with the scope **All sandboxes**, acting as the service account `<workspace>/pk-sandbox-api-key` | `editor` of the workspace's Atespace |
-| Platform admins: Keycloak role `realm-admin`, which the group `pk-admin` grants | global `owner`: every sandbox of every workspace |
+| Platform admins: members of the Keycloak group `pk-admin` | global `owner`: every sandbox of every workspace |
 
-To make someone a platform admin, add them to `pk-admin` on the [User Management](./user_management.html) page. Users who lose the role or are deleted are removed again. The sync leaves other members of the global access policy alone, so grant service accounts, users of other login connectors, or global `viewer` access by hand with `kubectl ate get access-policy --global -o yaml` and `kubectl ate update access-policy --global -f <file>`.
+To make someone a platform admin, add them to `pk-admin` on the [User Management](./user_management.html) page. Users who leave the group or are deleted are removed again. The sync leaves other members of the global access policy alone, so grant service accounts, users of other login connectors, or global `viewer` access by hand with `kubectl ate get access-policy --global -o yaml` and `kubectl ate update access-policy --global -f <file>`.
 
 Every workspace member is also a `viewer` of the Atespace `sandbox-templates`, which holds the presets' templates. The policy sync overwrites manual changes to workspace Atespaces.
 
