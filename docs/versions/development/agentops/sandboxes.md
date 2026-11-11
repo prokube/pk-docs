@@ -162,7 +162,7 @@ client.set_network("demo", [
 
 ### From a Workspace Pod
 
-Notebooks, pipeline steps, and agents in a workspace can use its sandboxes without a login. Select **Allow access to sandboxes** under **Configurations** when you launch a Lab, or add the label `access-sandboxes: "true"` to other pods. Install the SDK with `pip install 'prokube-sdk @ git+https://github.com/prokube/prokube-sdk.git'`, then:
+Notebooks, pipeline steps, and agents in a workspace can use its sandboxes without a login. Select **Allow access to sandboxes** under **Configurations** when you launch a Lab, or add the label `sandbox.prokube.ai/access: "true"` to other pods. Install the SDK with `pip install 'prokube-sdk @ git+https://github.com/prokube/prokube-sdk.git'`, then:
 
 ```python
 from prokube.sandbox import SandboxClient
