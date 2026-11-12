@@ -22,6 +22,18 @@ pk sandbox create demo --connect
 
 `pk auth login` opens your browser for the platform login; `pk auth workspace set <workspace>` changes the default workspace later. The last command creates the sandbox and opens an SSH session in it.
 
+## Run the Examples
+
+The [`prokube/examples`](https://github.com/prokube/examples/tree/main/sandboxes) repository has runnable sandbox examples. Managed Labs clone it into `~/examples`; the notebooks need a Lab with **Allow access to sandboxes** under **Configurations**.
+
+| Example | Use when |
+|---|---|
+| [`parallel-sandboxes`](https://github.com/prokube/examples/tree/main/sandboxes/parallel-sandboxes) | You want to run many short jobs at once, such as an eval or a test matrix: 20 sandboxes created, used, and deleted in seconds. |
+| [`langgraph-data-analysis`](https://github.com/prokube/examples/tree/main/sandboxes/langgraph-data-analysis) | You build an agent in your own code and want its tools to run code in a sandbox. Uses LangGraph; the tools are plain SDK functions. |
+| [`mcp-server`](https://github.com/prokube/examples/tree/main/sandboxes/mcp-server) | You want to give agents sandbox tools over MCP, in the workspace or in Claude Code and opencode on a laptop. |
+| [`claude-code-worker`](https://github.com/prokube/examples/tree/main/sandboxes/claude-code-worker) | You want to run a coding agent headless on a repository, with its API key injected at egress so it never enters the sandbox. |
+| [`opencode-server`](https://github.com/prokube/examples/tree/main/sandboxes/opencode-server) | You want an agent to work in a sandbox while you follow and steer it from opencode on your laptop. |
+
 ## Create a Sandbox
 
 Open **Sandboxes** under **AgentOps**, select the workspace, and click **Create Sandbox**. Enter a **Name**, pick a **Preset**, and click **Create**. **Network access** is prefilled with the platform's default rules, and [Credentials](#credentials) are optional. The sandbox starts right away unless you clear **Start the sandbox after creating it**.
@@ -162,7 +174,7 @@ client.set_network("demo", [
 
 ### From a Workspace Pod
 
-Notebooks, pipeline steps, and agents in a workspace can use its sandboxes without a login. Select **Allow access to sandboxes** under **Configurations** when you launch a Lab, or add the label `sandbox.prokube.ai/access: "true"` to other pods. Install the SDK with `pip install 'prokube-sdk @ git+https://github.com/prokube/prokube-sdk.git'`, then:
+Notebooks, pipeline steps, and agents in a workspace can use its sandboxes without a login, with the SDK or `pk`. Select **Allow access to sandboxes** under **Configurations** when you launch a Lab, or add the label `sandbox.prokube.ai/access: "true"` to other pods. Install the SDK with `pip install 'prokube-sdk @ git+https://github.com/prokube/prokube-sdk.git'`, then:
 
 ```python
 from prokube.sandbox import SandboxClient
@@ -205,17 +217,7 @@ Or to opencode, in `opencode.json`:
 }
 ```
 
-To offer the tools to agents in a workspace, run `pk sandbox mcp` there as an [MCP server](mcp_servers.md); the [`mcp-server` example](https://github.com/prokube/examples/tree/sandboxv3/main/sandboxes/mcp-server) has the manifest. Every caller then acts as the workspace, on its sandboxes only, and Agent Gateway decides who may call the server.
-
-## Examples
-
-The [sandbox examples](https://github.com/prokube/examples/tree/sandboxv3/main/sandboxes) in `prokube/examples`:
-
-- [`parallel-sandboxes`](https://github.com/prokube/examples/tree/sandboxv3/main/sandboxes/parallel-sandboxes): run a test in 20 sandboxes at once.
-- [`langgraph-data-analysis`](https://github.com/prokube/examples/tree/sandboxv3/main/sandboxes/langgraph-data-analysis): a LangGraph agent with sandbox tools built on the SDK.
-- [`mcp-server`](https://github.com/prokube/examples/tree/sandboxv3/main/sandboxes/mcp-server): the same tools over MCP, in the workspace and on a laptop.
-- [`claude-code-worker`](https://github.com/prokube/examples/tree/sandboxv3/main/sandboxes/claude-code-worker): Claude Code headless in a sandbox, with the API key injected at egress.
-- [`opencode-server`](https://github.com/prokube/examples/tree/sandboxv3/main/sandboxes/opencode-server): an opencode server in a sandbox, attached from a laptop.
+To offer the tools to agents in a workspace, run `pk sandbox mcp` there as an [MCP server](mcp_servers.md); the [`mcp-server` example](https://github.com/prokube/examples/tree/main/sandboxes/mcp-server) has the manifest. Every caller then acts as the workspace, on its sandboxes only, and Agent Gateway decides who may call the server.
 
 ## Related Pages
 
