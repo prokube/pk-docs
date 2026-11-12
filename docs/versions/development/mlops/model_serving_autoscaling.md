@@ -23,6 +23,34 @@ Do not let KPA and KEDA control the same workload. If you create a KEDA `ScaledO
 
 For models deployed through [LLM Serving](../agentops/llm_serving.html), these choices are part of the deploy and edit forms: **Serverless (Knative)** deployments scale with KPA, and **Raw Deployment** offers **HPA** or **KEDA** as the autoscaler mode. The manual steps on this page are for InferenceServices created outside LLM Serving, or for settings the forms do not expose.
 
+## LLMInferenceService Autoscaling
+
+This section applies to the optional KServe 0.21 `LLMInferenceService` stack, not the `InferenceService` resources created by the normal model-serving forms. An administrator must enable `llmisvc` and, for autoscaling, `keda`. See [installation requirements and the direct-ingress security warning](../admin/installation.html#optional-llminferenceservice-stack).
+
+Use direct KEDA scaling through `spec.scaling.keda`. KServe manages the resulting `ScaledObject`; do not create a second autoscaler for the same workload. WVA is not installed, so `spec.scaling.wva.keda` is not an alternative.
+
+The following is a scaling-spec excerpt for a model whose vLLM metrics are already scraped:
+
+```yaml
+spec:
+  scaling:
+    minReplicas: 1
+    maxReplicas: 4
+    keda:
+      triggers:
+        - type: prometheus
+          metadata:
+            serverAddress: http://kube-prometheus-stack-prometheus.monitoring:9090
+            query: sum(vllm:num_requests_waiting{namespace="my-workspace",model_name="my-model"})
+            threshold: "5"
+```
+
+Adapt the selectors to the labels actually present in Prometheus. Verify scrape coverage for llmisvc workloads rather than assuming the ordinary InferenceService monitor covers them. Tune the threshold and scaling behaviour under load, and configure a safe fallback for unavailable metrics. Use `spec.scaling` instead of `spec.replicas`; prefill and decode must use the same scaling mode.
+
+Keep at least one replica until scale-from-zero is explicitly validated. Setting `idleReplicaCount: 0` permits scale-to-zero, but a signal exported only by model pods cannot reliably wake them after all replicas disappear. Request-driven wake-up needs an upstream queue or another signal that stays observable with no model pods.
+
+Direct KEDA scales against the configured triggers. It does not replace WVA's cost-aware optimisation across hardware variants.
+
 ## KPA Walkthrough
 
 KPA is the default autoscaler for many KServe deployments. It works well when concurrent request count or QPS is a useful proxy for load.

@@ -139,6 +139,22 @@ For production deployments, do not keep the placeholder storage sizes from a dem
 - pipeline concurrency;
 - backup requirements.
 
+## Optional LLMInferenceService Stack
+
+[KServe LLMInferenceService](https://kserve.github.io/website/docs/admin-guide/kubernetes-deployment-llmisvc) supports multi-node and disaggregated prefill/decode serving. It is a separate, opt-in platform component; enabling the UI's LLM Serving capability does not install it or convert existing InferenceServices.
+
+For the KServe 0.21 platform configuration, enable the `llmisvc` extra app. The stack includes LeaderWorkerSet 0.8.0 and uses Envoy Gateway 1.8.1, Envoy AI Gateway 1.1.0, and llm-d router 0.10.0. Core KServe and its llmisvc controller must use the same version. The gateway is shared platform infrastructure: validate other application routes when changing its version.
+
+For autoscaling, also enable the separate `keda` extra app and use `spec.scaling.keda`. Fixed-replica workloads do not need KEDA. Workload Variant Autoscaler (WVA) is not installed; `spec.scaling.wva`, including `spec.scaling.wva.keda`, is not supported by this stack. See [LLMInferenceService autoscaling](../mlops/model_serving_autoscaling.html#llminferenceservice-autoscaling).
+
+The default router preset exposes `/serving/<namespace>/<name>/...` paths on the HTTPS listener. It does not expose upstream global header-based or publisher-qualified routes. Prefix-cache-aware scheduling can use a separate tokenizer Deployment and Service; include that connectivity when reviewing Istio and network policies.
+
+::: danger Direct llmisvc ingress is not authenticated
+The direct Envoy Gateway → InferencePool path bypasses the interim API-key filter on the Istio cluster-local gateway. Ordinary InferenceService authentication does not secure this path. Do not expose it to untrusted clients without an additional authentication and workspace-authorization layer. Validate rejection of unauthenticated and cross-workspace requests before production use.
+:::
+
+Before enabling the stack, validate CRD/webhook readiness, a fixed-replica model, streaming responses, scheduler/tokenizer connectivity, and any prefill/decode KV transfer. Add autoscaling only after the selected metrics are visible in Prometheus and thresholds are calibrated under representative load.
+
 ## Related Pages
 
 - [Storage](storage.md)

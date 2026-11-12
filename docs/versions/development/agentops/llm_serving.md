@@ -136,6 +136,8 @@ If cleanup fails, some objects may already be deleted. For a failed S3 cleanup, 
 
 ## Advanced Configuration
 
+The forms on this page create KServe `InferenceService` resources. Multi-node or disaggregated serving through `LLMInferenceService` is a separate opt-in stack with different routing and security requirements; see [installation planning](../admin/installation.html#optional-llminferenceservice-stack).
+
 The **Advanced Configuration** section is collapsed by default. It covers:
 
 - [**Deployment Mode**](https://kserve.github.io/website/docs/concepts/architecture/control-plane): **Serverless (Knative)** is the default and supports scale-to-zero. **Raw (also called Standard in newer KServe versions) Deployment** creates a plain Kubernetes Deployment for clusters without Knative or for [KEDA](https://keda.sh/docs/latest/concepts/scaling-deployments/) autoscaling. Raw deployments require at least one replica.
