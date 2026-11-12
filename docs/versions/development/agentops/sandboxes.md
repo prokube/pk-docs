@@ -133,6 +133,27 @@ On first use the CLI creates its own SSH key, `~/.config/prokube/ssh/id_ed25519`
 
 `ssh` and IDEs do not resume a suspended sandbox, so an IDE that reconnects on its own does not wake it; the connection fails with `Run: pk sandbox resume demo`. To let them resume it, write the entry with `pk sandbox ssh-config demo --resume`.
 
+### Claude Code and opencode Desktop Apps
+
+The Claude desktop app and the opencode desktop app can run their agent in a sandbox over SSH. Make the sandbox an SSH host first; `--resume` lets the apps wake a suspended sandbox when they reconnect:
+
+```bash
+pk sandbox ssh-config demo --install --resume
+```
+
+- **Claude desktop app**: start a new session, open the environment selector below the prompt box, select **New environment**, then **SSH** and **Add SSH connection**. Enter `pk.<workspace>.demo` as **SSH host** and choose a folder under `/workspace`.
+- **opencode desktop app**: open **Settings**, then **Servers** and **Add server**, and enter `ssh pk.<workspace>.demo`.
+
+![Claude desktop app: Add SSH connection with the sandbox as SSH host](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/sandboxes/claude-desktop-ssh-connection.webp)
+
+![opencode desktop app: Add SSH server with the sandbox's SSH host](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/sandboxes/opencode-desktop-ssh-server.webp)
+
+On the first connection, each app installs its own server in the sandbox under `/workspace/home` and talks to it over the SSH connection; nothing in the sandbox listens on a network port. The agent's commands and its model requests run in the sandbox, under the sandbox's [network rules](#network-access). If Claude Code asks you to log in, the sandbox must reach `console.anthropic.com` and `platform.claude.com`, which the default rules do not include:
+
+```bash
+pk sandbox network demo --passthrough console.anthropic.com --passthrough platform.claude.com
+```
+
 ### Reach a Server in a Sandbox
 
 Forward a local port to a server in the sandbox, for example `opencode serve`, Jupyter, or a dev server:
