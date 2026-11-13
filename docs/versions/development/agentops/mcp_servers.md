@@ -54,11 +54,9 @@ Click a catalog card to deploy it. The deploy dialog shows:
 - **Resource Limits**: optional CPU and memory requests and limits.
 - **Technical Details**: image, transport, and provided tools.
 
-![Deploy dialog for a catalog MCP server](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/playwright-launch-dialog.png)
+![Deploy dialog for the Playwright catalog server with one variable read from a Secret](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/mcp-catalog-deploy-playwright-env-from-secret-framed.png)
 
 Environment variables can be entered directly (**Direct Value**) or read from a Kubernetes Secret in the workspace (**From Secret**). For **From Secret**, select the **Secret** and the **Secret key**. If the Secret doesn't exist yet, select **Create Secret**; the new Secret is selected for the variable when you save it. Use Secrets for tokens, passwords, API keys, and other sensitive values. See [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets).
-
-<img src="https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/mcp-deploy-env-from-secret.png" alt="Deploy Custom Server dialog with an environment variable read from a Secret key" style="max-width: 768px; width: 100%; height: auto;">
 
 ### Catalog Source and Trust
 
@@ -92,6 +90,8 @@ Optional fields:
 - root or writable-filesystem options for images that require them;
 - persistent storage for servers that need data to survive pod restarts;
 - live view for browser-based servers such as noVNC-backed Playwright images.
+
+![Deploy Custom Server dialog with an environment variable read from a Secret key](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/mcp-deploy-env-from-secret-framed.png)
 
 Prefer custom images that run as non-root and work with a read-only root filesystem. Images that require root or write access are harder to run in restricted workspaces and have a larger security footprint.
 

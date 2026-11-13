@@ -14,7 +14,7 @@ Open **API Keys** from the sidebar under **Serving**. Select the workspace befor
 
 Regular users see only their own keys in the selected workspace. Administrators can see and manage all keys in the workspace.
 
-![API Keys list with owner, scopes, rate limit, and last activity per key](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-keys-list-last-active.png)
+![API Keys list with owner, scopes, rate limit, and last activity per key](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-keys-list-last-active-framed.png)
 
 The table shows each key's metadata, such as owner, status, scopes, client authentication, creation and expiration date, but never the full key value. The key prefix helps identify which key a client is using without exposing the secret. **Rate Limit** appears only when the platform enforces [request limits](#request-limits).
 
@@ -126,7 +126,7 @@ Disable a key when you need temporary revocation or want to test whether a clien
 
 Rotating a key invalidates the old value immediately. Update every client or secret that uses the key before relying on the rotated value.
 
-<img src="https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-edit-disable-rotate-menu.png" alt="API key action menu with edit, disable, rotate, and delete actions" style="max-width: 360px; width: 100%; height: auto;">
+<img src="https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-actions-menu-activity-framed.png" alt="API key action menu with Activity, Edit, Disable, Rotate key value, and Delete" style="max-width: 360px; width: 100%; height: auto;">
 
 ## Request Limits
 
@@ -134,7 +134,7 @@ Per-key request limits are an optional platform feature and are disabled by defa
 
 When limits are enabled, set **Requests Per Minute** when creating or editing a key: a whole number from 1 to 4,294,967,295, or empty for unlimited. To remove a limit, clear the field in **Edit**.
 
-<img src="https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-create-rpm-limit.png" alt="Create API Key dialog with a Requests Per Minute limit of 60" style="max-width: 672px; width: 100%; height: auto;">
+![Create API Key dialog with a Requests Per Minute limit of 60](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-create-rpm-limit-framed.png)
 
 A client that exceeds the limit receives HTTP `429 Too Many Requests`. The limit works as follows:
 
@@ -162,7 +162,7 @@ Usage of all keys in the workspace is shown on [Gateway Usage](gateway_usage.htm
 
 Select **Actions** > **Activity** on a key, or **Activity** in the key's row on Gateway Usage, to list the individual requests that Agent Gateway authenticated with that key. Regular users can open Activity for their own keys; administrators for any current key in the workspace. Deleted keys cannot open Activity.
 
-![Request Activity for an API key with the call trend, filters, and individual calls](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/gateway-usage/gateway-usage-credential-activity.png)
+![Request Activity for an API key with the call trend, filters, and individual calls](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/gateway-usage/gateway-usage-credential-activity-framed.png)
 
 The **Call trend** at the top shows the key's calls over the selected window. Use **Split by** **Model** or **Route** to see which models or services the key used.
 

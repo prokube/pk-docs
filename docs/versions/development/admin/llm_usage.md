@@ -6,7 +6,7 @@ Use this page to answer platform-wide questions, such as which workspaces spend 
 
 ## Usage and Cost
 
-![Usage and Cost with LLM call, token, and cost totals, the trend, and breakdowns by source and workspace](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/llm-usage/llm-usage-and-cost-card.png)
+![Usage and Cost with LLM call, token, and cost totals, the trend, and breakdowns by source and workspace](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/llm-usage/llm-usage-and-cost-card-framed.png)
 
 Select a time window: **Last hour**, **Last 24 hours** (default), **Last 7 days**, or **Max (N days)**. N defaults to 10 and is limited by how long the gateway keeps its access logs.
 
@@ -25,7 +25,7 @@ Calls that bypass Agent Gateway are not included. These figures are estimates fo
 
 Agent Gateway calculates the cost of each LLM call from its model price catalog. It ships with built-in prices for common hosted models. Use **Model pricing** to price models it does not know, such as self-hosted models, or to set negotiated prices.
 
-![Model pricing panel with a custom price and a model used without a price](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/llm-usage/llm-usage-model-pricing-panel.png)
+![Model pricing panel with a custom price and a model used without a price](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/llm-usage/llm-usage-model-pricing-panel-framed.png)
 
 **Used in the last 24 hours without a price** lists models that received calls but have neither a built-in nor a custom price. Their calls show tokens but no cost.
 
@@ -40,7 +40,7 @@ Agent Gateway calculates the cost of each LLM call from its model price catalog.
 3. Enter rates in USD per million tokens: **Input**, **Output**, **Cache read**, **Cache write**, and **Reasoning**. Fill in at least one. An empty field keeps the gateway's built-in price for that rate. Values allow up to 6 decimal places; more precise values are rejected, not rounded.
 4. Select **Save price**.
 
-<img src="https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/llm-usage/llm-usage-add-price-dialog.png" alt="Add model price dialog pre-filled for a self-hosted model" style="max-width: 672px; width: 100%; height: auto;">
+![Add model price dialog pre-filled for a self-hosted model](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/llm-usage/llm-usage-add-price-dialog-framed.png)
 
 New calls use the price within a few minutes, without a gateway restart. **Delete price** removes your custom rates; the gateway then falls back to its built-in price for that model, if it has one.
 
@@ -56,7 +56,7 @@ Select **Show default prices** to browse the built-in prices of the deployed Age
 
 Saving an override changes only your custom prices; the default prices stay unchanged. If the platform does not publish a snapshot, the view shows **Default prices are not published by the platform.**
 
-![Default model prices with release version and snapshot date, filtered by a search](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/llm-usage/llm-usage-default-prices-dialog.png)
+![Default model prices with release version and snapshot date, filtered by a search](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/llm-usage/llm-usage-default-prices-dialog-framed.png)
 
 ### Pricing and Historical Usage
 

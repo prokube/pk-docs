@@ -73,9 +73,9 @@ Select **Grant Workspace Access**, then choose:
 
 The grant creates a Model Configuration in the target workspace. It appears automatically on the workspace's **Agents** page with the source **External model grant**. Users can select it when creating an agent without creating their own provider Secret.
 
-![Workspace Access table with a healthy grant and its View Traffic and Revoke Access actions](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/external-models-workspace-access-view-traffic.png)
+![Workspace Access table with a healthy grant and its View Traffic and Revoke Access actions](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/external-models-workspace-access-view-traffic-framed.png)
 
-![Granted external model listed under Model Configurations with the source External model grant](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/agents-model-configurations-external-grant.png)
+![Granted external model listed under Model Configurations with the source External model grant](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/agents-model-configurations-external-grant-framed.png)
 
 The central provider credential is not exposed to the workspace. Revoke the grant from **Workspace Access** when the workspace should no longer use the model.
 
@@ -121,7 +121,7 @@ Traffic is shown only to members of the workspace. For a workspace you don't bel
 
 The **External model usage** card shows LLM calls to the configured external providers, both through workspace grants and directly. Select **Last hour**, **Last 24 hours**, **Last 7 days**, or **Max (N days)**.
 
-![External model usage card with totals, trend, and breakdowns by source, provider, gateway model, and workspace](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/external-models-usage-card.png)
+![External model usage card with totals, trend, and breakdowns by source, provider, gateway model, and workspace](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/external-models-usage-card-framed.png)
 
 Besides the LLM call, token, and estimated cost totals and the trend, the card breaks the calls down **By source**, **By provider**, **By gateway model**, and **By grant / workspace**.
 

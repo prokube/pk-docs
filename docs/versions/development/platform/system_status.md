@@ -46,7 +46,7 @@ Use this when completed pipeline pods are consuming workspace pod quota and bloc
 
 Realm administrators see the installed prokube version, the edition, and the installation registration status.
 
-![Platform Information with prokube version, edition, and registration status](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/system-status/system-status-platform-information.png)
+![Platform Information with prokube version, edition, and registration status](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/system-status/system-status-platform-information-framed.png)
 
 | Edition | Shown |
 |---|---|
@@ -116,7 +116,7 @@ The badge at the top shows the overall state:
 
 When the AI Gateway module is enabled, realm administrators also see **Agent Gateway traffic**. It covers calls in all workspaces that are not tied to an API key or model grant. Usage by API key and model grant is shown per workspace on [Gateway Usage](gateway_usage.html), and LLM spend across all workspaces on [LLM Usage and Cost](../admin/llm_usage.html).
 
-![Agent Gateway traffic with internal, token, and failed calls, calls without valid credentials, the call trend, and top routes](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/system-status/system-status-agent-gateway-traffic.png)
+![Agent Gateway traffic with internal, token, and failed calls, calls without valid credentials, the call trend, and top routes](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/system-status/system-status-agent-gateway-traffic-framed.png)
 
 Select **Last hour**, **Last 24 hours** (default), **Last 7 days**, or **Max (N days)**. The panel shows:
 

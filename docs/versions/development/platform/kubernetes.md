@@ -67,11 +67,11 @@ If a workspace repeatedly reaches the pod quota, check for large fan-out pipelin
 
 Use **K8s Secrets** from the prokube user menu to create workspace-scoped [Kubernetes Secrets](https://kubernetes.io/docs/concepts/configuration/secret/).
 
-![K8s Secrets dialog](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/kubernetes/k8s-secrets-ui.png)
+![K8s Secrets dialog listing a Secret with its keys and Edit and Delete actions](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/kubernetes/k8s-secrets-list-edit-delete-framed.png)
 
 Secrets can be referenced by workloads without putting secret values into notebooks, pipeline code, component YAML, or container images. Forms that need a credential, such as MCP server deployment, Agents, and LLM Serving, let you pick a Secret and key directly or create a Secret without leaving the form.
 
-The dialog lists the Secrets created through the prokube UI. Select **Edit** on a Secret to change it. Existing values are never displayed; only the changes you make explicitly are saved:
+The dialog lists the Secrets created through the prokube UI. Select the edit (pencil) icon next to a Secret to change it, or the trash icon to delete it. Existing values are never displayed; only the changes you make explicitly are saved:
 
 - **Replace value** on a key, then enter the new value.
 - **Delete key** removes a key. The last key cannot be deleted; delete the whole Secret instead.
@@ -80,7 +80,7 @@ The dialog lists the Secrets created through the prokube UI. Select **Edit** on 
 
 The Secret name cannot be changed. Workloads that already read the Secret may need a restart to pick up the new values.
 
-<img src="https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/kubernetes/k8s-secret-edit-write-only.png" alt="Edit Secret dialog with one value being replaced and one key being deleted" style="max-width: 672px; width: 100%; height: auto;">
+![Edit Secret dialog with one value being replaced and one key being deleted](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/kubernetes/k8s-secret-edit-write-only-framed.png)
 
 You need write access to the workspace to create or change Secrets.
 

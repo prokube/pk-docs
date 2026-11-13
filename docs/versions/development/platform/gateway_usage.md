@@ -4,7 +4,7 @@
 
 Open **Gateway Usage** under **Monitoring** in the sidebar and select the workspace.
 
-![Gateway Usage with summary tiles, the source table, the call trend, and the By caller tab](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/gateway-usage/gateway-usage-summary-by-caller.png)
+![Gateway Usage summary with tiles, the source table, and the call trend](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/gateway-usage/gateway-usage-summary-framed.png)
 
 Calls that bypass Agent Gateway, for example a workload calling a model's cluster-internal service address directly, are not counted. Prompts, responses, and tool arguments are never shown.
 

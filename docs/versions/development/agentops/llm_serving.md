@@ -194,7 +194,7 @@ The **Configuration** tab summarizes the model's settings and endpoints. For a K
 
 The **Traffic** tab shows the calls the model received through Agent Gateway: calls, failed calls, LLM tokens, estimated cost, the breakdown by [source](../platform/gateway_usage.html#sources), and a call trend. A self-hosted model shows **No price set** until an administrator [sets a price](../admin/llm_usage.html#model-pricing). Calls to the model's cluster-internal address bypass Agent Gateway and are not counted.
 
-![Traffic tab of a self-hosted model with calls by source and the call trend](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/llm-serving/llm-model-traffic-tab.png)
+![Traffic tab of a self-hosted model with calls by source and the call trend](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/llm-serving/llm-model-traffic-tab-framed.png)
 
 ## Edit a Model
 
