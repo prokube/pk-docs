@@ -19,7 +19,7 @@ Workspace owners and editors can create, change, and use sandboxes. Viewers can 
 ## Quickstart
 
 ```bash
-pip install 'prokube-sdk[cli] @ git+https://github.com/prokube/prokube-sdk.git'
+pip install 'prokube-sdk[cli] @ git+https://github.com/prokube/prokube-sdk.git@v1.0.0'
 pk auth login https://<your-prokube-domain> --workspace <workspace>
 pk sandbox create demo --connect
 ```
@@ -58,11 +58,11 @@ The default presets run the same Debian image with Python 3, Node.js, git, openc
 
 - Everything runs as `root`: the terminal, SSH, `pk sandbox exec`, and the SDK. Install packages with `apt`, without `sudo`.
 - Commands start in `/workspace`. The home directory is `/workspace/home`.
-- Claude Code runs with `--dangerously-skip-permissions`. The sandbox and its network rules are the isolation boundary, not Claude Code's permission prompts.
+- Claude Code accepts `--dangerously-skip-permissions`, because the image sets `IS_SANDBOX=1`. Without the flag, it asks for permissions as usual. With it, the sandbox and its network rules are the isolation boundary, not Claude Code's permission prompts.
 
 ## Lifecycle
 
-**Suspend** saves the sandbox to a snapshot and frees its CPU and memory. **Resume** restores it. Commands, port forwarding, file transfers, and the SDK resume a suspended sandbox automatically. Plain `ssh` and IDEs do not; see [SSH and IDEs](#ssh-and-ides). Suspend sandboxes you are not using.
+**Suspend** saves the sandbox to a snapshot and frees its CPU and memory. **Resume** restores it. Commands, port forwarding, file transfers, and the SDK resume a suspended sandbox automatically. SSH connections, including IDEs, do not by default, so an IDE that reconnects on its own does not keep waking the sandbox; see [SSH and IDEs](#ssh-and-ides). Suspend sandboxes you are not using.
 
 What survives a suspend depends on the preset:
 
@@ -106,7 +106,7 @@ A sandbox can call an API with a key it never sees. The egress gateway replaces 
    kubectl label secret openai -n <workspace> prokube.ai/sandbox-credential=true
    ```
 
-2. In the create dialog or on the **Network** tab, click **Add credential** and set **Host** `api.openai.com`, **Header** `Authorization`, **Prefix** `Bearer ` (with the trailing space), **Secret** `openai`, and **Key** `api-key`.
+2. In the create dialog or on the **Network** tab, click **Add credential** and set **Host** `api.openai.com`, **Header** `Authorization`, **Prefix** `Bearer ` (with the trailing space), **Secret** `openai`, and **Key** `api-key`. With the CLI, use `pk sandbox create demo --inject-bearer api.openai.com openai/api-key`, or `pk sandbox network` with the same option for an existing sandbox.
 3. In the sandbox, let your tool send the header with any placeholder, for example `export OPENAI_API_KEY=placeholder`. The gateway replaces only a header that the request already sends; without it, nothing is injected.
 
 A credential also allows its host; it needs no separate allowlist entry.
@@ -155,7 +155,7 @@ ssh pk.<workspace>.demo
 
 On first use, the CLI creates its own SSH key, `~/.config/prokube/ssh/id_ed25519`, copies the public key into the sandbox through the platform API, and pins the sandbox's host key. The host entry names that key, so `ssh` and IDEs use it too.
 
-`ssh` and IDEs do not resume a suspended sandbox, so an IDE that reconnects on its own does not wake it. The connection fails with an error that tells you to run `pk sandbox resume demo`. To let `ssh` and IDEs resume the sandbox, run `pk sandbox ssh-config demo --resume`.
+Every SSH connection goes through `pk`, which the host entry runs as `ProxyCommand`. By default, the entry refuses a suspended sandbox, so an IDE that reconnects on its own does not wake it. The connection fails with an error that tells you to run `pk sandbox resume demo`. To let SSH connections resume the sandbox, run `pk sandbox ssh-config demo --resume`.
 
 ### Claude Desktop App and opencode Desktop App
 
@@ -243,7 +243,7 @@ Notebooks, pipeline steps, and agents in a workspace can use its sandboxes witho
 Install the SDK with the CLI:
 
 ```bash
-pip install 'prokube-sdk[cli] @ git+https://github.com/prokube/prokube-sdk.git'
+pip install 'prokube-sdk[cli] @ git+https://github.com/prokube/prokube-sdk.git@v1.0.0'
 ```
 
 The SDK finds the pod's workspace on its own:
@@ -256,12 +256,12 @@ with SandboxClient() as client:      # the pod's own workspace
     print(client.run("nb-demo", "uname -a").stdout)
 ```
 
-The `pk` CLI also needs the platform URL and the workspace:
+The `pk` CLI also needs no login and uses the pod's workspace. Only the SSH commands `connect`, `forward`, and `ssh-config` need the platform URL:
 
 ```bash
-export PROKUBE_URL=https://<your-prokube-domain>
-export PROKUBE_WORKSPACE=<workspace>
 pk sandbox list
+export PROKUBE_URL=https://<your-prokube-domain>
+pk sandbox connect nb-demo
 ```
 
 The pod acts as the workspace's `default-editor` service account. It is an editor of its own workspace and has no access to other workspaces.
@@ -321,8 +321,8 @@ The server acts as the workspace. Every agent that may call it can create, use, 
 | Claude Code cannot log in | Allow `console.anthropic.com` and `platform.claude.com`, as under [Claude Desktop App and opencode Desktop App](#claude-desktop-app-and-opencode-desktop-app). |
 | Creating or resuming fails with HTTP 503 | The workers are full. Suspend or delete sandboxes you are not using, or ask an administrator for more [capacity](../admin/sandboxes.html#capacity). |
 | A sandbox shows as crashed | Its node restarted. Run `pk sandbox revert <name>` or click **Revert**, then resume it. |
-| `No platform URL` from `pk` in a workspace pod | Set `PROKUBE_URL` and `PROKUBE_WORKSPACE`; see [Access from Workspace Pods](#access-from-workspace-pods). |
-| `No login and no workload token` in a workspace pod | The pod has no sandbox token. Launch the Lab with **Allow access to sandboxes**, or add the label `sandbox.prokube.ai/access: "true"`. If that does not help, ask an administrator to check [workspace pod access](../admin/sandboxes.html#access-from-workspace-pods). |
+| `SSH to a sandbox needs the platform URL` in a workspace pod | Set `PROKUBE_URL`; see [Access from Workspace Pods](#access-from-workspace-pods). |
+| `No login and no workload token`, or `No platform URL` from `pk`, in a workspace pod | The pod has no sandbox token. Launch the Lab with **Allow access to sandboxes**, or add the label `sandbox.prokube.ai/access: "true"`. If that does not help, ask an administrator to check [workspace pod access](../admin/sandboxes.html#access-from-workspace-pods). |
 
 ## Related Pages
 
