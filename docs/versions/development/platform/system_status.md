@@ -1,6 +1,6 @@
 # System Status
 
-The **System Status** page is available from the prokube user menu. It shows workspace pod quota for workspaces you can access. For administrators, it also shows live backend component health checks and the state of live UI updates.
+The **System Status** page is available from the prokube user menu. It shows workspace pod quota for workspaces you can access. For administrators, it also shows the installed platform version and edition, live backend component health checks, the state of live UI updates, and Agent Gateway traffic that is not tied to an API key.
 
 Use this page to inspect pod quota pressure before starting new workloads, clean up completed pipeline pods, and perform a quick platform health check when you have administrator privileges.
 
@@ -12,7 +12,7 @@ Open the user menu in the prokube UI and select **System Status**.
 
 The page may also be available directly at `/system-status`.
 
-All authenticated users can open the page to inspect workspace pod quota. The **AI Gateway traffic**, **Component Health**, **Realtime Operations**, and **Backend Info** sections are visible only to realm administrators.
+All authenticated users can open the page to inspect workspace pod quota. The **Platform Information**, **Component Health**, **Realtime Operations**, **Agent Gateway traffic**, and **Backend Info** sections are visible only to realm administrators.
 
 ## Workspace Pod Quota
 
@@ -42,20 +42,25 @@ Use this when completed pipeline pods are consuming workspace pod quota and bloc
 
 ![Delete Completed Pipeline Pods dialog](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/system-status/system-status-cleanup-dialog.png)
 
-## AI Gateway Traffic
+## Platform Information
 
-When the AI Gateway module is enabled, realm administrators also see **AI Gateway traffic**. It shows Agent Gateway requests that no workspace's [API Key Usage Dashboard](api_keys.html#usage-dashboard) attributes to a key. Counts cover all workspaces.
+Realm administrators see the installed prokube version, the edition, and the installation registration status.
 
-![AI Gateway traffic panel with in-cluster traffic and requests without a valid key](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/system-status/system-status-ai-gateway-traffic-framed.png)
+![Platform Information with prokube version, edition, and registration status](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/system-status/system-status-platform-information.png)
 
-Select Last hour, Last 24 hours (default), Last 7 days, or Last 30 days. The panel has two cards:
+| Edition | Shown |
+|---|---|
+| **Demo** | Version and registration status. |
+| **Core** | The section is titled **Platform & Subscription** and also shows **Subscription Status**, **Days Remaining**, **Valid Until**, **Grace Until**, and the **Installation ID**. |
+| **Enterprise** | Version and registration status. |
 
-- **In-cluster traffic**: keyless calls from agents, notebooks, pipelines, and other workloads inside the cluster through the internal gateway path. These requests use no API key, so they cannot be attributed to one. See [Public vs. Internal Traffic](agent_gateway.html#public-vs-internal-traffic).
-- **Requests without a valid key**: public requests with a missing, invalid, or revoked key. Most are rejected with `401`.
+The subscription status is **Active**, **Pending**, **Expiring soon**, **Grace period**, **Expired**, **Revoked**, or **Unavailable**.
 
-Each card shows the request count, the failed count, LLM tokens when there are any, and a request trend. If Prometheus usage telemetry is not configured, the panel shows **Traffic telemetry unavailable**.
+### Register the Installation
 
-A sudden rise in requests without a valid key usually means a client still uses a revoked or rotated key.
+When the installation is **Not registered**, the section shows **Register this installation**. Enter the **Organization** and a **Contact email**, accept the privacy statement, and select **Submit registration**. prokube.ai reviews the request manually; the status changes to **Pending**, then **Approved** or **Rejected**. After a rejection you can submit corrected details.
+
+Registration does not change the edition. The installation stays on Demo until prokube.ai assigns Core or Enterprise. prokube.ai uses the contact details only to review and manage the registration; the contact email is stored as protected registration data and is not part of the installation's status. **Status unavailable** means that registration is not available from this cluster.
 
 ## Admin Component Health
 
@@ -107,6 +112,23 @@ The badge at the top shows the overall state:
 3. If the state is **capacity limited**, find the limit that is reached under **Transport** or **Diagnostics Event watches**, and check whether drops keep increasing.
 4. If only **Current admin browser** is disconnected, reload the page or sign in again.
 
+## Agent Gateway Traffic
+
+When the AI Gateway module is enabled, realm administrators also see **Agent Gateway traffic**. It covers calls in all workspaces that are not tied to an API key or model grant. Usage by API key and model grant is shown per workspace on [Gateway Usage](gateway_usage.html), and LLM spend across all workspaces on [LLM Usage and Cost](../admin/llm_usage.html).
+
+![Agent Gateway traffic with internal, token, and failed calls, calls without valid credentials, the call trend, and top routes](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/system-status/system-status-agent-gateway-traffic.png)
+
+Select **Last hour**, **Last 24 hours** (default), **Last 7 days**, or **Max (N days)**. The panel shows:
+
+- **Internal calls**: keyless calls between platform services inside the cluster, for example agents calling self-hosted models or MCP servers. See [Public vs. Internal Traffic](agent_gateway.html#public-vs-internal-traffic).
+- **Token calls**: calls signed in with a user account or with a workspace notebook or pipeline token, for example to sandboxes. A token call can still fail after sign-in.
+- **Calls without valid credentials**: calls with a missing or invalid API key or token. Most are rejected with `401`.
+- **Failed calls**: failed calls across the three classes above.
+- **Call trend**: calls and failed calls per interval.
+- **Top routes**: the routes that received the most of these calls, with their class and failures. Background calls by platform controllers, such as kagent discovering MCP tools, are left out of the totals and can be shown with **Show**.
+
+A sudden rise in calls without valid credentials usually means a client still uses a revoked or rotated key. If usage telemetry is not available, the panel says so instead of showing zero.
+
 ## Admin Backend Info
 
 Realm administrators also see **Backend Info**, including backend version and enabled backend modules.
@@ -137,7 +159,7 @@ When a user reports that workloads cannot start:
 
 - Workspace pod quota cards show only workspaces you can access.
 - Quota details are loaded per workspace, not all at once.
-- Component health checks, Realtime Operations, and AI Gateway traffic are administrator-only.
+- Platform Information, component health checks, Realtime Operations, and Agent Gateway traffic are administrator-only.
 - The page checks backend components and integrations, not every workload in every workspace.
 - A healthy component status means the health check passed; it does not guarantee that all user workflows are healthy.
 - A disabled status can be expected when a module is intentionally not enabled in a deployment.
