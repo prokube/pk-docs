@@ -130,7 +130,7 @@ Rotating a key invalidates the old value immediately. Update every client or sec
 
 ## Request Limits
 
-A platform administrator can enable per-key request limits. Until then, the **Requests Per Minute** field and the **Rate Limit** column are hidden, and keys are not limited.
+Per-key request limits are an optional platform feature and are disabled by default. A platform administrator can enable them; see [API Key Request Limits](../admin/operations_runbooks.html#api-key-request-limits). While they are disabled, the **Requests Per Minute** field and the **Rate Limit** column are hidden, and keys are not limited.
 
 When limits are enabled, set **Requests Per Minute** when creating or editing a key: a whole number from 1 to 4,294,967,295, or empty for unlimited. To remove a limit, clear the field in **Edit**.
 
