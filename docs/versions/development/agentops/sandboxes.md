@@ -1,10 +1,10 @@
 # Sandboxes
 
 ::: info Upstream documentation
-For Agent Substrate concepts that are not specific to prokube, use the upstream documentation of the release prokube deploys:
+For Agent Substrate concepts that are not specific to prokube, use the upstream documentation:
 
-- [Agent Substrate](https://github.com/kagent-dev/substrate/tree/v1.0.1)
-- [Substrate documentation](https://github.com/kagent-dev/substrate/tree/v1.0.1/docs)
+- [Agent Substrate](https://github.com/kagent-dev/substrate)
+- [Substrate documentation](https://github.com/kagent-dev/substrate/tree/main/docs)
 - [gVisor](https://gvisor.dev/)
 :::
 

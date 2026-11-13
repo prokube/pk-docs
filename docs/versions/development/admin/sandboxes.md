@@ -1,6 +1,6 @@
 # Sandbox Administration
 
-[Sandboxes](../agentops/sandboxes.html) run on [Agent Substrate](https://github.com/kagent-dev/substrate/tree/v1.0.1), release `v1.0.1`. Administrators decide how much capacity sandboxes get, which presets users can pick, and which network destinations new sandboxes reach.
+[Sandboxes](../agentops/sandboxes.html) run on [Agent Substrate](https://github.com/kagent-dev/substrate). Administrators decide how much capacity sandboxes get, which presets users can pick, and which network destinations new sandboxes reach.
 
 ## Requirements
 
@@ -11,15 +11,20 @@
 
 ## Install kubectl ate
 
-Administrators manage sandboxes with the `kubectl ate` plugin. Install the plugin of the deployed release on your machine:
+Administrators manage sandboxes with the `kubectl ate` plugin. Its release must match the deployed Substrate. The commands read the deployed release from the image tag of `ate-api-server` and install the matching plugin:
 
 ```bash
+ATE_VERSION=$(kubectl get deployment ate-api-server -n ate-system \
+  -o jsonpath='{.spec.template.spec.containers[0].image}' | sed -e 's/@.*//' -e 's/.*://')
 ATE_ASSET=kubectl-ate-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')
-curl -fsSLO "https://github.com/kagent-dev/substrate/releases/download/v1.0.1/$ATE_ASSET"
-shasum -a 256 "$ATE_ASSET"     # compare with the digest on the release page
+curl -fsSLO "https://github.com/kagent-dev/substrate/releases/download/$ATE_VERSION/$ATE_ASSET"
+shasum -a 256 "$ATE_ASSET"     # compare with the digest on the release page of $ATE_VERSION
 install -m 0755 "$ATE_ASSET" ~/.local/bin/kubectl-ate && rm "$ATE_ASSET"
 export ATE_CLIENT_SERVICE_ACCOUNT=substrate-operator
+kubectl ate --version
 ```
+
+Upstream documentation on GitHub follows Substrate's `main` branch. For the docs of your release, select the tag `$ATE_VERSION` on GitHub.
 
 With `ATE_CLIENT_SERVICE_ACCOUNT`, `kubectl ate` uses your kubeconfig to act as the operator service account, a Substrate global owner. All `kubectl ate` commands on this page assume it.
 
@@ -202,7 +207,7 @@ Platform admins open **Sandboxes** under **Admin** in the prokube UI. The view s
 
 ## Use kubectl ate
 
-Sandboxes do not depend on the prokube UI. Manage them with [`kubectl ate`](https://github.com/kagent-dev/substrate/blob/v1.0.1/docs/reference/kubectl-ate.md), installed as in [Install kubectl ate](#install-kubectl-ate). A sandbox `demo` is the actor `sbx-demo`:
+Sandboxes do not depend on the prokube UI. Manage them with `kubectl ate`, installed as in [Install kubectl ate](#install-kubectl-ate). `kubectl ate --help` documents the installed release; the [`kubectl ate` reference](https://github.com/kagent-dev/substrate/blob/main/docs/reference/kubectl-ate.md) covers the latest one. A sandbox `demo` is the actor `sbx-demo`:
 
 ```bash
 kubectl ate get atespaces                                  # one per workspace, plus sandbox-templates
