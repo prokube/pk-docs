@@ -199,7 +199,7 @@ Activity is built from Agent Gateway access logs, which are kept for 10 days by 
 | Client receives `401` or `403` | Confirm the key is enabled, not expired, sent with the selected authentication header, and scoped to the target service. |
 | Client can call one service but not another | The key is scoped to selected services. Edit the key or create a new key for the additional service. |
 | Client stopped working after rotation | The old key value stopped working immediately. Update the client secret or environment variable with the new value. |
-| Client receives `429` | The key exceeded its [request limit](#request-limits). Slow the client down or raise the limit. Check the key's [Request Activity](#request-activity) for status `429`. |
+| Client receives `429` | If the key has a [request limit](#request-limits), it may have exceeded it: slow the client down or raise the limit. Otherwise the model or its provider is limiting requests. Check the key's [Request Activity](#request-activity) for status `429`. |
 
 ## Related Pages
 

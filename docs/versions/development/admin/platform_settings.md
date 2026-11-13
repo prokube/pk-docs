@@ -6,7 +6,7 @@ Use **Admin > Platform Settings** to change the portal's branding and choose whi
 
 Under **Deployment branding**, set the **Display name** (up to 100 characters) and **Tagline** (up to 200 characters) shown next to the logo. An empty display name uses the value from the deployment configuration; an empty tagline hides the tagline. **Brand preview** shows the result before you save.
 
-To replace the logo, select a JPEG, PNG, or WebP file of up to 512 KB and at most 2,048 px per side, then select **Upload logo**. A square image works best; use PNG or WebP for transparency.
+To replace the logo, select a JPEG, PNG, or WebP file of up to 512 KB and at most 2,048 px per side, then select **Upload logo**. A square image works best; use PNG or WebP for transparency. The logo applies as soon as it is uploaded; **Remove uploaded logo** restores the deployment default.
 
 ## Choose Visible Features
 
@@ -30,7 +30,7 @@ A suite control is shown as mixed when only some of its features are visible. Se
 
 ## Save Changes
 
-Changes take effect only after you select **Save settings**. Your portal updates right away, without a redeploy; other users see the change after reloading. If the page shows **Settings saved; refresh needed**, reload it.
+Changes to the display name, tagline, and visible features take effect only after you select **Save settings**. Your portal updates right away, without a redeploy; other users see the change after reloading. If the page shows **Settings saved; refresh needed**, reload it.
 
 If another administrator saved in the meantime, select **Review latest changes**, compare their version with your draft, and save again.
 
