@@ -50,7 +50,7 @@ The service list is built from services available in the selected workspace. It 
 
 Besides individual services, you can select aggregate scopes such as **All MCP servers** or **All AI models**. They also cover matching services created later. **Full workspace access** covers every service in the workspace. Keys with **All AI models**, **All external AI models**, or **Full workspace access** must use the Bearer format.
 
-**All sandboxes** lets the `pk` CLI and the Python SDK manage and use the workspace's [sandboxes](../agentops/sandboxes.html#with-an-api-key). Such keys must use the Bearer format; **Full workspace access** does not include sandboxes.
+**All sandboxes** lets the `pk` CLI and the Python SDK manage and use the workspace's [sandboxes](../agentops/sandboxes.html#external-access-with-api-keys). Such keys must use the Bearer format; **Full workspace access** does not include sandboxes.
 
 Admin-granted [external models](../admin/external_models.html) are not listed as individual services. To reach them, use a Bearer-format key with **All external AI models**, **All AI models**, or **Full workspace access**. These scopes cover every granted model in the workspace; a key cannot be limited to one granted model.
 
