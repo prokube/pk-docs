@@ -54,9 +54,9 @@ Click a catalog card to deploy it. The deploy dialog shows:
 - **Resource Limits**: optional CPU and memory requests and limits.
 - **Technical Details**: image, transport, and provided tools.
 
-![Deploy dialog for a catalog MCP server](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/playwright-launch-dialog.png)
+![Deploy dialog for the Playwright catalog server with one variable read from a Secret](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/mcp-catalog-deploy-playwright-env-from-secret-framed.png)
 
-Environment variables can be entered directly or read from a Kubernetes Secret in the workspace. Use Secrets for tokens, passwords, API keys, and other sensitive values. See [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets).
+Environment variables can be entered directly (**Direct Value**) or read from a Kubernetes Secret in the workspace (**From Secret**). For **From Secret**, select the **Secret** and the **Secret key**. If the Secret doesn't exist yet, select **Create Secret**; the new Secret is selected for the variable when you save it. Use Secrets for tokens, passwords, API keys, and other sensitive values. See [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets).
 
 ### Catalog Source and Trust
 
@@ -72,7 +72,7 @@ Before giving an MCP server credentials or access to internal systems, review wh
 
 ## Deploy a Custom Server
 
-Use **Deploy Custom Server** when the server is not in the catalog or when you maintain your own image.
+Select **Deploy Server** above the deployed servers to open **Deploy Custom Server** when the server is not in the catalog or when you maintain your own image.
 
 Required fields:
 
@@ -83,13 +83,15 @@ Required fields:
 
 Optional fields:
 
-- environment variables, either direct values or Secret references;
+- environment variables, either direct values or Secret keys, as in the catalog dialog;
 - image pull credentials for private registries;
 - CPU and memory requests and limits;
 - container arguments;
 - root or writable-filesystem options for images that require them;
 - persistent storage for servers that need data to survive pod restarts;
 - live view for browser-based servers such as noVNC-backed Playwright images.
+
+![Deploy Custom Server dialog with an environment variable read from a Secret key](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/mcp-deploy-env-from-secret-framed.png)
 
 Prefer custom images that run as non-root and work with a read-only root filesystem. Images that require root or write access are harder to run in restricted workspaces and have a larger security footprint.
 
@@ -98,6 +100,23 @@ Prefer custom images that run as non-root and work with a read-only root filesys
 Use YAML when the form does not expose a setting you need. The deploy dialog can generate a ToolHive `MCPServer` manifest from the form fields. Inspect or adjust it, then submit it through the UI.
 
 The namespace is set by prokube to the selected workspace namespace. Custom YAML must still be a ToolHive `MCPServer` resource using a supported `toolhive.stacklok.dev` API version.
+
+### Edit Server Configuration
+
+To change a deployed server, open it and select **Edit**. The **Edit MCP server** dialog shows its `MCPServer` YAML. You can change the image, arguments, environment values and Secret references, transport and ports, resource requests and limits, labels and annotations, and supported pod settings such as image pull Secrets, volume mounts, and security contexts. The name, namespace, persistent storage settings, and telemetry configuration cannot be changed.
+
+Select **Save changes**. prokube accepts the new configuration, then updates the server's gateway access and isolation policies. The server runtime may restart; persistent storage is kept. The dialog stays open and shows the progress:
+
+| State | Meaning |
+|---|---|
+| **Applying...** | The update was accepted and is waiting for gateway access and isolation to converge. |
+| **Applied** | Gateway access and isolation match the new configuration. Check the server's status on its page to confirm that it runs. |
+| **Failed** | The update could not converge or was replaced by a newer change. Close the editor and review the current configuration. |
+| **Status unknown** | The update was accepted, but its status could not be read. Select **Retry status** to check again. |
+
+**Save changes** stays disabled after an update is accepted. **Retry status** only checks the status; it never saves again. If **Retry status** is not offered, do not save again: select **Close editor** and reload the server page to inspect its current configuration.
+
+If someone else changed the server after you opened the editor, saving fails. Reload the configuration, review the latest version, and apply your changes again.
 
 ## Connect Clients
 
@@ -150,6 +169,42 @@ For these servers, the details page can show:
 ![MCP server metrics for a browser automation server](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/playwright-details-metrics.png)
 
 Live view is only available for servers that declare live-view support in the catalog or custom configuration.
+
+## Server Metrics and Traffic
+
+The **Metrics** tab shows Grafana panels from two sources:
+
+- **Istio Mesh Traffic** from the server's Istio sidecar: request rate by response code, error rate, latency, mTLS versus plaintext requests, and requests by caller.
+- **ToolHive Application Metrics** from the server's MCP proxy: request rate, success rate, latency, requests by MCP method, and active connections.
+
+Servers deployed through the prokube UI report ToolHive metrics automatically. Servers deployed with `kubectl` or GitOps, and servers deployed by earlier prokube releases, report them only after they opt in. A server opts in by referencing an `MCPTelemetryConfig` with Prometheus metrics enabled and labelling its proxy pods:
+
+```yaml
+spec:
+  telemetryConfigRef:
+    name: <telemetry-config>
+  resourceOverrides:
+    proxyDeployment:
+      podTemplateMetadataOverrides:
+        labels:
+          prokube.ai/mcp-metrics: "true"
+```
+
+Only reference an `MCPTelemetryConfig` you own: its settings can also export telemetry to other destinations. A server labelled without such a reference has no metrics endpoint and shows up as a failing monitoring target.
+
+Adding the label restarts the server's proxy once, which drops open MCP sessions. Administrators can opt in all existing servers that already reference the prokube-managed `pkui-mcp-telemetry` config:
+
+```bash
+kubectl get mcpservers.toolhive.stacklok.dev -A -o json |
+  jq -r '.items[] | select(.spec.telemetryConfigRef.name == "pkui-mcp-telemetry") | [.metadata.namespace, .metadata.name] | @tsv' |
+  while IFS=$'\t' read -r namespace name; do
+    kubectl patch mcpservers.toolhive.stacklok.dev "$name" -n "$namespace" \
+      --type merge \
+      -p '{"spec":{"resourceOverrides":{"proxyDeployment":{"podTemplateMetadataOverrides":{"labels":{"prokube.ai/mcp-metrics":"true"}}}}}}'
+  done
+```
+
+The **Traffic** tab shows the calls the server received through Agent Gateway, by source, with failures and a call trend. Calls to the server's in-cluster address bypass Agent Gateway and are not counted there. See [Gateway Usage: Traffic on Resource Pages](../platform/gateway_usage.html#traffic-on-resource-pages).
 
 ## Security and Operations
 

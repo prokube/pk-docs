@@ -128,18 +128,50 @@ Avoid using time to first token as the first autoscaling trigger without testing
 
 ### Configure KEDA in LLM Serving
 
-For a model deployed through LLM Serving, open **Advanced Configuration** in the deploy form. The deployment mode is fixed after creation, but you can change the autoscaler settings later with **Edit**.
+For a model deployed through LLM Serving, open **Advanced Configuration** in the deploy form. The deployment mode is fixed after creation.
 
-1. Set **Deployment Mode** to **Raw Deployment**.
+1. Set **Deployment Mode** to **Standard** (RawDeployment).
 2. Set **Autoscaler Mode** to **KEDA**.
 3. Check the **Prometheus Metric Query**. The form pre-fills a prompt plus generation token-throughput query for the model.
 4. Set the **Scale Threshold**. The default of `100000` is intentionally high so the model does not scale up before calibration. Deploy the model, measure per-replica throughput under load, then lower the threshold as described in [Load Test and Calibrate](#_4-load-test-and-calibrate).
 
-Use the manual pattern below when the InferenceService is not managed by LLM Serving, or when you need settings the form does not expose, such as multiple triggers or custom scale-down behavior.
+The form configures KEDA on the InferenceService itself; you do not create a `ScaledObject`. KServe creates the `ScaledObject` `<model>-predictor`, keeps it in sync, and deletes it together with the model. The model's **Configuration** tab shows it under **Scaling**, together with the **KEDA Metric** and **KEDA Threshold**.
+
+The resulting manifest uses the `keda` autoscaler class and one Prometheus metric under `spec.predictor.autoScaling`:
+
+```yaml
+metadata:
+  annotations:
+    serving.kserve.io/deploymentMode: RawDeployment
+    serving.kserve.io/autoscalerClass: keda
+spec:
+  predictor:
+    minReplicas: 1
+    maxReplicas: 3
+    autoScaling:
+      metrics:
+        - type: External
+          external:
+            metric:
+              backend: prometheus
+              serverAddress: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090/prometheus
+              query: >-
+                sum(rate(vllm:prompt_tokens_total{namespace="<workspace>",model_name="<model>"}[2m]))
+                + sum(rate(vllm:generation_tokens_total{namespace="<workspace>",model_name="<model>"}[2m]))
+            target:
+              type: Value
+              value: "100000"
+```
+
+Use `target.type: Value`. KEDA compares the threshold with the query result divided by the number of replicas, as with `AverageValue` in a manual `ScaledObject`.
+
+With **Edit**, you can change the query, threshold, replica range, and resources of a KEDA model. You cannot switch an existing model into or out of KEDA: the edit form disables those choices, and YAML updates that change the autoscaler class are rejected. KServe does not remove the previous scaler when the class changes, so both scalers would control the model. Recreate the model with the other autoscaler instead, or ask an administrator to coordinate the handoff. Switching between HPA and **External (user-managed)** remains possible.
+
+Use the manual pattern below when the InferenceService is not managed by LLM Serving, or when you need settings native KEDA does not expose, such as multiple triggers or custom scale-down behavior.
 
 ### Prerequisites
 
-KEDA must be installed by an administrator. The manual pattern below also assumes Prometheus can scrape vLLM metrics and KEDA can reach the Prometheus endpoint.
+KEDA must be installed by an administrator. Its CRDs must exist before KServe starts; if KEDA is installed later, KServe must be restarted before it can create scalers. The manual pattern below also assumes Prometheus can scrape vLLM metrics and KEDA can reach the Prometheus endpoint.
 
 prokube platform configuration includes a cluster-wide vLLM `PodMonitor` in the monitoring stack. It selects KServe InferenceService pods and scrapes the `user-port` endpoint. Because of that, declare the predictor container port explicitly when using RawDeployment mode.
 
@@ -190,6 +222,8 @@ kubectl get isvc opt-125m -n "${NAMESPACE}" -w
 ```
 
 In RawDeployment mode, KServe creates a Deployment named `<inference-service-name>-predictor`. The example above creates `opt-125m-predictor`; the KEDA `ScaledObject` must point to that Deployment.
+
+The `external` autoscaler class tells KServe not to scale the model. You manage the scaler yourself, here a KEDA `ScaledObject`. prokube shows such a model as **External (user-managed)** and does not create, change, or delete its scaler. Apply the `ScaledObject` separately with `kubectl` or GitOps, as in step 3. The YAML editors in the prokube UI accept exactly one InferenceService and reject additional documents such as a `ScaledObject`. When you delete the model, delete its `ScaledObject` too.
 
 ### 2. Check vLLM Metrics
 

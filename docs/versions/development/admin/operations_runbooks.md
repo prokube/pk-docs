@@ -13,7 +13,7 @@ Run these procedures only when you understand the deployment topology, GitOps se
 | Identity and login | [Keycloak bootstrap](#keycloak-bootstrap-and-advanced-iam), [login 502 errors](#login-502-from-large-response-headers) |
 | Cluster certificates | [MicroK8s certificate maintenance](#microk8s-certificate-maintenance) |
 | Workspace defaults | [Global registry credentials](#global-registry-credentials), [resource quotas](#workspace-resource-quotas) |
-| Metrics and logs | [Grafana dashboards](#grafana), [Prometheus queries](#prometheus), [Loki log search](#loki) |
+| Metrics and logs | [Grafana dashboards](#grafana), [Prometheus queries](#prometheus), [Loki log search](#loki), [LLM usage audit](#auditing-llm-usage), [API key request limits](#api-key-request-limits) |
 | Alerts and workload failures | [Alert routing](#alertmanager), [KServe and Knative alerts](#kserve-and-knative-service-alerts), [Katib controller OOM](#katib-suggestion-controller-oom) |
 
 ## MinIO Administration
@@ -412,6 +412,35 @@ Use `.*` in regular expressions. A bare `*` is not a valid replacement for regex
 
 Be careful with shared dashboards and broad Explore access. Depending on permissions, a Grafana dashboard or Loki query can expose logs from multiple namespaces. Do not publish log dashboards broadly unless namespace scoping and access controls have been verified.
 
+### Auditing LLM Usage
+
+Agent Gateway writes one access-log line per request. [Gateway Usage](../platform/gateway_usage.md), [LLM Usage and Cost](llm_usage.md), and [Request Activity](../platform/api_keys.md#request-activity) are built from these logs. Query them directly when you need fields or filters the UI doesn't offer, for example to find who used which model when a key shows unexpected cost.
+
+Query the logs in Grafana Explore with Loki. The identity fields are not Loki labels, so parse them with `logfmt` and filter after parsing:
+
+```text
+{namespace="agentgateway-system", container="agentgateway"} |= "gen_ai.request.model" | logfmt | key_id="<key-uuid>"
+```
+
+Replace the last filter to search by owner, `key_owner="<user>"`, by calling workload, `caller=~".*/ns/<namespace>/sa/<service-account>"`, or by target, for example `target_kind="mcp" | target_workspace="<workspace>" | target_name="<server>"`.
+
+| Field | Content |
+|---|---|
+| `key_id` | ID of the API key that authenticated the request, or `none`. |
+| `workspace` | Workspace of that key, or `none`. |
+| `key_owner` | Owner of that key, or `none`. |
+| `traffic_class` | `external_key` for requests with a valid key, `internal` for in-cluster calls, `user_token` for requests signed in with a user or workload token, `unattributed` for requests without valid credentials. `user_token` means the token was valid, not that the request was authorized or succeeded. |
+| `caller` | The Kubernetes ServiceAccount of the calling workload, as `<trust-domain>/ns/<namespace>/sa/<service-account>`, when the gateway could verify it. Otherwise `none`, for example for calls through the public endpoint. |
+| `target_kind` | Kind of the called resource: `model`, `serving`, `mcp`, `memory`, `a2a`, `sandbox`, or `other`. |
+| `target_name`, `target_workspace` | Name and workspace of the called resource, or `none`. The target workspace is independent of the key's `workspace`. |
+
+Each line also contains the route, path, status, model, token counts, duration, and cost (`agw.ai.usage.cost.total`).
+
+- Prompts, responses, tool arguments, and API keys are never logged.
+- `key_owner` is personal data, such as an email address. Restrict who can read these logs.
+- Logs are retained for 10 days by default. They are an operational audit trail, not a billing record. The **Max** time window in the usage views defaults to the same 10 days; it limits queries and does not change retention.
+- For an agent, `caller` is the agent's ServiceAccount, not the user who started the conversation.
+
 ### Alertmanager
 
 Alertmanager handles alert notification routing. In prokube deployments that use `kube-prometheus-stack`, Prometheus alerting rules are usually defined with `PrometheusRule` resources, while notification routing is defined with `AlertmanagerConfig` resources.
@@ -557,6 +586,19 @@ kubectl logs <katib-suggestion-pod> -n kubeflow --previous
 Increase suggestion-controller CPU and memory in the authoritative Katib configuration for the deployment, commonly the `katib-config` ConfigMap or Helm/Kustomize values that render it. In GitOps-managed clusters, update the deployment repository instead of live-editing generated resources.
 
 After rollout, verify that the suggestion pod stays running and that experiments create new trials again. If OOMs continue, reduce experiment parallelism or search-space size, or choose a lighter suggestion algorithm.
+
+## API Key Request Limits
+
+Per-key request limits are optional and off by default. The optional `agentgateway-ratelimit` platform component enables them. It deploys the rate-limit service, one Envoy Ratelimit replica with an in-memory Redis in `agentgateway-system`, and turns on limit handling in pk-ui and the Agent Gateway controller (pk-ui value `aiGateway.rateLimit.enabled: true`). Only then do the **Requests Per Minute** field and the **Rate Limit** column appear on [API Keys](../platform/api_keys.md#request-limits). Keep the service and the pk-ui setting enabled together: without the service, keys accept limits that are never enforced.
+
+Operational behavior:
+
+- Limits fail open. While the rate-limit service or Redis is unavailable, requests are allowed and authentication keeps working. A key can show **Propagated** even though no limit is enforced at that moment.
+- Counters live only in Redis memory. Restarting Redis resets every key's current minute.
+- The bucket is the key's ID, shared across all routes and gateway replicas, and kept across key rotation and limit changes.
+- Disabling the component removes the runtime and stops adding limits to gateway policies. Until the controller has reconciled, existing policies fail open.
+
+The platform ships alerts for the component: `AgentGatewayRateLimitUnavailable` and `AgentGatewayRateLimitRedisUnavailable` (limits are bypassed), `AgentGatewayRateLimitRuntimeRestarted`, `AgentGatewayRateLimitConfigLoadErrors`, and `AgentGatewayRateLimitRedisErrors`. Investigate with the rate-limit service logs and Deployment readiness, restore configuration through GitOps, then verify that a key with a small limit receives `429` after its allowed requests.
 
 ## Related Pages
 

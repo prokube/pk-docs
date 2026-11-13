@@ -117,7 +117,7 @@ Optional sections (collapsible):
 
 ### YAML Tab
 
-Paste a raw KServe `InferenceService` manifest, optionally with a `ScaledObject` separated by `---`. Use **Load Example** to populate the editor with a valid template:
+Paste a raw KServe `InferenceService` manifest. The editor accepts exactly one InferenceService; additional documents separated by `---`, such as a KEDA `ScaledObject`, are rejected. For KEDA autoscaling, configure it on the InferenceService or apply your own scaler separately; see [Model Serving Autoscaling](model_serving_autoscaling.md#configure-keda-in-llm-serving). Use **Load Example** to populate the editor with a valid template:
 
 ```yaml
 apiVersion: serving.kserve.io/v1beta1
@@ -158,6 +158,7 @@ The detail page shows the InferenceService status, endpoint URLs, configuration,
 | **Overview** | Endpoint URLs (V2 and V1 protocols), configuration card, resources card, timestamps |
 | **Test** | Interactive inference testing panel |
 | **Metrics** | Grafana dashboards for the endpoint |
+| **Traffic** | Calls the model received through Agent Gateway, by source, with failures and a call trend. See [Gateway Usage](../platform/gateway_usage.html#traffic-on-resource-pages). |
 | **Logs** | Inference pod logs |
 | **Events** | Kubernetes events for the InferenceService |
 | **Conditions** | KServe condition status |
@@ -208,13 +209,13 @@ For a detailed KPA walkthrough and a manual KEDA/vLLM token-throughput example, 
 
 ### S3-compatible Storage
 
-InferenceServices access models in S3-compatible file storage through a `ServiceAccount` annotated with S3 endpoint details. The prokube workspace is preconfigured with S3-compatible storage; use the **File Storage** page in the UI to see available buckets. See [File Storage](../platform/file_storage.md) for storage browser, path, and client details.
+InferenceServices access models in S3-compatible file storage through a `ServiceAccount` annotated with S3 endpoint details. The prokube workspace is preconfigured with S3-compatible storage; use the **Object Storage** page in the UI to see available buckets. See [File Storage](../platform/file_storage.md) for storage browser, path, and client details.
 
 For models stored in workspace buckets, the deployment wizard's **Browse S3** button selects the path directly. For `kubectl`-based deployment, a secret named `s3creds` with the correct KServe annotations already exists in the workspace namespace and grants access to the buckets the workspace can see. Reference it from the InferenceService via `spec.predictor.serviceAccountName`.
 
 ### MLflow Model Registry
 
-Use `storageUri` values starting with `mlflow://` to deploy models registered in MLflow without exposing S3 credentials across namespaces. This requires a secret named `mlflow-credentials` in the same namespace as the InferenceService, containing `MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME`, and `MLFLOW_TRACKING_PASSWORD`. The wizard's **Import from MLflow** button helps select the model; the secret must exist in the namespace before deployment. See [MLflow](mlflow.md) for instructions on creating the secret and obtaining your credentials.
+Use `storageUri` values starting with `mlflow://` to deploy models registered in MLflow without exposing S3 credentials across namespaces. This requires a secret named `mlflow-credentials` in the same namespace as the InferenceService, containing `MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME`, and `MLFLOW_TRACKING_PASSWORD`. The wizard's **Import from MLflow** button helps select the model. If the secret is missing or incomplete, the picker shows **Create MLflow credentials** or **Edit MLflow credentials** to set the three values without leaving the wizard; existing values are not displayed. See [MLflow](mlflow.md) for how to obtain your credentials.
 
 The URI format:
 
@@ -222,7 +223,7 @@ The URI format:
 - `mlflow://models/<model-name>/<stage>` – stage alias (`staging`, `production`, `latest`)
 - `mlflow://runs/<run-id>/<artifact-path>` – run artifact
 
-A custom `mlflow-storage-initializer` init container resolves these URIs by fetching the model artifact through the MLflow API with the credentials from the workspace's `mlflow-credentials` secret. **Import from MLflow** checks that this secret exists but does not create it.
+A custom `mlflow-storage-initializer` init container resolves these URIs by fetching the model artifact through the MLflow API with the credentials from the workspace's `mlflow-credentials` secret.
 
 ## In-Cluster Access
 
