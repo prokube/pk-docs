@@ -14,7 +14,9 @@ The document workflow below is available only for **RAG + pgvector** stores, cur
 2. Under **Deployed Memory Systems**, open an existing **RAG + pgvector** store by selecting its name or **Details**.
 3. Select **Documents**. **Uploaded Documents** lists files added through this workflow, not memories added through MCP tools.
 
-Workspace owners, workspace admins, and platform admins can upload and delete documents. Other users with workspace access can view the list, but don't see upload, selection, or deletion controls. An editor role alone isn't enough to manage documents.
+Workspace owners and workspace admins can upload and delete documents. Other users with workspace access can view the list, but don't see upload, selection, or deletion controls. An editor role alone isn't enough to manage documents. Platform administrators need a workspace role as well: being a platform administrator doesn't grant access to a workspace's Memory stores.
+
+The store's **Traffic** tab shows the calls it received through Agent Gateway. See [Gateway Usage: Traffic on Resource Pages](../platform/gateway_usage.html#traffic-on-resource-pages).
 
 ## Upload or Replace Documents
 

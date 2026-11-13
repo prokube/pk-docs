@@ -45,7 +45,7 @@ Click **Deploy Model** and choose a preset, or select **Deploy Custom Model** to
 
 vLLM and vLLM Omni require a custom ClusterServingRuntime.
 
-If the model is gated on HuggingFace, the form warns you before deploying: accept the license on huggingface.co, create an access token, and store it as a Kubernetes Secret named `storage-config` with key `HF_TOKEN` in the workspace (see [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets)). Deployment fails without it.
+If the model is gated on Hugging Face, the form warns you before deploying. Accept the license on huggingface.co and create an access token. Then select **Create Hugging Face credential** in the warning, enter the token as `HF_TOKEN`, and save. Keep the suggested Secret name `storage-config`: deployments read the token from this Secret, and [cache downloads](#gated-models) can use it as well. If the Secret exists but is incomplete, the button reads **Edit Hugging Face credential**. A gated deployment fails without the token. The same action is offered on the model's detail page, for example after a failed download.
 
 Select **Or edit YAML manifest directly** if the form does not cover a setting you need, such as extra container arguments. The editor accepts exactly one InferenceService; additional YAML documents, such as a KEDA `ScaledObject`, are rejected.
 
@@ -75,7 +75,7 @@ If a model needs replicas on several nodes and no `ReadWriteMany` option is offe
 1. Open **LLM Serving**, select **Deploy Model**, and find the preset. Each cacheable preset card shows its cache status.
 2. Select **Cache this model**. The dialog shows the model, the Hugging Face revision it resolved to, and the file format.
 3. If an administrator has enabled PVC caches, the dialog shows **Storage destination**. Choose **Workspace S3** or **Dedicated PVC**. For a PVC, select the StorageClass, access mode, and claim size within the displayed limits. Otherwise, the cache goes to workspace S3.
-4. For a gated model, the dialog shows a **Hugging Face credential** field. Select the Secret that holds your token. See [Gated Models](#gated-models).
+4. For a gated model, the dialog shows a **Hugging Face credential** field. Select the Secret that holds your token, or create one with **Create Hugging Face credential**. See [Gated Models](#gated-models).
 5. Select **Start caching**.
 
 ![Cache dialog with Dedicated PVC selected, showing StorageClass, access mode, and claim size](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/llm-serving/model-cache-dialog-pvc.png)
@@ -86,7 +86,7 @@ The download runs as a Kubernetes Job in the workspace.
 
 Some Hugging Face models, such as Llama and Gemma, are gated: you must accept the model's license on huggingface.co, and downloads need an access token. Public models need no token, and the dialog does not show the credential field for them.
 
-To cache a gated model, store your token in a workspace Secret with the key `HF_TOKEN` and the label `prokube.ai/credential-type=huggingface`. The credential field lists only Secrets with this label, so the `storage-config` Secret that direct deployments from Hugging Face use does not appear unless you label it. Create the Secret with `kubectl`:
+To cache a gated model, the token must be in a workspace Secret with the key `HF_TOKEN` and the label `prokube.ai/credential-type=huggingface`. The credential field lists only Secrets with this label. **Create Hugging Face credential** creates such a Secret, `storage-config`, which direct deployments use as well. To use a Secret created with `kubectl`, label it:
 
 ```bash
 kubectl create secret generic hf-token -n <workspace> --from-literal=HF_TOKEN=<token>
@@ -191,6 +191,10 @@ This list matches the parsers built into the platform's currently deployed vLLM 
 Open a **Ready** model from the list. Text-generation models have a **Chat** tab with a built-in streaming chat tester. Embedding and reranking models have an **API** tab. Audio models have an **API** or **Test** tab, depending on the task. These tabs show the endpoint path and a ready-to-run `curl` example for the supported operation.
 
 The **Configuration** tab summarizes the model's settings and endpoints. For a KEDA model, **Scaling** shows the **ScaledObject**, **KEDA Metric**, and **KEDA Threshold**; a model scaled by your own scaler shows **External (user-managed)**. For troubleshooting, use the **Metrics**, **Logs**, and **Conditions** tabs. While model weights are downloading, a storage panel shows download progress and errors instead of the usual tabs.
+
+The **Traffic** tab shows the calls the model received through Agent Gateway: calls, failed calls, LLM tokens, estimated cost, the breakdown by [source](../platform/gateway_usage.html#sources), and a call trend. A self-hosted model shows **No price set** until an administrator [sets a price](../admin/llm_usage.html#model-pricing). Calls to the model's cluster-internal address bypass Agent Gateway and are not counted.
+
+![Traffic tab of a self-hosted model with calls by source and the call trend](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/llm-serving/llm-model-traffic-tab.png)
 
 ## Edit a Model
 

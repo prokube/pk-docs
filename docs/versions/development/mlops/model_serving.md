@@ -158,6 +158,7 @@ The detail page shows the InferenceService status, endpoint URLs, configuration,
 | **Overview** | Endpoint URLs (V2 and V1 protocols), configuration card, resources card, timestamps |
 | **Test** | Interactive inference testing panel |
 | **Metrics** | Grafana dashboards for the endpoint |
+| **Traffic** | Calls the model received through Agent Gateway, by source, with failures and a call trend. See [Gateway Usage](../platform/gateway_usage.html#traffic-on-resource-pages). |
 | **Logs** | Inference pod logs |
 | **Events** | Kubernetes events for the InferenceService |
 | **Conditions** | KServe condition status |
@@ -214,7 +215,7 @@ For models stored in workspace buckets, the deployment wizard's **Browse S3** bu
 
 ### MLflow Model Registry
 
-Use `storageUri` values starting with `mlflow://` to deploy models registered in MLflow without exposing S3 credentials across namespaces. This requires a secret named `mlflow-credentials` in the same namespace as the InferenceService, containing `MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME`, and `MLFLOW_TRACKING_PASSWORD`. The wizard's **Import from MLflow** button helps select the model; the secret must exist in the namespace before deployment. See [MLflow](mlflow.md) for instructions on creating the secret and obtaining your credentials.
+Use `storageUri` values starting with `mlflow://` to deploy models registered in MLflow without exposing S3 credentials across namespaces. This requires a secret named `mlflow-credentials` in the same namespace as the InferenceService, containing `MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME`, and `MLFLOW_TRACKING_PASSWORD`. The wizard's **Import from MLflow** button helps select the model. If the secret is missing or incomplete, the picker shows **Create MLflow credentials** or **Edit MLflow credentials** to set the three values without leaving the wizard; existing values are not displayed. See [MLflow](mlflow.md) for how to obtain your credentials.
 
 The URI format:
 
@@ -222,7 +223,7 @@ The URI format:
 - `mlflow://models/<model-name>/<stage>` – stage alias (`staging`, `production`, `latest`)
 - `mlflow://runs/<run-id>/<artifact-path>` – run artifact
 
-A custom `mlflow-storage-initializer` init container resolves these URIs by fetching the model artifact through the MLflow API with the credentials from the workspace's `mlflow-credentials` secret. **Import from MLflow** checks that this secret exists but does not create it.
+A custom `mlflow-storage-initializer` init container resolves these URIs by fetching the model artifact through the MLflow API with the credentials from the workspace's `mlflow-credentials` secret.
 
 ## In-Cluster Access
 

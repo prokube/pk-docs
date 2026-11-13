@@ -69,7 +69,20 @@ Use **K8s Secrets** from the prokube user menu to create workspace-scoped [Kuber
 
 ![K8s Secrets dialog](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/kubernetes/k8s-secrets-ui.png)
 
-Secrets can be referenced by workloads without putting secret values into notebooks, pipeline code, component YAML, or container images.
+Secrets can be referenced by workloads without putting secret values into notebooks, pipeline code, component YAML, or container images. Forms that need a credential, such as MCP server deployment, Agents, and LLM Serving, let you pick a Secret and key directly or create a Secret without leaving the form.
+
+The dialog lists the Secrets created through the prokube UI. Select **Edit** on a Secret to change it. Existing values are never displayed; only the changes you make explicitly are saved:
+
+- **Replace value** on a key, then enter the new value.
+- **Delete key** removes a key. The last key cannot be deleted; delete the whole Secret instead.
+- **Keep unchanged** reverts the pending change of a key.
+- **Add Key-Value Pair** adds a new key.
+
+The Secret name cannot be changed. Workloads that already read the Secret may need a restart to pick up the new values.
+
+<img src="https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/kubernetes/k8s-secret-edit-write-only.png" alt="Edit Secret dialog with one value being replaced and one key being deleted" style="max-width: 672px; width: 100%; height: auto;">
+
+You need write access to the workspace to create or change Secrets.
 
 Treat Kubernetes Secrets as workspace-scoped credentials. Users with sufficient workspace access may be able to read secrets in the workspace namespace. Do not store personal credentials or administrator credentials in shared workspaces.
 

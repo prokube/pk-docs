@@ -56,7 +56,9 @@ Click a catalog card to deploy it. The deploy dialog shows:
 
 ![Deploy dialog for a catalog MCP server](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/playwright-launch-dialog.png)
 
-Environment variables can be entered directly or read from a Kubernetes Secret in the workspace. Use Secrets for tokens, passwords, API keys, and other sensitive values. See [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets).
+Environment variables can be entered directly (**Direct Value**) or read from a Kubernetes Secret in the workspace (**From Secret**). For **From Secret**, select the **Secret** and the **Secret key**. If the Secret doesn't exist yet, select **Create Secret**; the new Secret is selected for the variable when you save it. Use Secrets for tokens, passwords, API keys, and other sensitive values. See [Kubernetes Secrets](../platform/kubernetes.html#kubernetes-secrets).
+
+<img src="https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/mcp/mcp-deploy-env-from-secret.png" alt="Deploy Custom Server dialog with an environment variable read from a Secret key" style="max-width: 768px; width: 100%; height: auto;">
 
 ### Catalog Source and Trust
 
@@ -72,7 +74,7 @@ Before giving an MCP server credentials or access to internal systems, review wh
 
 ## Deploy a Custom Server
 
-Use **Deploy Custom Server** when the server is not in the catalog or when you maintain your own image.
+Select **Deploy Server** above the deployed servers to open **Deploy Custom Server** when the server is not in the catalog or when you maintain your own image.
 
 Required fields:
 
@@ -83,7 +85,7 @@ Required fields:
 
 Optional fields:
 
-- environment variables, either direct values or Secret references;
+- environment variables, either direct values or Secret keys, as in the catalog dialog;
 - image pull credentials for private registries;
 - CPU and memory requests and limits;
 - container arguments;
@@ -168,7 +170,7 @@ For these servers, the details page can show:
 
 Live view is only available for servers that declare live-view support in the catalog or custom configuration.
 
-## Server Metrics
+## Server Metrics and Traffic
 
 The **Metrics** tab shows Grafana panels from two sources:
 
@@ -201,6 +203,8 @@ kubectl get mcpservers.toolhive.stacklok.dev -A -o json |
       -p '{"spec":{"resourceOverrides":{"proxyDeployment":{"podTemplateMetadataOverrides":{"labels":{"prokube.ai/mcp-metrics":"true"}}}}}}'
   done
 ```
+
+The **Traffic** tab shows the calls the server received through Agent Gateway, by source, with failures and a call trend. Calls to the server's in-cluster address bypass Agent Gateway and are not counted there. See [Gateway Usage: Traffic on Resource Pages](../platform/gateway_usage.html#traffic-on-resource-pages).
 
 ## Security and Operations
 
