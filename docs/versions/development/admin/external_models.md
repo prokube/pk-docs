@@ -10,7 +10,7 @@ Use this workflow when you need to:
 
 For OpenAI, Anthropic, or Gemini, workspace users can instead create their own Model Configuration backed by a workspace Kubernetes Secret. See [Agents](../agentops/agents.html#_2-choose-or-create-a-model-configuration).
 
-![External Models page with the provider catalog for Anthropic, OpenAI, Mistral AI, Azure OpenAI, and custom OpenAI-compatible endpoints](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/external-models-provider-catalog.png)
+![External Models page with the provider catalog for Anthropic, OpenAI, Mistral AI, Azure OpenAI, and custom OpenAI-compatible endpoints](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/external-models-provider-catalog-framed.png)
 
 Usage across all models and model pricing are on [LLM Usage and Cost](llm_usage.html).
 
