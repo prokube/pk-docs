@@ -4,8 +4,8 @@
 
 ## Requirements
 
-- The Kubernetes APIs `ClusterTrustBundle` and `PodCertificateRequest` (`certificates.k8s.io/v1beta1`). They are beta and off by default in Kubernetes 1.35; new prokube installations switch them on. Check with `kubectl api-resources --api-group=certificates.k8s.io`.
-- A publicly trusted TLS certificate for the platform domain. Substrate fetches the login provider's signing keys over the public URL.
+- The Kubernetes APIs `ClusterTrustBundle` and `PodCertificateRequest`. Kubernetes 1.37 and later serve them by default (`certificates.k8s.io/v1`). In 1.35 and 1.36 they are beta (`certificates.k8s.io/v1beta1`) and off by default; new prokube installations on MicroK8s switch them on. Check with `kubectl api-resources --api-group=certificates.k8s.io`.
+- A publicly trusted TLS certificate for the platform domain. The Substrate API and Agent Gateway fetch the login provider's signing keys over the public URL and trust only public certificate authorities. A private certificate authority is not supported out of the box.
 - Outbound HTTPS from the nodes to `storage.googleapis.com`, where the gVisor runtime is downloaded.
 - Room in the platform MinIO for snapshots; see [Snapshots](#snapshots).
 
@@ -18,8 +18,9 @@ ATE_VERSION=$(kubectl get deployment ate-api-server -n ate-system \
   -o jsonpath='{.spec.template.spec.containers[0].image}' | sed -e 's/@.*//' -e 's/.*://')
 ATE_ASSET=kubectl-ate-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')
 curl -fsSLO "https://github.com/kagent-dev/substrate/releases/download/$ATE_VERSION/$ATE_ASSET"
-shasum -a 256 "$ATE_ASSET"     # compare with the digest on the release page of $ATE_VERSION
-install -m 0755 "$ATE_ASSET" ~/.local/bin/kubectl-ate && rm "$ATE_ASSET"
+curl -fsSLO "https://github.com/kagent-dev/substrate/releases/download/$ATE_VERSION/$ATE_ASSET.sha256"
+shasum -a 256 -c "$ATE_ASSET.sha256"
+install -m 0755 "$ATE_ASSET" ~/.local/bin/kubectl-ate && rm "$ATE_ASSET" "$ATE_ASSET.sha256"
 export ATE_CLIENT_SERVICE_ACCOUNT=substrate-operator
 kubectl ate --version
 ```
@@ -163,7 +164,7 @@ Templates are immutable, and sandboxes keep the template they were created from.
 
 1. Add the next version of its template, for example `pk-default-small-v6.yaml` next to `pk-default-small-v5.yaml`.
 2. List it in `paas/pk-sandbox/templates/kustomization.yaml` instead of the old file, and point the preset's `template` in `presets.json` at it.
-3. Sync `pk-sandbox-templates` and `pk-sandbox-gateway`. The policy sync creates the template, and Substrate boots it once to take the snapshot that new sandboxes start from.
+3. Sync `pk-sandbox-templates` and `pk-sandbox-gateway`. The policy sync creates the template, and Substrate boots it once to take the snapshot that new sandboxes start from. This needs room on a worker; while the workers are full, `kubectl ate get actor-templates -a sandbox-templates` shows the template without a golden tag.
 4. Delete the old template once no sandbox uses it: `kubectl ate delete actor-template pk-default-small-v5 -a sandbox-templates`.
 
 ## Access
@@ -236,6 +237,7 @@ kubectl ate get actor-templates -a sandbox-templates       # presets' templates,
 | Creating or resuming fails with HTTP 503 | No worker has room; see [When capacity runs short](#when-capacity-runs-short). |
 | Sandboxes are crashed after a node restart | Running sandboxes crash when their node restarts. Users bring them back with `pk sandbox revert` or **Revert** in the prokube UI; admins with `kubectl ate revert`. |
 | Workspace pods fail with `No login and no workload token` | The workspace has no PodDefault `access-sandboxes`; see [Access from Workspace Pods](#access-from-workspace-pods). |
+| A sandbox stays in `ACTOR_STATE_DELETING` and keeps its share of the worker | A known Substrate issue when a client cancels a resume mid-restore ([agent-substrate/substrate#3840](https://github.com/agent-substrate/substrate/issues/3840)). Find the worker in the `WORKER POD` column of `kubectl ate get actors -A`, suspend the other sandboxes on it, delete the worker pod with `kubectl delete pod -n ate-workers <worker>`, then delete the sandbox again with `kubectl ate delete actor`. |
 | `WARNING` entries in `pk-sandbox/policy-sync` | The 5-minute check corrected a missed update or a manual change in Substrate; see [Access](#access). |
 
 ## Related Pages
