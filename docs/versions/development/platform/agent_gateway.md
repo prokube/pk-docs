@@ -48,14 +48,19 @@ API keys are the unit of access control for Agent Gateway. Create, scope, rotate
 
 See [API Keys](api_keys.html) for the full create/edit/rotate/disable workflow, client authentication formats, and troubleshooting.
 
-## Usage Dashboard
+## Usage and Traffic
 
-The API Keys page also has a **Usage** tab showing request volume, LLM token/cost estimates, and per-key usage and request activity for the selected workspace. Any workspace member can see this. See [Usage Dashboard](api_keys.html#usage-dashboard) for details. Traffic that is not tied to a key, such as internal calls and requests without a valid key, is shown to administrators under [System Status](system_status.html#ai-gateway-traffic).
+Agent Gateway logs every call it handles. prokube shows these calls in several places:
+
+- [Gateway Usage](gateway_usage.html) under **Monitoring**: all calls in the selected workspace by source, caller, and API key, with estimated LLM cost and individual calls. Any workspace member can open it.
+- The **Traffic** views on model, MCP server, memory store, and agent pages: calls that one resource received.
+- For administrators, [LLM Usage and Cost](../admin/llm_usage.html) for LLM calls across all workspaces, and [System Status](system_status.html#agent-gateway-traffic) for internal calls, token calls, and calls without valid credentials across all workspaces.
 
 ## Related Pages
 
 - [Agent Gateway for AgentOps](../agentops/agent_gateway.html)
 - [API Keys](api_keys.html)
+- [Gateway Usage](gateway_usage.html)
 - [Model Serving](../mlops/model_serving.html)
 - [Serverless](../mlops/knative.html)
 - [MCP Servers](../agentops/mcp_servers.html)

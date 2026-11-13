@@ -47,6 +47,12 @@ When configuring an Agent, you can either:
 - select individual discovered tools, which stores their names in the Agent's `mcpServer.toolNames` field; or
 - attach the complete `RemoteMCPServer` without `toolNames`, which makes all current and future tools from that connection available to the Agent.
 
+Federated tool and prompt names always carry the MCP server's name as a prefix, even when the workspace has only one MCP server: for an MCP server `fetch-example`, its tool `fetch` is exposed as `fetch-example_fetch`. Adding or removing other MCP servers does not rename these tools; renaming the server or an upstream tool does. The per-server public routes `/svc/mcp/<workspace>/<server>` are not affected.
+
+::: warning Update bare tool names after upgrading
+Agents, prompts, and clients that reference a federated tool by its bare upstream name, such as `fetch`, stop matching after an upgrade to the prefixed names. Their owners update these references to the exact discovered names, including in GitOps manifests, then verify both discovery and an actual tool call. Do not switch an Agent to all tools to work around a name mismatch. Administrators schedule the upgrade with these owners and confirm beforehand that the installed Agent Gateway CRDs and runtime are version 1.4 or newer. A rollback restores bare names for a workspace with a single MCP server, so references must be changed back as well.
+:::
+
 Tool selection controls which tools kagent presents to that Agent. Do not treat it as an independent network-security boundary: prokube does not currently materialize a separate Agent Gateway authorization policy for each Agent and selected tool. Use workspace separation and narrowly scoped MCP servers when a capability requires stronger isolation.
 
 See [Agents](agents.html) for the UI workflow and [MCP Servers](mcp_servers.html) for deploying and operating tool servers.
@@ -67,7 +73,13 @@ External access is configured through service-scoped API keys, not on this page.
 
 ## Observability
 
-Traffic routed through Agent Gateway provides a common collection point for request metrics, logs, and traces. The [API Key Usage Dashboard](../platform/api_keys.html#usage-dashboard) covers requests authenticated with an API key, including the individual requests of each key. Administrators see internal agent traffic in aggregate under [System Status](../platform/system_status.html#ai-gateway-traffic) and can trace requests to a key or calling workload in the gateway logs. See [Auditing LLM Usage](../admin/operations_runbooks.html#auditing-llm-usage). For an agent, the logs identify its ServiceAccount, not the user who started the conversation.
+Traffic routed through Agent Gateway provides a common collection point for request metrics, logs, and traces:
+
+- An Agent's **Overview** shows **Traffic**, the calls the Agent received, and **Usage**, the model and tool calls it made with their estimated cost. Usage is attributed to the Agent's ServiceAccount; Agents sharing a ServiceAccount share these totals.
+- Model, MCP server, and memory store pages have a **Traffic** tab with the calls each resource received.
+- [Gateway Usage](../platform/gateway_usage.html) shows all calls in the workspace by source and caller, including internal agent calls, and lists the individual calls of each caller.
+
+Administrators can also trace calls to a key or calling workload in the gateway logs. See [Auditing LLM Usage](../admin/operations_runbooks.html#auditing-llm-usage). For an agent, the logs identify its ServiceAccount, not the user who started the conversation. Direct provider calls that bypass Agent Gateway are not recorded.
 
 For workload logs, Kubernetes events, metrics, and currently available tracing workflows, see [Observability](../platform/observability.html). The underlying agentgateway data plane supports OpenTelemetry-based metrics and tracing integrations.
 
@@ -78,5 +90,6 @@ For workload logs, Kubernetes events, metrics, and currently available tracing w
 - [LLM Serving](llm_serving.html)
 - [Agent Gateway](../platform/agent_gateway.html)
 - [API Keys](../platform/api_keys.html)
+- [Gateway Usage](../platform/gateway_usage.html)
 - [External Models](../admin/external_models.html)
 - [Observability](../platform/observability.html)

@@ -14,9 +14,18 @@ Open **API Keys** from the sidebar under **Serving**. Select the workspace befor
 
 Regular users see only their own keys in the selected workspace. Administrators can see and manage all keys in the workspace.
 
-![API Keys list with filters and key metadata](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-list.png)
+![API Keys list with owner, scopes, rate limit, and last activity per key](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-keys-list-last-active.png)
 
-The table shows each key's metadata, such as owner, status, expiration, and scopes, but never the full key value. The key prefix helps identify which key a client is using without exposing the secret.
+The table shows each key's metadata, such as owner, status, scopes, client authentication, creation and expiration date, but never the full key value. The key prefix helps identify which key a client is using without exposing the secret. **Rate Limit** appears only when the platform enforces [request limits](#request-limits).
+
+**Last active** shows when the key was last used, looking back over the longest usage window (10 days by default):
+
+- a relative time, such as **about 2 hours ago**;
+- **No calls in N days**: the whole window is covered by logs and the key made no calls;
+- **No calls logged**: no calls were found, but the gateway logs start later than the window, so older calls are unknown;
+- **—**: usage data or log coverage is unknown.
+
+**View usage** opens [Gateway Usage](gateway_usage.html) with the per-key breakdown.
 
 ## Ownership and Workspace Scope
 
@@ -35,6 +44,7 @@ Click **Create Key** and fill in the form:
 - **Name**: a descriptive name for the key.
 - **Description**: optional context for who or what uses the key.
 - **Expiration Date**: optional. Use expirations for automation keys unless there is a clear rotation process.
+- **Requests Per Minute**: optional, shown only when the platform enforces [request limits](#request-limits). Leave it empty for unlimited.
 - **Client Authentication**: choose how clients send the key.
 - **Select Services**: choose the services this key may access.
 
@@ -108,7 +118,8 @@ From the API Keys page you can:
 
 - search keys by name or prefix;
 - filter by status, expiration, and scope type;
-- edit metadata, expiration, enabled state, and service scopes;
+- edit metadata, expiration, request limit, enabled state, and service scopes;
+- open a key's [Request Activity](#request-activity);
 - disable, rotate, or delete keys.
 
 Disable a key when you need temporary revocation or want to test whether a client still depends on it. Delete a key when it is no longer needed.
@@ -117,91 +128,58 @@ Rotating a key invalidates the old value immediately. Update every client or sec
 
 <img src="https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-edit-disable-rotate-menu.png" alt="API key action menu with edit, disable, rotate, and delete actions" style="max-width: 360px; width: 100%; height: auto;">
 
-## Usage Dashboard
+## Request Limits
 
-Switch to the **Usage** tab on the API Keys page to see how keys in the selected workspace are being used. The dashboard covers only requests that Agent Gateway authenticated with a key of this workspace. It does not cover internal in-mesh traffic (see [Agent Gateway: Public vs. Internal Traffic](agent_gateway.html#public-vs-internal-traffic)) or requests without a valid key. Administrators find platform-wide numbers for both under [System Status](system_status.html#ai-gateway-traffic).
+A platform administrator can enable per-key request limits. Until then, the **Requests Per Minute** field and the **Rate Limit** column are hidden, and keys are not limited.
 
-![API key usage dashboard with request summary, estimated LLM usage, and usage by key](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-usage-dashboard-framed.png)
+When limits are enabled, set **Requests Per Minute** when creating or editing a key: a whole number from 1 to 4,294,967,295, or empty for unlimited. To remove a limit, clear the field in **Edit**.
 
-### Time Window and Summary
+<img src="https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-create-rpm-limit.png" alt="Create API Key dialog with a Requests Per Minute limit of 60" style="max-width: 672px; width: 100%; height: auto;">
 
-Choose a **time window** to control both the summary numbers and the request trend chart below them. Options are Last hour, Last 24 hours (default), Last 7 days, and Last 30 days.
+A client that exceeds the limit receives HTTP `429 Too Many Requests`. The limit works as follows:
 
-Two summary cards cover the keys you can see:
+- Every request attempt counts, including failed ones, across all services the key can reach.
+- Requests are counted in fixed one-minute windows, so a client can briefly send about twice the limit around a minute boundary.
+- A new or changed limit takes effect asynchronously.
+- If the rate-limit service is unavailable, requests are allowed. A request limit is a protection against runaway clients, not a billing or usage quota.
 
-- **Requests**: all requests authenticated by these keys. Administrators see the total across all workspace keys, regular users across the keys they own.
-- **Failed requests**: HTTP 4xx and 5xx responses.
+The **Rate Limit** column shows `Unlimited` or the limit, such as `60 / min`, with a status:
 
-If none of these keys recorded requests or LLM tokens in the window, the dashboard shows **No visible key usage**.
-
-The **request trend** chart plots request volume per time bucket for the selected window. If Prometheus retained only part of the window, the dashboard shows a note that the trend is truncated rather than silently showing partial data as complete.
-
-### Token and Cost Estimate
-
-The **Estimated LLM usage** panel shows input tokens, output tokens, and an estimated cost for LLM traffic in the window. Agent Gateway computes the cost of each request from its model price catalog:
-
-- If pricing is missing for some models in the window, the panel notes that the estimate excludes those models.
-- If no pricing data is available at all, the panel says catalog pricing is unavailable rather than showing a misleading total.
-
-Self-hosted models have no built-in price. Administrators can add prices under [Model Pricing](../admin/external_models.html#model-pricing). A new price applies only to requests served afterward; earlier requests stay unpriced, so the estimate can stay incomplete for windows that include them. See [Pricing and Historical Usage](../admin/external_models.html#pricing-and-historical-usage).
-
-Token and cost figures apply only to LLM (`/svc/ai`) traffic. Other path families report request counts but not tokens or cost.
-
-### Usage by Key
-
-The **Usage by key** table lists per-key activity for the window:
-
-| Column | Meaning |
+| Status | Meaning |
 |---|---|
-| Key | Key name. A deleted key that still has recorded usage shows as **Historical** rather than disappearing from the table. |
-| Owner | The user who created the key. |
-| Requests | Total requests attributed to the key in the window. |
-| Failed | Requests that failed (non-2xx/3xx) in the window. |
-| LLM tokens | Input + output tokens, for `/svc/ai` traffic only. |
-| Estimated cost | Estimated cost for the key's LLM traffic in the window. |
-| Last Active | Approximate time since the key's last recorded request, bounded by the selected window and its sampling granularity, not an exact last-used timestamp. |
-| Activity | Opens the key's individual requests. See [Request Activity](#request-activity). |
+| **Propagated** | Every route the key can use carries the limit. No over-limit rejection in the last hour. |
+| **Limited recently** | Agent Gateway rejected requests over the limit within the last hour. This does not confirm that the limiter is reachable right now. |
+| **Pending** | Not every route the key can use carries the limit yet. |
+| **Not enforced** (grey) | No gateway policy carries the limit, for example because platform rate limiting is turned off. |
+| **Not enforced** (red) | The stored limit is invalid. Edit the key and set a valid limit, or select **remove the stored limit**. |
+| **Status unknown** | The gateway policy state could not be read. |
 
-Regular users see **Keys owned by you**. Administrators see **All workspace keys**. Keys with no recorded activity in the window are omitted, except historical (deleted) keys that administrators can still see for auditing.
+## Key Usage
+
+Usage of all keys in the workspace is shown on [Gateway Usage](gateway_usage.html), together with model grants, internal calls, and other traffic. Select **View usage** on the API Keys page to open it on the **By API key** tab, which lists calls, LLM calls, failures, tokens, estimated cost, and last activity per key. Regular users see their own keys; platform administrators see all keys in the workspace.
 
 ### Request Activity
 
-Select **Activity** in a key's row to open a list of the individual requests that Agent Gateway authenticated with that key. Regular users can open Activity for their own keys; administrators for any current key in the workspace. Historical (deleted) keys cannot open Activity.
+Select **Actions** > **Activity** on a key, or **Activity** in the key's row on Gateway Usage, to list the individual requests that Agent Gateway authenticated with that key. Regular users can open Activity for their own keys; administrators for any current key in the workspace. Deleted keys cannot open Activity.
 
-![Request activity for an API key with filters, request rows, and CSV export](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-request-activity-framed.png)
+![Request Activity for an API key with the call trend, filters, and individual calls](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/gateway-usage/gateway-usage-credential-activity.png)
+
+The **Call trend** at the top shows the key's calls over the selected window. Use **Split by** **Model** or **Route** to see which models or services the key used.
 
 Narrow the list with:
 
-- **Time window**: Last hour, Last 24 hours, Last 7 days, or Last 10 days.
-- **HTTP status (exact)**: one status code, for example `429`. Leave it empty for all statuses.
-- **Request model (exact)**: the model ID the client requested.
+- **Time window**: Last hour, Last 24 hours, Last 7 days, or Max (10 days by default).
+- **HTTP status**: one status code, for example `429`. Leave it empty for all statuses.
+- **Request model**: the model ID the client requested.
+- **Caller**: the full ID of the calling workload, for example `cluster.local/ns/<workspace>/sa/my-agent`, or `none` for calls through the public endpoint. A short name such as `my-agent` is rejected.
 
 Select **Apply filters** to load the filtered list and **Refresh** to reload it. Use **Older** and **Newer** to page through the results. A page can contain fewer rows than usual, because requests with the same timestamp are always kept on one page.
 
-Each row shows:
-
-| Column | Content |
-|---|---|
-| Time (UTC) | When the gateway served the request. |
-| Status | HTTP status code. |
-| Request | Method, path, and path family. For MCP traffic, also the MCP method and tool. |
-| Model | Requested model, and the response model when it differs. |
-| Tokens in / out | Input and output tokens. |
-| Cost (USD) | Estimated cost of the request. |
-| Duration (ms) | Request duration. |
-
-Fields that do not apply, such as tokens for MCP calls, show a dash.
+Each row shows the time (UTC), HTTP status, caller, the call with its method, path, and path family (for MCP traffic, also the MCP method and tool), the requested and responding model, input and output tokens, estimated cost in USD, and duration. Fields that do not apply, such as tokens for MCP calls, show a dash.
 
 **Export CSV** downloads the current page with the active filters, not the full history.
 
-Activity is built from Agent Gateway access logs, which are kept for 10 days. It is an operational view, not a durable audit or billing record. It shows request metadata only: prompts, responses, tool arguments, and credentials are not logged. If the logs cannot be read, the view shows **Activity unavailable** with a **Retry** action.
-
-### Reading the Numbers Correctly
-
-- Request counts, tokens, and cost are estimates for observability, not billing records.
-- Cost covers only requests whose model had a price when the request was served.
-- Prometheus retention limits how far back the dashboard can report. Older activity outside the retention window will not appear even if the key was used.
-- If usage telemetry is not configured for the cluster, the dashboard shows a notice instead of numbers. Contact your administrator if you expect usage data and see this notice.
+Activity is built from Agent Gateway access logs, which are kept for 10 days by default. It is an operational view, not a durable audit or billing record. It shows request metadata only: prompts, responses, tool arguments, and credentials are not logged. If the logs cannot be read, the view shows **Activity unavailable** with a **Retry** action.
 
 ## Security Guidance
 
@@ -221,9 +199,11 @@ Activity is built from Agent Gateway access logs, which are kept for 10 days. It
 | Client receives `401` or `403` | Confirm the key is enabled, not expired, sent with the selected authentication header, and scoped to the target service. |
 | Client can call one service but not another | The key is scoped to selected services. Edit the key or create a new key for the additional service. |
 | Client stopped working after rotation | The old key value stopped working immediately. Update the client secret or environment variable with the new value. |
+| Client receives `429` | The key exceeded its [request limit](#request-limits). Slow the client down or raise the limit. Check the key's [Request Activity](#request-activity) for status `429`. |
 
 ## Related Pages
 
+- [Gateway Usage](gateway_usage.html)
 - [Agent Gateway](agent_gateway.html)
 - [MCP Servers](../agentops/mcp_servers.html)
 - [Model Serving](../mlops/model_serving.html)

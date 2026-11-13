@@ -69,7 +69,8 @@ const baseSidebar: SidebarItem[] = [
       { text: 'Observability', link: '/platform/observability.html' },
       { text: 'System Status', link: '/platform/system_status.html' },
       { text: 'Agent Gateway', link: '/platform/agent_gateway.html' },
-      { text: 'API Keys', link: '/platform/api_keys.html' }
+      { text: 'API Keys', link: '/platform/api_keys.html' },
+      { text: 'Gateway Usage', link: '/platform/gateway_usage.html', versions: ['development'] }
     ]
   },
   {
@@ -85,6 +86,7 @@ const baseSidebar: SidebarItem[] = [
       { text: 'Application Networking', link: '/admin/application_networking.html' },
       { text: 'Application Authentication', link: '/admin/application_authentication.html' },
       { text: 'External Models', link: '/admin/external_models.html' },
+      { text: 'LLM Usage and Cost', link: '/admin/llm_usage.html', versions: ['development'] },
       { text: 'Sandboxes', link: '/admin/sandboxes.html', versions: ['development'] },
       { text: 'Storage', link: '/admin/storage.html' },
       { text: 'GPU Administration', link: '/admin/gpu.html' },
