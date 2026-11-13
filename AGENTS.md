@@ -114,6 +114,23 @@ git worktree add worktrees/issue-<number> -b feature/issue-<number> origin/stagi
 - If creating a PR, include a short summary and the verification command that was run.
 - Only deploy manually when explicitly asked. A normal docs edit should end at build verification and, when requested, a PR.
 
+## Upstream Versions
+
+- Prefer reading deployed versions from the cluster or linking to upstream documentation without a version. Keep explicit pins for release defaults, reproducible examples, and commands that cannot derive a compatible version.
+- Use an unavoidable pin once per page and verify it against the relevant source:
+
+  | Component | Verification source |
+  |---|---|
+  | Agent Substrate, `kubectl ate` | `prokube-neo` `paas/substrate/update/last_version_generated` and generated deployment images |
+  | Release defaults | `prokube-release` `paas/prokube/base/paas_version_cm.yaml` at the target release tag or candidate, cross-checked against deployment manifests and image build pins |
+  | KFP SDK | `prokube-images` `pk-notebook-images/requirements.txt` |
+  | prokube SDK | Release tags in `prokube-sdk` |
+
+- Chart, application, and image versions are not interchangeable. For custom images such as MLflow, inspect the build definition at the deployed image's source tag; report and correct stale release metadata rather than copying it into docs.
+- Add components to Component Versions only when `paas-version` records them. Keep unrecorded versions out of the table, including tools bundled in sandbox images.
+- Use supported runtime releases in installation examples, such as Node.js LTS. Check upstream lifecycle information rather than assuming an old example remains supported.
+- Update unreleased facts under `docs/versions/development/`; preserve release-specific defaults in published snapshots.
+
 ## Releases
 
 When cutting a docs version for a new prokube release, follow the release workflow in `README.md`, and also:

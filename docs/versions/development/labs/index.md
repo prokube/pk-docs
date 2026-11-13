@@ -131,13 +131,12 @@ brew install htop
 
 The installation lives under `/home/jovyan` in the default images and survives Lab restarts. For team-wide or production environments, move required tools into a [Custom Notebook](custom_notebooks.md) image instead.
 
-For Node.js workflows, use a user-space version manager such as [nvm](https://github.com/nvm-sh/nvm) so the installation lives in the persistent home directory:
+For Node.js workflows, use [nvm](https://github.com/nvm-sh/nvm) so the installation lives in the persistent home directory. Follow its [installation instructions](https://github.com/nvm-sh/nvm#installing-and-updating), then load it and install the current Node.js LTS release:
 
 ```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-nvm install 20
+nvm install --lts
 ```
 
 If you need the same Node.js version for a team workflow, prefer a custom image with the runtime pinned and tested.
