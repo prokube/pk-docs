@@ -1,6 +1,6 @@
 # External Models
 
-The **AI Gateway** admin page connects centrally managed model providers to prokube. Administrators can add provider credentials once, register models from those providers, and grant specific workspaces access to specific models.
+The **External Models** admin page connects centrally managed model providers to prokube. Administrators can add provider credentials once, register models from those providers, and grant specific workspaces access to specific models.
 
 Use this workflow when you need to:
 
@@ -10,7 +10,9 @@ Use this workflow when you need to:
 
 For OpenAI, Anthropic, or Gemini, workspace users can instead create their own Model Configuration backed by a workspace Kubernetes Secret. See [Agents](../agentops/agents.html#_2-choose-or-create-a-model-configuration).
 
-![AI Gateway catalog with Anthropic, OpenAI, Mistral AI, Azure OpenAI, and custom OpenAI-compatible providers](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/ai-gateway-provider-catalog-framed.png)
+![External Models page with the provider catalog for Anthropic, OpenAI, Mistral AI, Azure OpenAI, and custom OpenAI-compatible endpoints](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/external-models-provider-catalog.png)
+
+Usage across all models and model pricing are on [LLM Usage and Cost](llm_usage.html).
 
 ## Provider Options
 
@@ -26,7 +28,7 @@ Anthropic uses its native protocol. The other provider types use an OpenAI-compa
 
 ## Connect a Provider
 
-Open **AI Gateway** under **Admin**, then select **Add Provider**. Configure:
+Open **External Models** under **Admin**, then select **Add Provider**. Configure:
 
 - **Provider**: select an entry from the provider catalog.
 - **Provider name**: unique name for the provider connection.
@@ -69,11 +71,11 @@ Select **Grant Workspace Access**, then choose:
 - **Route ID / ModelConfig name**: the name shown in that workspace's Model Configurations.
 - **Resource**: the provider model to grant.
 
-The grant creates a Model Configuration in the target workspace. It appears automatically on the workspace's **Agents** page, tagged **AI Gateway** as its origin. Users can select it when creating an agent without creating their own provider Secret.
+The grant creates a Model Configuration in the target workspace. It appears automatically on the workspace's **Agents** page with the source **External model grant**. Users can select it when creating an agent without creating their own provider Secret.
 
-![Workspace Access table with an external model grant](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/grant-workspace-access.png)
+![Workspace Access table with a healthy grant and its View Traffic and Revoke Access actions](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/external-models-workspace-access-view-traffic.png)
 
-![Granted external model shown as an AI Gateway Model Configuration](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/grant-workspace-access-agents-tab.png)
+![Granted external model listed under Model Configurations with the source External model grant](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/agents-model-configurations-external-grant.png)
 
 The central provider credential is not exposed to the workspace. Revoke the grant from **Workspace Access** when the workspace should no longer use the model.
 
@@ -109,80 +111,27 @@ Agents in the workspace use the granted model through its generated Model Config
 
 Granted models are not listed as individual services on the **API Keys** page. An external client needs a Bearer-format key with **All external AI models**, **All AI models**, or **Full workspace access**, which covers every granted model in the workspace. A key cannot be limited to one granted model. See [API Keys](../platform/api_keys.html#create-a-key).
 
-## Usage and Cost
+### Traffic for a Grant
 
-The **Usage and Cost** panel shows authenticated Agent Gateway traffic across all workspaces. Select Last hour, Last 24 hours, Last 7 days, or Last 30 days to view:
+Select **View Traffic** in a grant's row menu to see the calls that reached the granted model in that workspace: calls, failures, LLM tokens, estimated cost, the breakdown by source, and a call trend. The same view appears on the granted Model Configuration's detail page under **Agents**.
 
-- total, successful, and failed requests;
-- request trends;
-- LLM input and output tokens;
-- estimated LLM cost.
+Traffic is shown only to members of the workspace. For a workspace you don't belong to, **View Traffic** is disabled; use [LLM Usage and Cost](llm_usage.html) for platform-wide numbers instead.
 
-These figures are observability estimates, not billing records. Use the workspace [API Key Usage Dashboard](../platform/api_keys.html#usage-dashboard) to inspect usage attributed to visible keys in one workspace. Platform-wide in-cluster traffic and requests without a valid key are shown under [System Status](../platform/system_status.html#ai-gateway-traffic).
+## External Model Usage
 
-Agent Gateway computes the cost of each LLM request from its model price catalog when the request is served. Models without a price, such as self-hosted models, show no cost; the panel then reports **Partial pricing coverage** or **Model pricing unavailable**. Add the missing prices under [Model Pricing](#model-pricing). Prices apply only to new requests; see [Pricing and Historical Usage](#pricing-and-historical-usage).
+The **External model usage** card shows LLM calls to the configured external providers, both through workspace grants and directly. Select **Last hour**, **Last 24 hours**, **Last 7 days**, or **Max (N days)**.
 
-## Model Pricing
+![External model usage card with totals, trend, and breakdowns by source, provider, gateway model, and workspace](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/external-models-usage-card.png)
 
-Agent Gateway ships with built-in prices for common hosted models. Use the **Model pricing** panel on the **AI Gateway** admin page to price models it does not know, such as self-hosted models, or to set negotiated prices.
+Besides the LLM call, token, and estimated cost totals and the trend, the card breaks the calls down **By source**, **By provider**, **By gateway model**, and **By grant / workspace**.
 
-![Model pricing panel with a custom price for one model](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/model-pricing-panel-framed.png)
+The card counts only routes whose backends are currently configured external providers. Self-hosted models are excluded even if they share a provider type or model name, and calls to a provider that has since been removed no longer appear here. Use **LLM Usage and Cost — all models** for all LLM calls, including self-hosted models and removed providers, and **Set prices** to open [Model Pricing](llm_usage.html#model-pricing).
 
-### Add or Edit a Price
-
-1. Select **Add price**, or select **Edit price** in a row's menu. Models listed under **Used in the last 24 hours without a price** have their own **Add price** button that pre-fills the provider and model.
-2. Enter **Provider** and **Model** as the gateway logs them:
-   - **Provider** is the logged provider name. Self-hosted and custom OpenAI-compatible providers usually log `custom`.
-   - **Model** is the model ID returned in the response, or the requested model if the response names none.
-
-   Both are catalog keys. They are not necessarily the provider connection name or the route ID of a workspace grant.
-3. Enter rates in USD per million tokens: **Input**, **Output**, **Cache read**, **Cache write**, and **Reasoning**. Fill in at least one. An empty field keeps the gateway's built-in price for that rate. Values allow up to 6 decimal places; more precise values are rejected, not rounded.
-4. Select **Save price**.
-
-New requests use the price within a few minutes, without a gateway restart. **Delete price** removes your custom rates; the gateway then falls back to its built-in price for that model, if it has one.
-
-If another administrator changed pricing at the same time, saving fails with a conflict message and keeps your draft. Cancel, select **Reload pricing**, review the current values, and save again.
-
-![Add model price dialog with provider, model, and token rates](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/model-pricing-add-price-framed.png)
-
-### Start from Default Prices
-
-Select **Show default prices** to browse the built-in prices of the deployed Agent Gateway release. The view shows the **Release version** and when the snapshot was generated (**Snapshot generated**), and can be searched by provider or model.
-
-- Prices are flat token rates in USD per million tokens. Context tiers, audio, and per-page pricing are not shown. A dash means the catalog lists no rate, not that usage is free.
-- The snapshot is published with the platform release. It is not read from the running gateway.
-- Models you have priced are marked **Overridden**. Select **Edit price** to change your price, or **Override price** on another model to open the editor pre-filled with its default rates.
-
-Saving an override changes only your custom prices; the default prices stay unchanged. If the platform does not publish a snapshot, the view shows **Default prices are not published by the platform.**
-
-![Default model prices with release version and snapshot date, filtered by a search](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/model-pricing-default-prices-framed.png)
-
-### Pricing and Historical Usage
-
-The gateway records a request's cost when it serves the request. A new or changed price is not applied retroactively:
-
-- Requests served before the price took effect stay unpriced. Saving a price does not turn **Unavailable** into a historical estimate; cost appears once new requests for the model are served and Prometheus records them.
-- In a window that mixes old and new traffic, request and token totals include all requests, but the cost covers only requests that were priced when served. For example, with 100 requests before pricing and 10 after, the totals cover 110 requests and the cost covers 10.
-- Pricing coverage is evaluated per model, not per request. Once a model reports costs, the coverage warning can disappear even though earlier requests for that model in the selected window are unpriced. Do not read the displayed amount as complete historical cost.
-
-### Manage Prices with GitOps
-
-The panel stores prices in the ConfigMap `agentgateway-model-catalog` in the `agentgateway-system` namespace, key `catalog.json`. The platform does not ship this ConfigMap; the first save in the panel creates it. Prices are merged over the built-in catalog:
-
-```json
-{"providers":{"custom":{"models":{"my-model":{"rates":{"input":"0.50","output":"1.50"}}}}}}
-```
-
-- Rates are decimal strings in USD per million tokens. `cacheRead`, `cacheWrite`, and `reasoning` are optional.
-- The catalog can hold up to 500 provider and model pairs and 256 KiB.
-- If the file is not valid JSON, the gateway keeps the last valid prices. Requests are not affected.
-
-Use either GitOps or the panel to manage this ConfigMap, not both. The panel keeps content it does not manage and rejects stale changes, but a GitOps tool restores its own version on the next sync.
-
-To verify a price, send a new request to the model, then check the cost under **API Keys > Usage**, or search the gateway logs for `agw.ai.usage.cost.total`. See [Auditing LLM Usage](operations_runbooks.html#auditing-llm-usage).
+Costs are estimates at the prices that were set when each call was made, not billing records. A model without a price shows tokens but no cost.
 
 ## Related Pages
 
+- [LLM Usage and Cost](llm_usage.html)
 - [Agents](../agentops/agents.html)
 - [Agent Gateway](../agentops/agent_gateway.html)
 - [API Keys](../platform/api_keys.html)

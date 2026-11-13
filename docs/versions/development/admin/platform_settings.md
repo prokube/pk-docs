@@ -1,6 +1,12 @@
 # Platform Settings
 
-Use **Admin > Platform Settings** to choose which features appear in the prokube portal. The settings apply to all users and workspaces. Access requires the Keycloak `realm-admin` role.
+Use **Admin > Platform Settings** to change the portal's branding and choose which features appear in the prokube portal. The settings apply to all users and workspaces. Access requires the Keycloak `realm-admin` role.
+
+## Change Branding
+
+Under **Deployment branding**, set the **Display name** (up to 100 characters) and **Tagline** (up to 200 characters) shown next to the logo. An empty display name uses the value from the deployment configuration; an empty tagline hides the tagline. **Brand preview** shows the result before you save.
+
+To replace the logo, select a JPEG, PNG, or WebP file of up to 512 KB and at most 2,048 px per side, then select **Upload logo**. A square image works best; use PNG or WebP for transparency.
 
 ## Choose Visible Features
 
@@ -12,7 +18,9 @@ Under **Shown in portal**, switch individual features on or off, or use the **ML
 |---|---|
 | MLOps | Labs, Hparam Search, MLflow, Pipelines, Volumes |
 | AgentOps | LLM Serving, MCP Servers, Agents, Memory, Sandboxes |
-| Both | Models, Serverless, API Keys, Object Storage, AI Gateway |
+| Both | Models, Serverless, API Keys, Object Storage, External Models, LLM Usage and Cost |
+
+The **API Keys** switch also controls **Gateway Usage** under **Monitoring**.
 
 Features in both suites stay visible while either suite is on. For example, turning off **AgentOps** hides Agents and Memory, but Models and API Keys stay visible because **MLOps** is still on. When both suites are off, these shared features are hidden and can't be switched on individually.
 
