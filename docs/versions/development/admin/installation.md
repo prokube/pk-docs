@@ -10,7 +10,7 @@ Recommended baseline for a multi-user deployment:
 
 | Resource | Minimum | Recommended |
 |---|---:|---:|
-| Kubernetes version | `1.32` to `1.35` | `1.35` |
+| Kubernetes version | `1.34` to `1.35` | `1.35` |
 | Nodes | 3 | 3 or more, across failure domains where possible |
 | Memory per node | 32 GB | 96 GB |
 | CPU per node | 8 cores | 24 cores |
