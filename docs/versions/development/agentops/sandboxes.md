@@ -240,11 +240,7 @@ After this call, the sandbox reaches only the OpenAI API and PyPI.
 
 Notebooks, pipeline steps, and agents in a workspace can use its sandboxes without a login. Select **Allow access to sandboxes** under **Configurations** when you launch a Lab, or add the label `sandbox.prokube.ai/access: "true"` to other pods.
 
-Install the SDK with the CLI:
-
-```bash
-pip install 'prokube-sdk[cli] @ git+https://github.com/prokube/prokube-sdk.git@v1.0.0'
-```
+Install the SDK with the CLI using the install command in [Quickstart](#quickstart).
 
 The SDK finds the pod's workspace on its own:
 

@@ -6,7 +6,7 @@ Do not assume that every prokube deployment runs the same component versions. Ma
 
 ## Release Defaults
 
-Component versions shipped with prokube 1.9:
+Component versions in development for prokube 1.10:
 
 | Component | Version |
 |---|---|
@@ -14,7 +14,7 @@ Component versions shipped with prokube 1.9:
 | [Kubeflow Pipelines](https://www.kubeflow.org/docs/components/pipelines/) backend | 2.16.1 |
 | [KFP SDK](https://kubeflow-pipelines.readthedocs.io/) (recommended) | 2.15.0 |
 | [KServe](https://kserve.github.io/website/) | v0.18.0 |
-| [MLflow](https://mlflow.org/docs/latest/) | 3.10.0 |
+| [MLflow](https://mlflow.org/docs/latest/) | 3.17.2 |
 
 Each component name links to its upstream documentation.
 
