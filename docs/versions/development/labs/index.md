@@ -145,13 +145,15 @@ If you need the same Node.js version for a team workflow, prefer a custom image 
 
 Labs can work with S3-compatible file storage. The available tools depend on the selected image and workspace configuration.
 
-The prokube-maintained `pk-*` notebook images include `rclone` with a preconfigured `minio` remote when the workspace file-storage configuration is available. Use it from a Lab terminal:
+The prokube-maintained `pk-*` notebook images include `rclone` with a preconfigured `s3` remote when the workspace file-storage configuration is available. Use it from a Lab terminal:
 
 ```bash
-rclone lsd minio:
-rclone copy local-file minio:my-bucket/path/
-rclone copy minio:my-bucket/path/file ./file
+rclone lsd s3:
+rclone copy local-file s3:my-bucket/path/
+rclone copy s3:my-bucket/path/file ./file
 ```
+
+The `s3` remote works with any S3-compatible backend. `minio` remains an alias of `s3:`, so existing `minio:` commands keep working.
 
 See [File Storage](../platform/file_storage.md) for S3-backed and PVC-backed storage. It has Python and R examples with `s3fs` and pandas, connection settings for external clients, and storage security notes.
 
