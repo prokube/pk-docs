@@ -170,7 +170,7 @@ The **Metrics** tab shows Grafana panels from two sources:
 - **Istio Mesh Traffic** from the server's Istio sidecar: request rate by response code, error rate, latency, mTLS versus plaintext requests, and requests by caller.
 - **ToolHive Application Metrics** from the server's MCP proxy: request rate, success rate, latency, requests by MCP method, and active connections.
 
-From prokube 1.10, servers deployed through the prokube UI report ToolHive metrics automatically. Servers deployed with `kubectl` or GitOps report them only after they opt in by referencing an `MCPTelemetryConfig` with Prometheus metrics enabled and labelling its proxy pods:
+From prokube 1.10, servers deployed through the prokube UI report ToolHive metrics automatically. Servers deployed with `kubectl` or GitOps report them only after they opt in by referencing an `MCPTelemetryConfig` with Prometheus metrics enabled and labelling their proxy pods:
 
 ```yaml
 spec:

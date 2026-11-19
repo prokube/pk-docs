@@ -61,7 +61,7 @@ Check the following when upgrading from prokube 1.9 or earlier.
 
 ### Prefixed MCP Tool Names
 
-From prokube 1.10, federated MCP tool and prompt names always carry the MCP server's name as a prefix, also in workspaces with a single MCP server. See [MCP Federation and Tool Selection](../agentops/agent_gateway.html#mcp-federation-and-tool-selection). Earlier releases exposed bare tool names in workspaces with a single MCP server. Before upgrading:
+From prokube 1.10, federated MCP tool and prompt names always carry the MCP server's name as a prefix, also in workspaces with a single MCP server. See [MCP Federation and Tool Selection](../agentops/agent_gateway.html#mcp-federation-and-tool-selection). prokube 1.9 and earlier exposed bare tool names in workspaces with a single MCP server. Before upgrading:
 
 - confirm that the installed Agent Gateway CRDs and runtime are version 1.4 or newer;
 - schedule the upgrade with the owners of Agents, prompts, and clients that reference tools by bare name, so they can switch to the prefixed names;
@@ -69,7 +69,7 @@ From prokube 1.10, federated MCP tool and prompt names always carry the MCP serv
 
 ### ToolHive Metrics for Existing MCP Servers
 
-From prokube 1.10, the prokube UI labels the MCP servers it deploys with `prokube.ai/mcp-metrics`, and labelled servers report [ToolHive metrics](../agentops/mcp_servers.html#server-metrics-and-traffic). Servers deployed through the UI in earlier releases have no ToolHive metrics until they are labelled. Adding the label restarts the server's proxy once, which drops open MCP sessions.
+From prokube 1.10, the prokube UI labels the MCP servers it deploys with `prokube.ai/mcp-metrics`, and labelled servers report [ToolHive metrics](../agentops/mcp_servers.html#server-metrics-and-traffic). Servers deployed through the UI in prokube 1.9 and earlier have no ToolHive metrics until they are labelled. Adding the label restarts the server's proxy once, which drops open MCP sessions.
 
 To label all servers that reference the prokube-managed `pkui-mcp-telemetry` config:
 

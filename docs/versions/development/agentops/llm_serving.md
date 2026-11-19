@@ -158,7 +158,7 @@ Use **Environment Variables** for settings passed to the model container, for ex
 
 The form accepts up to 50 variables. Names that the platform manages are rejected: `HF_TOKEN`, `VLLM_CPU_KVCACHE_SPACE`, `PORT`, `K_SERVICE`, `K_CONFIGURATION`, `K_REVISION`, and Kubernetes service-discovery variables such as `KUBERNETES_SERVICE_HOST`.
 
-Editing a model changes only the variables managed by the form. Variables set in YAML, such as Secret references, are kept, and the form can't add a row with one of their names.
+Editing a model changes only the variables managed by the form. Variables set in YAML, such as Secret references, and platform-managed variables such as `HF_TOKEN` are kept. The form can't add a row with one of their names.
 
 ::: warning Credentials
 Form values are stored in plain text. Don't paste tokens or passwords here. Store credentials in a [Kubernetes Secret](../platform/kubernetes.html#kubernetes-secrets) and reference its key with `valueFrom.secretKeyRef` in the YAML editor. For gated-model downloads, use the `HF_TOKEN` setup described above instead of adding a literal variable.

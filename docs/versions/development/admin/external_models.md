@@ -83,9 +83,15 @@ The central provider credential is not exposed to the workspace. Revoke the gran
 
 ### Grant Health and Status
 
-Each grant in **Workspace Access** shows its health, the state of its resources, with a short explanation. An **Orphaned** grant has lost its workspace Model Configuration but still blocks model deletion; revoke it to remove it. Grants with **Orphaned** or **Unknown** health can be revoked directly.
+Each grant in **Workspace Access** shows the health of its resources, with a short explanation. An **Orphaned** grant has lost its workspace Model Configuration but still blocks model deletion; revoke it to remove it. Grants with **Orphaned** or **Unknown** health can be revoked directly.
 
-A grant or revoke operation has its own status, separate from health. The change takes a few seconds while the Agent Gateway controller updates the workspace, and the page shows **Applying** until then. Treat access as changed only once it shows **Applied**. If it shows **Failed** or **Unknown**, resolve any listed blockers and select **Check again** if it is offered; it re-reads the status without repeating the change. Then review the refreshed **Workspace Access** table and select **Acknowledge and continue**.
+A grant or revoke operation has its own status, separate from health. The page shows **Applying** for a few seconds while the Agent Gateway controller updates the workspace. Treat access as changed only once it shows **Applied**.
+
+If the status is **Failed** or **Unknown**:
+
+1. Resolve any blockers shown.
+2. Select **Check again** if it is offered. It re-reads the status without repeating the change.
+3. Review the refreshed **Workspace Access** table, then select **Acknowledge and continue**.
 
 Grants of a deleted workspace stay listed until you revoke them. The revoke succeeds once Kubernetes has removed the workspace's resources; retry it if it is rejected before then.
 
