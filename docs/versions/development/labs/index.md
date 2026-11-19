@@ -113,7 +113,7 @@ One option is [Homebrew on Linux](https://docs.brew.sh/Homebrew-on-Linux):
 ```bash
 export HOMEBREW_PREFIX="$HOME/.linuxbrew"
 mkdir -p "$HOMEBREW_PREFIX"
-curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C "$HOMEBREW_PREFIX"
+curl -L https://github.com/Homebrew/brew/tarball/main | tar xz --strip 1 -C "$HOMEBREW_PREFIX"
 
 echo 'export HOMEBREW_PREFIX="$HOME/.linuxbrew"' >> ~/.bashrc
 echo 'export PATH="$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin:$PATH"' >> ~/.bashrc
