@@ -36,14 +36,16 @@ The default JupyterLab images include platform-oriented tooling requested in rea
 
 Included capabilities depend on the selected image, but the prokube-maintained images commonly include:
 
-- command-line tools such as `kubectl`, `git`, `tmux`, `tree`, `ripgrep`, `fzf`, `htop`, `curl`, `make`, `gcc`, `nvim`, and `zsh`;
-- Python tooling and SDKs used across the platform, including the Kubeflow Pipelines SDK, MLflow, `s3fs`, `pyarrow`, debugging helpers, and `uv`;
+- command-line tools such as `kubectl`, `git`, `tmux`, `tree`, `ripgrep`, `fzf`, `htop`, `curl`, `make`, `nvim`, and `zsh`;
+- Python tooling and SDKs used across the platform, including the Kubeflow Pipelines SDK, MLflow, `s3fs`, `pyarrow`, debugging helpers, `uv`, and `mamba`;
 - S3-compatible file storage access through `rclone`, with a preconfigured `minio` remote where available;
 - optional S3 browsing in the JupyterLab sidebar for file-storage workflows;
 - container image build support through Docker CLI and Buildx backed by a remote BuildKit service;
 - automatic cloning of the public [`prokube/examples`](https://github.com/prokube/examples) repository into the Lab home directory on first start.
 
 You can also use the JupyterLab terminal for CLI-based coding-agent tools when that fits your workflow, for example the OpenCode CLI, Claude Code, or similar tools. Install additional tools into the persistent home directory rather than the container filesystem; see [Installing Tools Without Root](index.md#installing-tools-without-root).
+
+The images include no system C or C++ compiler. To build packages from source or to use another Python version, see [Compilers](index.md#compilers) and [Other Python Versions](index.md#other-python-versions).
 
 ## Platform Access from Notebooks
 
