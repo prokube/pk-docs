@@ -12,6 +12,8 @@ An assigned profile applies to Istio-injected workloads in the workspace. prokub
 
 ::: warning Istio sidecar required
 Egress profiles restrict only workloads that are part of the Istio mesh and routed through the platform egress controls. Workloads without Istio sidecar injection are not filtered by these profiles and can still use any network path allowed by the cluster and underlying network.
+
+This includes [Sandboxes](./sandboxes.html): their traffic leaves through Agent Substrate's own egress gateway, so a workspace's egress profile does not restrict them. Each sandbox's network rules are set by its users.
 :::
 
 ![Network Policies page](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/network-policies/network-policies-page.png)

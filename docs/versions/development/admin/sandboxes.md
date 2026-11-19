@@ -156,7 +156,7 @@ A preset in `presets.json` names its template, size, and snapshot type (`fidelit
 }
 ```
 
-The `network` field of `presets.json` holds the [default network rules](../agentops/sandboxes.html#network-access), as JSON of Substrate egress rules, in the format that `pk sandbox network <name>` prints. Changes to them apply to sandboxes created afterwards.
+The `network` field of `presets.json` holds the [default network rules](../agentops/sandboxes.html#network-access), as JSON of Substrate egress rules, in the format that `pk sandbox network <name>` prints. Changes to them apply to sandboxes created afterwards. The defaults are not a limit: users can change a sandbox's rules, and workspace [egress profiles](./network_policies.html) do not apply to sandboxes.
 
 Every size must fit the per-worker limits of its pool, or its sandboxes never start. A preset's template carries its size, so changing a size that a preset uses also needs a new template version.
 
