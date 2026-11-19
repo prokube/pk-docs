@@ -141,6 +141,31 @@ nvm install --lts
 
 If you need the same Node.js version for a team workflow, prefer a custom image with the runtime pinned and tested.
 
+### Compilers
+
+The prokube-maintained images include no system C or C++ compiler. Most Python and R packages install as prebuilt packages and do not need one. To build a package from source, create a conda environment with the conda-forge compilers in your home directory:
+
+```bash
+GCC_MAJOR=$(ls /opt/conda/conda-meta | sed -n 's/^libstdcxx-\([0-9]*\)\..*/\1/p')
+mamba create -y -p ~/envs/build -c conda-forge "gcc=$GCC_MAJOR" "gxx=$GCC_MAJOR"
+
+echo 'export PATH="$HOME/envs/build/bin:$PATH"' >> ~/.bashrc
+export PATH="$HOME/envs/build/bin:$PATH"
+```
+
+The first line selects the GCC version that matches the C++ runtime of the image's Python environment, so compiled extensions load correctly. The environment takes about 1 GB of the workspace volume and survives Lab restarts. `pip`, `uv`, and `make` then use `gcc` and `g++` from it. Run builds from a terminal: notebook kernels do not read `~/.bashrc`.
+
+In RStudio Labs, R already compiles packages from source with its own conda-forge compilers, so no setup is needed.
+
+### Other Python Versions
+
+[uv](https://docs.astral.sh/uv/guides/install-python/) installs prebuilt Python versions into `~/.local/share/uv/python`, so they survive Lab restarts. For example, to create a project environment with Python 3.13:
+
+```bash
+uv python install 3.13
+uv venv --python 3.13
+```
+
 ## File Storage from Labs
 
 Labs can work with S3-compatible file storage. The available tools depend on the selected image and workspace configuration.
