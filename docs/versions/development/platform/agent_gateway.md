@@ -38,7 +38,7 @@ A key authorizes only the services in its current scopes: individual services, o
 Agent Gateway separates two kinds of callers:
 
 - **Public**: external clients calling a `/svc/ai`, `/svc/serving`, `/svc/mcp`, or `/svc/a2a` path with an API key. This is what SDKs, CI jobs, and external integrations use.
-- **Internal**: workloads running inside the same workspace (for example, an agent calling another service in-cluster) use Agent Gateway's internal `/_platform/...` routes. Istio authorization policies admit these calls based on the workload's service mesh identity instead of an API key, so you do not need to create or manage a key.
+- **Internal**: workloads running inside the same workspace (for example, an agent calling another service in-cluster) use Agent Gateway's internal `/_platform/...` routes. Istio authorization policies admit these calls based on the workload's service mesh identity instead of an API key, so you do not need to create or manage a key. The calling workload must therefore run with an Istio sidecar: internal requests without a mesh identity are rejected with `403`.
 
 You only need to think about API keys for the public path.
 
@@ -48,14 +48,19 @@ API keys are the unit of access control for Agent Gateway. Create, scope, rotate
 
 See [API Keys](api_keys.html) for the full create/edit/rotate/disable workflow, client authentication formats, and troubleshooting.
 
-## Usage Dashboard
+## Usage and Traffic
 
-The API Keys page also has a **Usage** tab showing request volume, LLM token/cost estimates, and per-key activity for the selected workspace. Any workspace member can see this. Administrators additionally see aggregate-only traffic that isn't tied to a specific key. See [Usage Dashboard](api_keys.html#usage-dashboard) for details.
+Agent Gateway logs every call it handles. prokube shows these calls in several places:
+
+- [Gateway Usage](gateway_usage.html) under **Monitoring**: all calls in the selected workspace by source, caller, and API key, with estimated LLM cost and individual calls. Any workspace member can open it.
+- The **Traffic** views on model, MCP server, memory store, and agent pages: calls that one resource received.
+- For administrators, [LLM Usage and Cost](../admin/llm_usage.html) for LLM calls across all workspaces, and [System Status](system_status.html#agent-gateway-traffic) for internal calls, token calls, and calls without valid credentials across all workspaces.
 
 ## Related Pages
 
 - [Agent Gateway for AgentOps](../agentops/agent_gateway.html)
 - [API Keys](api_keys.html)
+- [Gateway Usage](gateway_usage.html)
 - [Model Serving](../mlops/model_serving.html)
 - [Serverless](../mlops/knative.html)
 - [MCP Servers](../agentops/mcp_servers.html)

@@ -67,9 +67,17 @@ If a workspace repeatedly reaches the pod quota, check for large fan-out pipelin
 
 Use **K8s Secrets** from the prokube user menu to create workspace-scoped [Kubernetes Secrets](https://kubernetes.io/docs/concepts/configuration/secret/).
 
-![K8s Secrets dialog](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/kubernetes/k8s-secrets-ui.png)
+![K8s Secrets dialog listing a Secret with its keys and Edit and Delete actions](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/kubernetes/k8s-secrets-list-edit-delete-framed.png)
 
-Secrets can be referenced by workloads without putting secret values into notebooks, pipeline code, component YAML, or container images.
+Secrets can be referenced by workloads without putting secret values into notebooks, pipeline code, component YAML, or container images. Forms that need a credential, such as MCP server deployment, Agents, and LLM Serving, let you pick a Secret and key directly or create a Secret without leaving the form.
+
+The dialog lists the Secrets created through the prokube UI. Select the edit (pencil) icon next to a Secret to change it, or the trash icon to delete it. Existing values are never displayed. When editing, select **Replace value** or **Delete key** on individual keys, or **Add Key-Value Pair** for new ones; keys you leave unchanged keep their values. The last key cannot be deleted; delete the whole Secret instead.
+
+The Secret name cannot be changed. Workloads that already read the Secret may need a restart to pick up the new values.
+
+![Edit Secret dialog with one value being replaced and another key left unchanged](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/kubernetes/k8s-secret-edit-write-only-framed.png)
+
+You need write access to the workspace to create or change Secrets.
 
 Treat Kubernetes Secrets as workspace-scoped credentials. Users with sufficient workspace access may be able to read secrets in the workspace namespace. Do not store personal credentials or administrator credentials in shared workspaces.
 
