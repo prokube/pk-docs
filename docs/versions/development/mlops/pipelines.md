@@ -142,7 +142,7 @@ Practical rules:
 - use S3-compatible file storage for datasets, model files, and pipeline artifacts;
 - avoid relying on a Lab's persistent volume for pipeline runtime data;
 - pass explicit S3 object paths into pipelines when an example expects them;
-- use the **File Storage** page in the prokube UI to see which buckets are available to your workspace.
+- use the **Object Storage** page in the prokube UI to see which buckets are available to your workspace.
 
 For file-storage access from Labs, external clients, and storage security notes, see [File Storage](../platform/file_storage.md).
 
