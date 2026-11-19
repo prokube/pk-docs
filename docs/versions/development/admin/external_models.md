@@ -87,11 +87,10 @@ Each grant in **Workspace Access** shows the health of its resources, with a sho
 
 A grant or revoke operation has its own status, separate from health. The page shows **Applying** for a few seconds while the Agent Gateway controller updates the workspace. Treat access as changed only once it shows **Applied**.
 
-If the status is **Failed** or **Unknown**:
+If the operation does not reach **Applied**:
 
-1. Resolve any blockers shown.
-2. Select **Check again** if it is offered. It re-reads the status without repeating the change.
-3. Review the refreshed **Workspace Access** table, then select **Acknowledge and continue**.
+- **Failed**: resolve the blockers shown, then select **Check again**. If **Check again** isn't offered, the request wasn't accepted; review the details and try again.
+- **Unknown** or **Needs review**: the change may or may not have been applied, and it is not sent again automatically. Select **Check again** if it is offered; it re-reads the status without repeating the change. Otherwise, select **Review latest access**, check the refreshed **Workspace Access** table, then select **Acknowledge and continue** before making another change.
 
 Grants of a deleted workspace stay listed until you revoke them. The revoke succeeds once Kubernetes has removed the workspace's resources; retry it if it is rejected before then.
 
