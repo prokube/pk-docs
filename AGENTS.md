@@ -34,6 +34,17 @@ This repository contains the new public documentation site for prokube by prokub
 - For pages that are intentionally incomplete, add a visible VitePress `::: info Documentation in progress` block near the top. Do not leave bare TODO lists as public-facing documentation.
 - Put cross-cutting platform concepts such as Workspaces, Kubernetes resources, API access, observability, and shared security implications under `Foundation`; link to them from Labs, MLOps, and AgentOps pages instead of duplicating long explanations.
 
+## Documenting the UI
+
+- A page must make sense without its screenshots: images are not searchable, not read by screen readers, and go stale. Name the labels readers need to find, and explain what the UI does not say, such as consequences, permissions, and gotchas.
+- Do not transcribe field hints, help text, or the layout of a screen. Describe a card or panel by the question it answers, not by listing its tiles and columns.
+- Do not document validation that the form enforces, such as character limits, allowed characters, decimal places, or numeric ranges. Keep limits that affect planning, such as file sizes, item counts, and retention periods.
+- Describe transient operation states, such as **Applying**, **Applied**, and **Failed**, in prose together with what to do. Use a table only for states that readers act on differently.
+- Prefer instructions over disclaimers: "Treat access as changed only once it shows **Applied**" instead of "**Unknown** is not a success". Keep a negation when it prevents a likely misreading, such as "unavailable does not mean zero calls".
+- Feature pages describe current behavior. Put upgrade and migration steps in `admin/upgrading.md`.
+- Use the same wording for a caveat that appears on several pages.
+- `scripts/prose_signals.mjs` flags UI-enforced limits and version history in changed pages. Its findings are advisory review prompts.
+
 ## Tool Documentation Pattern
 
 For pages about upstream tools used in prokube, especially MLOps tools such as Kubeflow Pipelines, Katib, MLflow, KServe, and related components, use a consistent pattern:
