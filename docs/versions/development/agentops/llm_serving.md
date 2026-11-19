@@ -160,7 +160,7 @@ The form accepts at most 50 variables. Names must be unique, at most 128 charact
 
 Platform-managed names are protected: `HF_TOKEN`, `VLLM_CPU_KVCACHE_SPACE`, `PORT`, `K_SERVICE`, `K_CONFIGURATION`, and `K_REVISION`. Names matching Kubernetes service-discovery variables, such as `KUBERNETES_SERVICE_HOST` or `KUBERNETES_SERVICE_PORT`, are also rejected.
 
-When editing, unchanged variables are omitted from the update and stay as they are. Changing the rows replaces the form-managed variables; removing every row clears only those variables. Platform-managed entries, Secret references, and other YAML-only entries are preserved. A new row cannot reuse the name of a preserved entry.
+Editing a model changes only the variables managed by the form. Variables set in YAML, such as Secret references, and platform-managed variables are kept; you can't add a row with one of their names.
 
 ::: warning Credentials
 Form values are stored in plain text. Don't paste tokens or passwords here. Store credentials in a [Kubernetes Secret](../platform/kubernetes.html#kubernetes-secrets) and reference its key with `valueFrom.secretKeyRef` in the YAML editor. For gated-model downloads, use the `HF_TOKEN` setup described above instead of adding a literal variable.
@@ -198,7 +198,7 @@ The **Traffic** tab shows the calls the model received through Agent Gateway: ca
 
 ## Edit a Model
 
-From the model list or detail page, select **Edit** to change Model Type, Quantization, Data Type, tool-calling settings, [Environment Variables](#set-runtime-environment-variables), resource requests and limits, or auto-scaling. Model ID, runtime, and deployment mode are read-only in this form. To use a different deployment mode, deploy a new model. Use **View YAML** for advanced settings, not as a deployment-mode conversion workflow.
+From the model list or detail page, select **Edit** to change Model Type, Quantization, Data Type, tool-calling settings, [Environment Variables](#set-runtime-environment-variables), resource requests and limits, or auto-scaling. Model ID, runtime, and deployment mode are read-only in this form. To use a different deployment mode, deploy a new model.
 
 For a Standard (Raw) deployment, scroll below **Resources** and **Auto-Scaling** to find **Autoscaler Mode**. **External (user-managed)** is offered only for models that already use it. Switching into or out of KEDA is not possible in place, so the edit form disables those choices. The query and threshold of a KEDA model stay editable. To change to or from KEDA, redeploy the model or ask an administrator to coordinate the autoscaler handoff.
 

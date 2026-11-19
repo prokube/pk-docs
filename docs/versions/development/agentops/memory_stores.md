@@ -35,7 +35,3 @@ A batch can partly succeed. Check the per-file errors, correct the failed files,
 3. Review the filenames and confirm with **Delete documents**.
 
 Deletion removes the selected documents' content and embeddings. Unselected documents and MCP-added memories aren't changed. Wait for **Deleting documents...** to finish, then check the deleted count and any errors. The list refreshes automatically; retry only the files that failed.
-
-## Troubleshoot Document Operations
-
-If the list can't load, check that the Memory runtime is available, then reload the page. For an upload or deletion error, check your workspace access and the runtime before retrying. Upload and delete controls are disabled while an operation is running.

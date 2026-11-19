@@ -165,7 +165,7 @@ spec:
 
 Use `target.type: Value`. KEDA compares the threshold with the query result divided by the number of replicas, as with `AverageValue` in a manual `ScaledObject`.
 
-With **Edit**, you can change the query, threshold, replica range, and resources of a KEDA model. You cannot switch an existing model into or out of KEDA: the edit form disables those choices, and YAML updates that change the autoscaler class are rejected. KServe does not remove the previous scaler when the class changes, so both scalers would control the model. Recreate the model with the other autoscaler instead, or ask an administrator to coordinate the handoff. Switching between HPA and **External (user-managed)** remains possible.
+With **Edit**, you can change the query, threshold, replica range, and resources of a KEDA model. You cannot switch an existing model into or out of KEDA: the edit form disables those choices, and YAML updates that change the autoscaler class are rejected. KServe does not remove the previous scaler when the class changes, so both scalers would control the model. Recreate the model with the other autoscaler instead, or ask an administrator to coordinate the handoff. Switching between HPA and **External (user-managed)** works in place.
 
 Use the manual pattern below when the InferenceService is not managed by LLM Serving, or when you need settings native KEDA does not expose, such as multiple triggers or custom scale-down behavior.
 

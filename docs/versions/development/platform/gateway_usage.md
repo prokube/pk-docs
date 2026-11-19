@@ -43,7 +43,7 @@ The summary has four tiles:
 
 Below the tiles, the source table breaks the totals down by source, and the **Call trend** chart plots calls per interval. With **API keys** selected, you can show one key in the trend; with **External model grants** or **Internal calls**, one caller. The selection is part of the URL, so a link to the page keeps it.
 
-If the gateway's retained logs start after the beginning of the window, the page notes **Logs start at …; numbers for this window are partial.** Usage history goes back only as far as the gateway keeps its access logs, 10 days by default.
+If the window starts before the oldest retained gateway logs, the page shows **Logs start at …; numbers for this window are partial.**
 
 ## Break Down Usage
 
@@ -55,7 +55,7 @@ The tabs below the summary show the same calls from different angles. Source and
 
 Calls that platform controllers make on behalf of agents, such as kagent discovering MCP tools, are **background calls**. They are left out of the totals, the trend, and the source table. A line such as **3,153 background calls by kagent-controller · Show** reveals them in **By caller** and **Details**.
 
-Tables can be sorted by any column. Above 10 rows a search field appears; above 100 rows, **Show 100 more** loads the next rows. Hover a status label such as **Unauthorized** to see the exact HTTP codes. Expand **How usage is counted** at the bottom of the page for the definitions of all labels.
+Hover a status label such as **Unauthorized** to see the exact HTTP codes. Expand **How usage is counted** at the bottom of the page for the definitions of all labels.
 
 ## Inspect Individual Calls
 

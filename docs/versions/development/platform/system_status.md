@@ -60,7 +60,7 @@ The subscription status is **Active**, **Pending**, **Expiring soon**, **Grace p
 
 When the installation is **Not registered**, the section shows **Register this installation**. Enter the **Organization** and a **Contact email**, accept the privacy statement, and select **Submit registration**. prokube.ai reviews the request manually; the status changes to **Pending**, then **Approved** or **Rejected**. After a rejection you can submit corrected details.
 
-Registration does not change the edition. The installation stays on Demo until prokube.ai assigns Core or Enterprise. prokube.ai uses the contact details only to review and manage the registration; the contact email is stored as protected registration data and is not part of the installation's status. **Status unavailable** means that registration is not available from this cluster.
+Registration does not change the edition. The installation stays on Demo until prokube.ai assigns Core or Enterprise. prokube.ai uses the contact details only to review and manage the registration. **Status unavailable** means that registration is not available from this cluster.
 
 ## Admin Component Health
 
@@ -114,7 +114,7 @@ The badge at the top shows the overall state:
 
 ## Agent Gateway Traffic
 
-When the AI Gateway module is enabled, realm administrators also see **Agent Gateway traffic**. It covers calls in all workspaces that are not tied to an API key or model grant. Usage by API key and model grant is shown per workspace on [Gateway Usage](gateway_usage.html), and LLM spend across all workspaces on [LLM Usage and Cost](../admin/llm_usage.html).
+If the API Keys feature is installed, realm administrators also see **Agent Gateway traffic**. It covers calls in all workspaces that are not tied to an API key or model grant. Usage by API key and model grant is shown per workspace on [Gateway Usage](gateway_usage.html), and LLM spend across all workspaces on [LLM Usage and Cost](../admin/llm_usage.html).
 
 ![Agent Gateway traffic with internal, token, and failed calls, calls without valid credentials, the call trend, and top routes](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/system-status/system-status-agent-gateway-traffic-framed.png)
 

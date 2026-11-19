@@ -64,7 +64,6 @@ The gateway records a call's cost when it serves the call. A new or changed pric
 
 - Calls served before the change keep the cost recorded at the time. Calls that had no price stay unpriced and show **No price set**.
 - In a window that mixes old and new traffic, call and token totals include all calls, but the cost covers only calls that were priced when served. For example, with 100 calls before pricing and 10 after, the totals cover 110 calls and the cost covers 10.
-- Do not read the displayed amount as complete historical cost for windows that include calls from before the price was set.
 
 ### Manage Prices with GitOps
 

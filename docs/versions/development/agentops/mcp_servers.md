@@ -114,7 +114,7 @@ Select **Save changes**. prokube accepts the new configuration, then updates the
 | **Failed** | The update could not converge or was replaced by a newer change. Close the editor and review the current configuration. |
 | **Status unknown** | The update was accepted, but its status could not be read. Select **Retry status** to check again. |
 
-**Save changes** stays disabled after an update is accepted. **Retry status** only checks the status; it never saves again. If **Retry status** is not offered, do not save again: select **Close editor** and reload the server page to inspect its current configuration.
+**Retry status** only checks the status; it doesn't save the change again. If it isn't offered, close the editor and reload the server page to see the current configuration before you make another change.
 
 If someone else changed the server after you opened the editor, saving fails. Reload the configuration, review the latest version, and apply your changes again.
 
