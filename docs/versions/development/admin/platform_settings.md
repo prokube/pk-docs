@@ -4,7 +4,7 @@ Use **Admin > Platform Settings** to change the portal's branding and choose whi
 
 ## Change Branding
 
-Under **Deployment branding**, set the **Display name** (up to 100 characters) and **Tagline** (up to 200 characters) shown next to the logo. An empty display name uses the value from the deployment configuration; an empty tagline hides the tagline. **Brand preview** shows the result before you save.
+Under **Deployment branding**, set the **Display name** and **Tagline** shown next to the logo. An empty display name uses the value from the deployment configuration; an empty tagline hides the tagline. **Brand preview** shows the result before you save.
 
 To replace the logo, select a JPEG, PNG, or WebP file of up to 512 KB and at most 2,048 px per side, then select **Upload logo**. A square image works best; use PNG or WebP for transparency. The logo applies as soon as it is uploaded; **Remove uploaded logo** restores the deployment default.
 

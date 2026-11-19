@@ -10,16 +10,9 @@ Use this page to answer platform-wide questions, such as which workspaces spend 
 
 Select a time window: **Last hour**, **Last 24 hours** (default), **Last 7 days**, or **Max (N days)**. N defaults to 10 and is limited by how long the gateway keeps its access logs.
 
-The card shows:
+LLM calls are calls to language, embedding, and rerank models. **By source** uses the same sources as [Gateway Usage](../platform/gateway_usage.html#sources). **By workspace** lists calls that cannot be attributed to a workspace as **No workspace**.
 
-- **LLM calls**: calls to language, embedding, and rerank models.
-- **Input tokens** and **Output tokens**.
-- **Estimated LLM cost**: **Some calls have no price set** means the total is partial.
-- **LLM call trend**: LLM calls per interval.
-- **By source**: the same five sources as on [Gateway Usage](../platform/gateway_usage.html#sources): API keys, External model grants, Internal calls, Token calls, and Calls without valid credentials.
-- **By workspace**: LLM calls, tokens, and cost per workspace. Calls that cannot be attributed to a workspace are listed as **No workspace**.
-
-Calls that bypass Agent Gateway are not included. These figures are estimates for observability, not billing records.
+**Some calls have no price set** means the cost total is partial; see [Model Pricing](#model-pricing). Calls that bypass Agent Gateway are not included. Costs are estimates for observability, not billing records.
 
 ## Model Pricing
 
@@ -37,7 +30,7 @@ Agent Gateway calculates the cost of each LLM call from its model price catalog.
    - **Model** is the model ID returned in the response, or the requested model if the response names none.
 
    Both are catalog keys. They are not necessarily the provider connection name or the route ID of a workspace grant.
-3. Enter rates in USD per million tokens: **Input**, **Output**, **Cache read**, **Cache write**, and **Reasoning**. Fill in at least one. An empty field keeps the gateway's built-in price for that rate. Values allow up to 6 decimal places; more precise values are rejected, not rounded.
+3. Enter rates in USD per million tokens: **Input**, **Output**, **Cache read**, **Cache write**, and **Reasoning**. Fill in at least one. An empty field keeps the gateway's built-in price for that rate.
 4. Select **Save price**.
 
 ![Add model price dialog pre-filled for a self-hosted model](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/llm-usage/llm-usage-add-price-dialog-framed.png)
@@ -48,10 +41,10 @@ If another administrator changed pricing at the same time, saving fails with a c
 
 ### Start from Default Prices
 
-Select **Show default prices** to browse the built-in prices of the deployed Agent Gateway release. The view shows the **Release version** and when the snapshot was generated (**Snapshot generated**), and can be searched by provider or model.
+Select **Show default prices** to browse the built-in prices of the deployed Agent Gateway release, for example to check whether a model already has a price.
 
-- Prices are flat token rates in USD per million tokens. Tiered, audio, and per-page prices are not shown. A dash means the catalog lists no flat rate, not that usage is free.
-- The snapshot is published with the platform release. It is not read from the running gateway, and current provider prices may differ.
+- Only flat token rates are listed. A dash means the catalog has no flat rate for that model, not that usage is free.
+- The list is a snapshot published with the platform release, not read from the running gateway. Current provider prices may differ.
 - Models you have priced are marked **Overridden**. Select **Edit price** to change your price, or **Override price** on another model to open the editor pre-filled with its default rates.
 
 Saving an override changes only your custom prices; the default prices stay unchanged. If the platform does not publish a snapshot, the view shows **Default prices are not published by the platform.**

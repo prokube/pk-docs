@@ -156,11 +156,9 @@ Use **Environment Variables** for settings passed to the model container, for ex
 2. Select **Add Variable** and enter the name and value. Use the minus button to remove a row.
 3. Select **Deploy** for a new model or **Save Changes** when editing.
 
-The form accepts at most 50 variables. Names must be unique, at most 128 characters, start with a letter or underscore, and contain only letters, digits, or underscores. Values must be non-empty, at most 32,768 characters, and contain no NUL characters. Completely blank rows are ignored.
+The form accepts up to 50 variables. Names that the platform manages are rejected: `HF_TOKEN`, `VLLM_CPU_KVCACHE_SPACE`, `PORT`, `K_SERVICE`, `K_CONFIGURATION`, `K_REVISION`, and Kubernetes service-discovery variables such as `KUBERNETES_SERVICE_HOST`.
 
-Platform-managed names are protected: `HF_TOKEN`, `VLLM_CPU_KVCACHE_SPACE`, `PORT`, `K_SERVICE`, `K_CONFIGURATION`, and `K_REVISION`. Names matching Kubernetes service-discovery variables, such as `KUBERNETES_SERVICE_HOST` or `KUBERNETES_SERVICE_PORT`, are also rejected.
-
-Editing a model changes only the variables managed by the form. Variables set in YAML, such as Secret references, and platform-managed variables are kept; you can't add a row with one of their names.
+Editing a model changes only the variables managed by the form. Variables set in YAML, such as Secret references, are kept, and the form can't add a row with one of their names.
 
 ::: warning Credentials
 Form values are stored in plain text. Don't paste tokens or passwords here. Store credentials in a [Kubernetes Secret](../platform/kubernetes.html#kubernetes-secrets) and reference its key with `valueFrom.secretKeyRef` in the YAML editor. For gated-model downloads, use the `HF_TOKEN` setup described above instead of adding a literal variable.
@@ -192,7 +190,7 @@ Open a **Ready** model from the list. Text-generation models have a **Chat** tab
 
 The **Configuration** tab summarizes the model's settings and endpoints. For a KEDA model, **Scaling** shows the **ScaledObject**, **KEDA Metric**, and **KEDA Threshold**; a model scaled by your own scaler shows **External (user-managed)**. For troubleshooting, use the **Metrics**, **Logs**, and **Conditions** tabs. While model weights are downloading, a storage panel shows download progress and errors instead of the usual tabs.
 
-The **Traffic** tab shows the calls the model received through Agent Gateway: calls, failed calls, LLM tokens, estimated cost, the breakdown by [source](../platform/gateway_usage.html#sources), and a call trend. A self-hosted model shows **No price set** until an administrator [sets a price](../admin/llm_usage.html#model-pricing). Calls to the model's cluster-internal address bypass Agent Gateway and are not counted.
+The **Traffic** tab shows who calls the model through Agent Gateway, by [source](../platform/gateway_usage.html#sources), with failures, tokens, and estimated cost. A self-hosted model shows **No price set** until an administrator [sets a price](../admin/llm_usage.html#model-pricing). Calls to the model's cluster-internal address bypass Agent Gateway and are not counted.
 
 ![Traffic tab of a self-hosted model with calls by source and the call trend](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/agentops/llm-serving/llm-model-traffic-tab-framed.png)
 

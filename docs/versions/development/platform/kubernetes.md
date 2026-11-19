@@ -71,16 +71,11 @@ Use **K8s Secrets** from the prokube user menu to create workspace-scoped [Kuber
 
 Secrets can be referenced by workloads without putting secret values into notebooks, pipeline code, component YAML, or container images. Forms that need a credential, such as MCP server deployment, Agents, and LLM Serving, let you pick a Secret and key directly or create a Secret without leaving the form.
 
-The dialog lists the Secrets created through the prokube UI. Select the edit (pencil) icon next to a Secret to change it, or the trash icon to delete it. Existing values are never displayed; only the changes you make explicitly are saved:
-
-- **Replace value** on a key, then enter the new value.
-- **Delete key** removes a key. The last key cannot be deleted; delete the whole Secret instead.
-- **Keep unchanged** reverts the pending change of a key.
-- **Add Key-Value Pair** adds a new key.
+The dialog lists the Secrets created through the prokube UI. Select the edit (pencil) icon next to a Secret to change it, or the trash icon to delete it. Existing values are never displayed. When editing, select **Replace value** or **Delete key** on individual keys, or **Add Key-Value Pair** for new ones; keys you leave unchanged keep their values. The last key cannot be deleted; delete the whole Secret instead.
 
 The Secret name cannot be changed. Workloads that already read the Secret may need a restart to pick up the new values.
 
-![Edit Secret dialog with one value being replaced and one key being deleted](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/kubernetes/k8s-secret-edit-write-only-framed.png)
+![Edit Secret dialog with one value being replaced and another key left unchanged](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/kubernetes/k8s-secret-edit-write-only-framed.png)
 
 You need write access to the workspace to create or change Secrets.
 

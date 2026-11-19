@@ -48,13 +48,7 @@ Realm administrators see the installed prokube version, the edition, and the ins
 
 ![Platform Information with prokube version, edition, and registration status](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/system-status/system-status-platform-information-framed.png)
 
-| Edition | Shown |
-|---|---|
-| **Demo** | Version and registration status. |
-| **Core** | The section is titled **Platform & Subscription** and also shows **Subscription Status**, **Days Remaining**, **Valid Until**, **Grace Until**, and the **Installation ID**. |
-| **Enterprise** | Version and registration status. |
-
-The subscription status is **Active**, **Pending**, **Expiring soon**, **Grace period**, **Expired**, **Revoked**, or **Unavailable**.
+On the Core edition, the section is titled **Platform & Subscription** and also shows the subscription status, its validity and grace dates, and the **Installation ID**.
 
 ### Register the Installation
 
@@ -88,7 +82,7 @@ The summary bar counts healthy, degraded, unhealthy, and disabled components.
 
 ## Realtime Operations
 
-Realm administrators also see **Realtime Operations**. It shows whether the platform delivers live updates to the **Volumes**, **Dev Labs**, **KServe**, and **LLM** pages. When live updates fail, these pages fall back to polling and can lag behind the cluster.
+Check **Realtime Operations** when the Volumes, Labs, Models, or LLM Serving pages show outdated state. It shows whether the platform delivers live updates to these pages; when live updates fail, the pages fall back to polling and can lag behind the cluster. Only realm administrators see this section.
 
 The badge at the top shows the overall state:
 
@@ -101,9 +95,9 @@ The badge at the top shows the overall state:
 | **capacity limited** | A connection, buffer, or watch limit is reached. New connections or updates can be rejected. |
 | **unavailable** | The realtime service is not reachable, or the feature is not deployed. |
 
-**Family cache health** shows the state of each page with a reason. **Transport**, **Authorization cache**, and **Diagnostics Event watches** show connection counts, limits, and counters such as reconnects and drops. Counters run from the last restart of the realtime service, shown as **Process generation**. An old non-zero count alone is not a current problem.
+**Family cache health** shows the state and reason for each page; it lists Labs as **Dev Labs**, Models as **KServe**, and LLM Serving as **LLM**. The remaining panels show connection counts, limits, and counters such as reconnects and drops. Counters run from the last restart of the realtime service, shown as **Process generation**, so compare them over time: counters that keep rising point to a current problem.
 
-**Current admin browser** shows only your own browser tab: whether it receives live updates and whether its pages recently fell back to polling. It says nothing about other users.
+**Current admin browser** reflects only your own browser tab: whether it receives live updates and whether its pages recently fell back to polling.
 
 ### Troubleshoot Live Updates
 
@@ -124,7 +118,6 @@ Select **Last hour**, **Last 24 hours** (default), **Last 7 days**, or **Max (N 
 - **Token calls**: calls signed in with a user account or with a workspace notebook or pipeline token, for example to sandboxes. A token call can still fail after sign-in.
 - **Calls without valid credentials**: calls with a missing or invalid API key or token. Most are rejected with `401`.
 - **Failed calls**: failed calls across the three classes above.
-- **Call trend**: calls and failed calls per interval.
 - **Top routes**: the routes that received the most of these calls, with their class and failures. Background calls by platform controllers, such as kagent discovering MCP tools, are left out of the totals and can be shown with **Show**.
 
 A sudden rise in calls without valid credentials usually means a client still uses a revoked or rotated key. If usage telemetry is not available, the panel says so instead of showing zero.

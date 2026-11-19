@@ -22,7 +22,7 @@ Every call belongs to exactly one source, based on how it was authenticated:
 | **External model grants** | Agents and workloads using an [external model](../admin/external_models.html) granted to the workspace. They use the workspace's built-in credential and need no API key. |
 | **Internal calls** | Platform services calling each other inside the cluster without a key, for example an agent calling a self-hosted model, an MCP server, or another agent. See [Public vs. Internal Traffic](agent_gateway.html#public-vs-internal-traffic). |
 | **Token calls** | Calls signed in with a user account, or with the token of a workspace notebook or pipeline, for example to sandboxes. A token call can still fail after sign-in, for example with `403`. |
-| **Calls without valid credentials** | Calls with a missing, invalid, or revoked API key or token. Logs from older platform versions can also contain token calls that cannot be separated retroactively. |
+| **Calls without valid credentials** | Calls with a missing, invalid, or revoked API key or token. |
 
 ## Read the Summary
 
@@ -41,19 +41,19 @@ The summary has four tiles:
 | **LLM tokens** | Input and output tokens of the LLM calls. |
 | **Estimated cost** | Cost of the LLM calls at the model prices that were set when each call was made. **Some calls have no price set** means the total is partial. |
 
-Below the tiles, the source table breaks the totals down by source, and the **Call trend** chart plots calls per interval. With **API keys** selected, you can show one key in the trend; with **External model grants** or **Internal calls**, one caller. The selection is part of the URL, so a link to the page keeps it.
+To follow one key or caller over time, select **API keys**, **External model grants**, or **Internal calls** as the source, then pick the key or caller for the **Call trend**. A link to the page keeps the selection.
 
 If the window starts before the oldest retained gateway logs, the page shows **Logs start at …; numbers for this window are partial.**
 
 ## Break Down Usage
 
-The tabs below the summary show the same calls from different angles. Source and tab are part of the URL, for example `?source=api-key&tab=keys`.
+Use the tabs below the summary to find which workload, key, or route generates calls or cost. A link to the page keeps the selected source and tab.
 
 - **By caller**: one row per calling workload, with its sources, calls, tokens, and estimated cost. The caller is the workload's Kubernetes ServiceAccount, for example `my-agent`; hover to see the full identity, such as `cluster.local/ns/<workspace>/sa/my-agent`. Calls through the public endpoint show **Not recorded (public endpoint)**, because the gateway does not record which workload sent them; they can come from outside or inside the cluster.
 - **By API key**: one row per API key, with its owner, calls, LLM calls, failures, tokens, estimated cost, and **Last active**. A deleted key that still has recorded calls shows as **Historical** and cannot open Activity. Under any source other than **API keys**, the tab shows **Show API keys** instead.
 - **Details**: one row per credential, caller, and model or route, with the status of the calls.
 
-Calls that platform controllers make on behalf of agents, such as kagent discovering MCP tools, are **background calls**. They are left out of the totals, the trend, and the source table. A line such as **3,153 background calls by kagent-controller · Show** reveals them in **By caller** and **Details**.
+Calls that platform controllers make on behalf of agents, such as kagent discovering MCP tools, are **background calls**. They are left out of the totals, the trend, and the source table. Select **Show** in the background-calls note, for example **background calls by kagent-controller**, to list them in **By caller** and **Details**.
 
 Hover a status label such as **Unauthorized** to see the exact HTTP codes. Expand **How usage is counted** at the bottom of the page for the definitions of all labels.
 
@@ -84,7 +84,7 @@ An agent's **Usage** section counts the model and tool calls made by the agent's
 
 ## Reading the Numbers Correctly
 
-- Counts, tokens, and costs come from Agent Gateway access logs. They are operational estimates, not billing records.
+- Counts, tokens, and costs come from Agent Gateway access logs, kept for 10 days by default. Costs are estimates, not billing records.
 - A price applies only to calls made after it was set. See [Pricing and Historical Usage](../admin/llm_usage.html#pricing-and-historical-usage).
 - Calls without an API key belong to the workspace named in the request path or, failing that, to the namespace of the calling workload. Calls that match no workspace appear only in the platform-wide views for administrators: [System Status](system_status.html#agent-gateway-traffic) and [LLM Usage and Cost](../admin/llm_usage.html).
 

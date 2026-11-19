@@ -14,7 +14,7 @@ The document workflow below is available only for **RAG + pgvector** stores, cur
 2. Under **Deployed Memory Systems**, open an existing **RAG + pgvector** store by selecting its name or **Details**.
 3. Select **Documents**. **Uploaded Documents** lists files added through this workflow, not memories added through MCP tools.
 
-Workspace owners and workspace admins can upload and delete documents. Other users with workspace access can view the list, but don't see upload, selection, or deletion controls. An editor role alone isn't enough to manage documents. Platform administrators need a workspace role as well: being a platform administrator doesn't grant access to a workspace's Memory stores.
+Only workspace owners and workspace admins can upload and delete documents. Other members, including editors, can view the list. Platform administrators also need a workspace role: the platform administrator role alone doesn't give access to a workspace's Memory stores.
 
 The store's **Traffic** tab shows the calls it received through Agent Gateway. See [Gateway Usage: Traffic on Resource Pages](../platform/gateway_usage.html#traffic-on-resource-pages).
 
@@ -24,7 +24,7 @@ The store's **Traffic** tab shows the calls it received through Agent Gateway. S
 2. Wait for **Adding documents...** to finish. The page reports how many documents were added, refreshes the list, and shows any per-file errors.
 3. To replace a document, upload a file with exactly the same filename. It replaces the stored content and embeddings rather than adding a second document.
 
-Each file must be UTF-8 text with a `.txt`, `.md`, or `.markdown` extension, no larger than **1 MiB (1,048,576 bytes) per file**. Empty or whitespace-only files and binary content are rejected. Filenames must be plain names without path separators or control characters and at most 255 characters long. PDFs and other document formats aren't supported.
+Each file must be UTF-8 text with a `.txt`, `.md`, or `.markdown` extension, no larger than **1 MiB per file**. Empty files and binary content are rejected. PDFs and other document formats aren't supported.
 
 A batch can partly succeed. Check the per-file errors, correct the failed files, and select them again to retry. Uploaded text becomes available through the store's existing Memory tools.
 

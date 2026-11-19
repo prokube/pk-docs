@@ -55,6 +55,38 @@ Validate user-facing and admin paths:
 - System Status, Grafana, Prometheus, Loki, and Alertmanager;
 - backup jobs and monitoring alerts.
 
+## Upgrading to prokube 1.10
+
+Check the following when upgrading from prokube 1.9 or earlier.
+
+### Prefixed MCP Tool Names
+
+From prokube 1.10, federated MCP tool and prompt names always carry the MCP server's name as a prefix, also in workspaces with a single MCP server. See [MCP Federation and Tool Selection](../agentops/agent_gateway.html#mcp-federation-and-tool-selection). Earlier releases exposed bare tool names in workspaces with a single MCP server. Before upgrading:
+
+- confirm that the installed Agent Gateway CRDs and runtime are version 1.4 or newer;
+- schedule the upgrade with the owners of Agents, prompts, and clients that reference tools by bare name, so they can switch to the prefixed names;
+- plan rollbacks with the same owners: a rollback restores bare names in workspaces with a single MCP server, so their references must be changed back.
+
+### ToolHive Metrics for Existing MCP Servers
+
+From prokube 1.10, the prokube UI labels the MCP servers it deploys with `prokube.ai/mcp-metrics`, and labelled servers report [ToolHive metrics](../agentops/mcp_servers.html#server-metrics-and-traffic). Servers deployed through the UI in earlier releases have no ToolHive metrics until they are labelled. Adding the label restarts the server's proxy once, which drops open MCP sessions.
+
+To label all servers that reference the prokube-managed `pkui-mcp-telemetry` config:
+
+```bash
+kubectl get mcpservers.toolhive.stacklok.dev -A -o json |
+  jq -r '.items[] | select(.spec.telemetryConfigRef.name == "pkui-mcp-telemetry") | [.metadata.namespace, .metadata.name] | @tsv' |
+  while IFS=$'\t' read -r namespace name; do
+    kubectl patch mcpservers.toolhive.stacklok.dev "$name" -n "$namespace" \
+      --type merge \
+      -p '{"spec":{"resourceOverrides":{"proxyDeployment":{"podTemplateMetadataOverrides":{"labels":{"prokube.ai/mcp-metrics":"true"}}}}}}'
+  done
+```
+
+### Gateway Usage Right After Upgrading
+
+Gateway access logs written before the upgrade to prokube 1.10 do not separate token calls from calls without valid credentials. Until those logs age out, 10 days after the upgrade by default, [Gateway Usage](../platform/gateway_usage.html#sources) can count some token calls as **Calls without valid credentials**.
+
 ## Related Pages
 
 - [Backup and Restore](backup_restore.md)

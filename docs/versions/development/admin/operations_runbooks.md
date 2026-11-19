@@ -438,7 +438,7 @@ Each line also contains the route, path, status, model, token counts, duration, 
 
 - Prompts, responses, tool arguments, and API keys are never logged.
 - `key_owner` is personal data, such as an email address. Restrict who can read these logs.
-- Logs are retained for 10 days by default. They are an operational audit trail, not a billing record. The **Max** time window in the usage views defaults to the same 10 days; it limits queries and does not change retention.
+- Logs are retained for 10 days by default. The **Max** time window in the usage views defaults to the same 10 days; it limits queries and does not change retention.
 - For an agent, `caller` is the agent's ServiceAccount, not the user who started the conversation.
 
 ### Alertmanager

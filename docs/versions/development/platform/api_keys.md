@@ -130,9 +130,11 @@ Rotating a key invalidates the old value immediately. Update every client or sec
 
 ## Request Limits
 
-Per-key request limits are an optional platform feature and are disabled by default. A platform administrator can enable them; see [API Key Request Limits](../admin/operations_runbooks.html#api-key-request-limits). While they are disabled, the **Requests Per Minute** field and the **Rate Limit** column are hidden, and keys are not limited.
+Use a per-key request limit to protect services from runaway clients, such as a script stuck in a retry loop. A limit is not a usage quota.
 
-When limits are enabled, set **Requests Per Minute** when creating or editing a key: a whole number from 1 to 4,294,967,295, or empty for unlimited. To remove a limit, clear the field in **Edit**.
+Request limits are an optional platform feature and are disabled by default. A platform administrator can enable them; see [API Key Request Limits](../admin/operations_runbooks.html#api-key-request-limits). While they are disabled, the **Requests Per Minute** field and the **Rate Limit** column are hidden, and keys are not limited.
+
+When limits are enabled, set **Requests Per Minute** when creating or editing a key, or leave it empty for unlimited. To remove a limit, clear the field in **Edit**.
 
 ![Create API Key dialog with a Requests Per Minute limit of 60](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/api-keys/api-key-create-rpm-limit-framed.png)
 
@@ -141,7 +143,7 @@ A client that exceeds the limit receives HTTP `429 Too Many Requests`. The limit
 - Every request attempt counts, including failed ones, across all services the key can reach.
 - Requests are counted in fixed one-minute windows, so a client can briefly send about twice the limit around a minute boundary.
 - A new or changed limit takes effect asynchronously.
-- If the rate-limit service is unavailable, requests are allowed. A request limit is a protection against runaway clients, not a billing or usage quota.
+- If the rate-limit service is unavailable, requests are allowed.
 
 The **Rate Limit** column shows `Unlimited` or the limit, such as `60 / min`, with a status:
 
@@ -164,22 +166,22 @@ Select **Actions** > **Activity** on a key, or **Activity** in the key's row on 
 
 ![Request Activity for an API key with the call trend, filters, and individual calls](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/gateway-usage/gateway-usage-credential-activity-framed.png)
 
-The **Call trend** at the top shows the key's calls over the selected window. Use **Split by** **Model** or **Route** to see which models or services the key used.
+To see which models or services the key used, set **Split by** in the call trend to **Model** or **Route**.
 
 Narrow the list with:
 
-- **Time window**: Last hour, Last 24 hours, Last 7 days, or Max (10 days by default).
+- **Time window**: **Last hour**, **Last 24 hours** (default), **Last 7 days**, or **Max (N days)**, 10 days by default.
 - **HTTP status**: one status code, for example `429`. Leave it empty for all statuses.
 - **Request model**: the model ID the client requested.
 - **Caller**: the full ID of the calling workload, for example `cluster.local/ns/<workspace>/sa/my-agent`, or `none` for calls through the public endpoint. A short name such as `my-agent` is rejected.
 
-Select **Apply filters** to load the filtered list and **Refresh** to reload it. Use **Older** and **Newer** to page through the results. A page can contain fewer rows than usual, because requests with the same timestamp are always kept on one page.
+Select **Apply filters** to load the filtered list and **Refresh** to reload it. Use **Older** and **Newer** to page through the results.
 
-Each row shows the time (UTC), HTTP status, caller, the call with its method, path, and path family (for MCP traffic, also the MCP method and tool), the requested and responding model, input and output tokens, estimated cost in USD, and duration. Fields that do not apply, such as tokens for MCP calls, show a dash.
+Each row is one request. For MCP calls, the row also shows the MCP method and tool; fields that do not apply, such as tokens, show a dash.
 
 **Export CSV** downloads the current page with the active filters, not the full history.
 
-Activity is built from Agent Gateway access logs, which are kept for 10 days by default. It is an operational view, not a durable audit or billing record. It shows request metadata only: prompts, responses, tool arguments, and credentials are not logged. If the logs cannot be read, the view shows **Activity unavailable** with a **Retry** action.
+Activity is built from Agent Gateway access logs, which are kept for 10 days by default. It is an operational view, not a durable audit record. It shows request metadata only: prompts, responses, tool arguments, and credentials are not logged. If the logs cannot be read, the view shows **Activity unavailable** with a **Retry** action.
 
 ## Security Guidance
 

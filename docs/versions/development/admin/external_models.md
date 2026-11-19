@@ -73,39 +73,21 @@ Select **Grant Workspace Access**, then choose:
 
 The grant creates a Model Configuration in the target workspace. It appears automatically on the workspace's **Agents** page with the source **External model grant**. Users can select it when creating an agent without creating their own provider Secret.
 
+Agents reach every granted model through Agent Gateway's OpenAI-compatible API, so the Model Configuration's **Protocol** shows **OpenAI-compatible** even for an Anthropic model.
+
 ![Workspace Access table with a healthy grant and its View Traffic and Revoke Access actions](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/external-models-workspace-access-view-traffic-framed.png)
 
 ![Granted external model listed under Model Configurations with the source External model grant](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/agents-model-configurations-external-grant-framed.png)
 
 The central provider credential is not exposed to the workspace. Revoke the grant from **Workspace Access** when the workspace should no longer use the model.
 
-### Workspace Access Health
+### Grant Health and Status
 
-The health shown in **Workspace Access** describes the grant's resources, not the status of a grant or revoke operation:
+Each grant in **Workspace Access** shows its health, the state of its resources, with a short explanation. An **Orphaned** grant has lost its workspace Model Configuration but still blocks model deletion; revoke it to remove it. Grants with **Orphaned** or **Unknown** health can be revoked directly.
 
-| Health | Meaning |
-|---|---|
-| **Healthy** | All expected grant resources are present. |
-| **Degraded** | Some grant resources are missing or inconsistent. |
-| **Orphaned** | The workspace ModelConfig is missing, but the grant remains and still blocks model deletion. Revoke access to remove it. |
-| **Unknown** | Grant health could not be determined. Managed access can still be revoked. |
+A grant or revoke operation has its own status, separate from health. The change takes a few seconds while the Agent Gateway controller updates the workspace, and the page shows **Applying** until then. Treat access as changed only once it shows **Applied**. If it shows **Failed** or **Unknown**, resolve any listed blockers and select **Check again** if it is offered; it re-reads the status without repeating the change. Then review the refreshed **Workspace Access** table and select **Acknowledge and continue**.
 
-You can revoke orphaned grants as well as grants with unknown health; neither requires a healthy ModelConfig first.
-
-### Grant and Revoke Status
-
-Saving a grant or revoke records the change first. The Agent Gateway controller then creates or removes the workspace's gateway access, which can take a few seconds. The page shows the progress of each operation:
-
-| State | Meaning |
-|---|---|
-| **Applying** | The request was accepted and is waiting for reconciliation. Access is not confirmed yet. |
-| **Applied** | Workspace access was granted or revoked. |
-| **Failed** | The change could not be applied. If the operation was accepted, resolve the blockers shown, then select **Check again**. |
-| **Unknown** | The status could not be read, for example while the controller is unavailable. This is not a success. Select **Check again** if it is offered; otherwise inspect **Workspace Access** before making another change. |
-
-**Check again** only reads the status of the accepted operation; it never repeats the grant or revoke. After an unknown or failed outcome, review the refreshed **Workspace Access** table and select **Acknowledge and continue**.
-
-If a workspace was deleted, its grants stay listed until you revoke them. Revoking succeeds once Kubernetes has removed the workspace's resources; until then, the revoke is rejected and can be retried.
+Grants of a deleted workspace stay listed until you revoke them. The revoke succeeds once Kubernetes has removed the workspace's resources; retry it if it is rejected before then.
 
 Agents in the workspace use the granted model through its generated Model Configuration. External clients can call it through Agent Gateway at `/svc/ai/<workspace>/models/<route-id>/v1/...`, using the route ID chosen in the grant.
 
@@ -113,21 +95,19 @@ Granted models are not listed as individual services on the **API Keys** page. A
 
 ### Traffic for a Grant
 
-Select **View Traffic** in a grant's row menu to see the calls that reached the granted model in that workspace: calls, failures, LLM tokens, estimated cost, the breakdown by source, and a call trend. The same view appears on the granted Model Configuration's detail page under **Agents**.
+Use **View Traffic** in a grant's row menu to see how much the workspace uses the granted model, which sources call it, and what it costs. The same view appears on the granted Model Configuration's detail page under **Agents**.
 
 Traffic is shown only to members of the workspace. For a workspace you don't belong to, **View Traffic** is disabled; use [LLM Usage and Cost](llm_usage.html) for platform-wide numbers instead.
 
 ## External Model Usage
 
-The **External model usage** card shows LLM calls to the configured external providers, both through workspace grants and directly. Select **Last hour**, **Last 24 hours**, **Last 7 days**, or **Max (N days)**.
+The **External model usage** card shows LLM calls to the configured external providers, both through workspace grants and directly. Select **Last hour**, **Last 24 hours** (default), **Last 7 days**, or **Max (N days)**.
 
 ![External model usage card with totals, trend, and breakdowns by source, provider, gateway model, and workspace](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/admin/external-models/external-models-usage-card-framed.png)
 
-Besides the LLM call, token, and estimated cost totals and the trend, the card breaks the calls down **By source**, **By provider**, **By gateway model**, and **By grant / workspace**.
-
 The card counts only routes whose backends are currently configured external providers. Self-hosted models are excluded even if they share a provider type or model name, and calls to a provider that has since been removed no longer appear here. Use **LLM Usage and Cost — all models** for all LLM calls, including self-hosted models and removed providers, and **Set prices** to open [Model Pricing](llm_usage.html#model-pricing).
 
-Costs are estimates at the prices that were set when each call was made, not billing records. A model without a price shows tokens but no cost.
+Costs are estimated at the prices that were set when each call was made. A model without a price shows tokens but no cost.
 
 ## Related Pages
 

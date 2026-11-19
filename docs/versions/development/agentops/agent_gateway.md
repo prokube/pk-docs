@@ -49,8 +49,8 @@ When configuring an Agent, you can either:
 
 Federated tool and prompt names always carry the MCP server's name as a prefix, even when the workspace has only one MCP server: for an MCP server `fetch-example`, its tool `fetch` is exposed as `fetch-example_fetch`. Adding or removing other MCP servers does not rename these tools; renaming the server or an upstream tool does. The per-server public routes `/svc/mcp/<workspace>/<server>` are not affected.
 
-::: warning Update bare tool names after upgrading
-Agents, prompts, and clients that reference a federated tool by its bare upstream name, such as `fetch`, stop matching after an upgrade to the prefixed names. Their owners update these references to the exact discovered names, including in GitOps manifests, then verify both discovery and an actual tool call. Do not switch an Agent to all tools to work around a name mismatch. Administrators schedule the upgrade with these owners and confirm beforehand that the installed Agent Gateway CRDs and runtime are version 1.4 or newer. A rollback restores bare names for a workspace with a single MCP server, so references must be changed back as well.
+::: warning Use the prefixed tool names
+Agents, prompts, and clients must reference federated tools by their exact discovered names, such as `fetch-example_fetch`, not by the bare upstream name `fetch`. This includes Agent definitions in GitOps manifests. After changing a reference, verify both discovery and an actual tool call. Do not switch an Agent to all tools to work around a name mismatch. References to bare names stop matching after an upgrade to prokube 1.10; see [Upgrading: Prefixed MCP Tool Names](../admin/upgrading.html#prefixed-mcp-tool-names).
 :::
 
 Tool selection controls which tools kagent presents to that Agent. Do not treat it as an independent network-security boundary: prokube does not currently materialize a separate Agent Gateway authorization policy for each Agent and selected tool. Use workspace separation and narrowly scoped MCP servers when a capability requires stronger isolation.

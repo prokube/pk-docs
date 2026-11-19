@@ -105,16 +105,9 @@ The namespace is set by prokube to the selected workspace namespace. Custom YAML
 
 To change a deployed server, open it and select **Edit**. The **Edit MCP server** dialog shows its `MCPServer` YAML. You can change the image, arguments, environment values and Secret references, transport and ports, resource requests and limits, labels and annotations, and supported pod settings such as image pull Secrets, volume mounts, and security contexts. The name, namespace, persistent storage settings, and telemetry configuration cannot be changed.
 
-Select **Save changes**. prokube accepts the new configuration, then updates the server's gateway access and isolation policies. The server runtime may restart; persistent storage is kept. The dialog stays open and shows the progress:
+Select **Save changes**. prokube accepts the new configuration, then updates the server's gateway access and isolation policies. The server runtime may restart; persistent storage is kept.
 
-| State | Meaning |
-|---|---|
-| **Applying...** | The update was accepted and is waiting for gateway access and isolation to converge. |
-| **Applied** | Gateway access and isolation match the new configuration. Check the server's status on its page to confirm that it runs. |
-| **Failed** | The update could not converge or was replaced by a newer change. Close the editor and review the current configuration. |
-| **Status unknown** | The update was accepted, but its status could not be read. Select **Retry status** to check again. |
-
-**Retry status** only checks the status; it doesn't save the change again. If it isn't offered, close the editor and reload the server page to see the current configuration before you make another change.
+The dialog stays open and shows **Applying...** until gateway access and isolation match the new configuration. **Applied** confirms that; check the server's status on its page to confirm that it runs. On **Failed**, the update could not converge or a newer change replaced it: close the editor and review the current configuration. On **Status unknown**, select **Retry status**, which checks the status without saving again. If it isn't offered, close the editor and reload the server page before you make another change.
 
 If someone else changed the server after you opened the editor, saving fails. Reload the configuration, review the latest version, and apply your changes again.
 
@@ -177,7 +170,7 @@ The **Metrics** tab shows Grafana panels from two sources:
 - **Istio Mesh Traffic** from the server's Istio sidecar: request rate by response code, error rate, latency, mTLS versus plaintext requests, and requests by caller.
 - **ToolHive Application Metrics** from the server's MCP proxy: request rate, success rate, latency, requests by MCP method, and active connections.
 
-Servers deployed through the prokube UI report ToolHive metrics automatically. Servers deployed with `kubectl` or GitOps, and servers deployed by earlier prokube releases, report them only after they opt in. A server opts in by referencing an `MCPTelemetryConfig` with Prometheus metrics enabled and labelling its proxy pods:
+From prokube 1.10, servers deployed through the prokube UI report ToolHive metrics automatically. Servers deployed with `kubectl` or GitOps report them only after they opt in by referencing an `MCPTelemetryConfig` with Prometheus metrics enabled and labelling its proxy pods:
 
 ```yaml
 spec:
@@ -192,17 +185,7 @@ spec:
 
 Only reference an `MCPTelemetryConfig` you own: its settings can also export telemetry to other destinations. A server labelled without such a reference has no metrics endpoint and shows up as a failing monitoring target.
 
-Adding the label restarts the server's proxy once, which drops open MCP sessions. Administrators can opt in all existing servers that already reference the prokube-managed `pkui-mcp-telemetry` config:
-
-```bash
-kubectl get mcpservers.toolhive.stacklok.dev -A -o json |
-  jq -r '.items[] | select(.spec.telemetryConfigRef.name == "pkui-mcp-telemetry") | [.metadata.namespace, .metadata.name] | @tsv' |
-  while IFS=$'\t' read -r namespace name; do
-    kubectl patch mcpservers.toolhive.stacklok.dev "$name" -n "$namespace" \
-      --type merge \
-      -p '{"spec":{"resourceOverrides":{"proxyDeployment":{"podTemplateMetadataOverrides":{"labels":{"prokube.ai/mcp-metrics":"true"}}}}}}'
-  done
-```
+Adding the label restarts the server's proxy once, which drops open MCP sessions. To label servers deployed through the UI before prokube 1.10, see [Upgrading: ToolHive Metrics for Existing MCP Servers](../admin/upgrading.html#toolhive-metrics-for-existing-mcp-servers).
 
 The **Traffic** tab shows the calls the server received through Agent Gateway, by source, with failures and a call trend. Calls to the server's in-cluster address bypass Agent Gateway and are not counted there. See [Gateway Usage: Traffic on Resource Pages](../platform/gateway_usage.html#traffic-on-resource-pages).
 
