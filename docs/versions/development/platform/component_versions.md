@@ -6,7 +6,7 @@ Do not assume that every prokube deployment runs the same component versions. Ma
 
 ## Release Defaults
 
-Component versions in development for prokube 1.10:
+Component versions in development for prokube 1.11:
 
 | Component | Version |
 |---|---|
