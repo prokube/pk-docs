@@ -27,6 +27,9 @@ for (const sentence of [
 ]) assert.deepEqual(signals(sentence), [], sentence);
 
 assert.deepEqual(signals("Check references after upgrading.", { isUpgradePage: true }), []);
+assert.deepEqual(signals("Bare names stop matching after an upgrade to prokube 1.10."), []);
+assert.deepEqual(signals("Tokens created before the upgrade to mlflow-oidc-auth 11 keep working after the upgrade."), []);
+assert.deepEqual(signals("Servers deployed through the UI in prokube 1.9 and earlier releases need the label."), []);
 assert.deepEqual(signals("```text\nat most 128 characters\n```\n\n| Name | at most 128 characters |\n|---|---|\n\n# Before upgrading"), []);
 assert.deepEqual(signals("Use `at most 128 characters` as an example string."), []);
 assert.equal(analyzeMarkdown("Intro.\n\nNames must be at most 128 characters.").findings[0].line, 3);

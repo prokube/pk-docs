@@ -10,7 +10,9 @@ Advisory review signals for writing that reads like a transcript of the UI or co
   code-limit  Validation detail the UI enforces, such as character limits,
               decimal places, byte counts, or large numeric ranges.
   history     Version history in a feature page, such as "earlier releases" or
-              "after upgrading". Ignored in upgrading.md.
+              "after upgrading". Lines that name the release, such as "before
+              prokube 1.10" or "the upgrade to mlflow-oidc-auth 11", count as
+              anchored. Ignored in upgrading.md.
 
 Tables, code blocks, headings, images, and frontmatter are excluded.
 Repetition and bold density are deliberately not checked.
@@ -23,6 +25,10 @@ const CODE_LIMIT_PATTERNS = [
   /\b\d[\d,]*\s+bytes\b/i,
   /\bfrom\s+\d[\d,]*\s+to\s+\d{1,3}(?:,\d{3}){2,}\b/i,
   /\b(?:NUL|control) characters\b/i,
+];
+const RELEASE_ANCHORS = [
+  /\bprokube\s+v?\d+\.\d+/i,
+  /\bupgrad\w*\s+to\s+[\w.-]+\s+v?\d+(?:\.\d+)*/i,
 ];
 const HISTORY_PATTERNS = [
   /\b(?:earlier|older|previous|prior)\s+(?:prokube\s+|platform\s+)?(?:releases?|versions?)\b/i,
@@ -63,7 +69,7 @@ export function analyzeMarkdown(markdown, { isUpgradePage = false } = {}) {
     const text = withoutCode(entry.text);
     const limit = CODE_LIMIT_PATTERNS.find((pattern) => pattern.test(text));
     if (limit) findings.push({ signal: "code-limit", line: entry.line, message: `"${text.match(limit)[0]}": drop validation the form enforces; keep limits that affect planning.` });
-    const history = !isUpgradePage && HISTORY_PATTERNS.find((pattern) => pattern.test(text));
+    const history = !isUpgradePage && !RELEASE_ANCHORS.some((pattern) => pattern.test(text)) && HISTORY_PATTERNS.find((pattern) => pattern.test(text));
     if (history) findings.push({ signal: "history", line: entry.line, message: `"${text.match(history)[0]}": describe current behavior; put upgrade steps in admin/upgrading.md.` });
   }
   return { findings };
