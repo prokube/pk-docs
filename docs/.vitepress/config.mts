@@ -39,7 +39,7 @@ const baseSidebar: SidebarItem[] = [
       { text: 'MCP Servers', link: '/agentops/mcp_servers.html' },
       { text: 'Memory Stores', link: '/agentops/memory_stores.html' },
       { text: 'Agents', link: '/agentops/agents.html' },
-      { text: 'Sandboxes', link: '/agentops/sandboxes.html', versions: ['development'] },
+      { text: 'Sandboxes', link: '/agentops/sandboxes.html', versions: ['development', '1.10'] },
       { text: 'LLM Serving', link: '/agentops/llm_serving.html' }
     ]
   },
@@ -70,7 +70,7 @@ const baseSidebar: SidebarItem[] = [
       { text: 'System Status', link: '/platform/system_status.html' },
       { text: 'Agent Gateway', link: '/platform/agent_gateway.html' },
       { text: 'API Keys', link: '/platform/api_keys.html' },
-      { text: 'Gateway Usage', link: '/platform/gateway_usage.html', versions: ['development'] }
+      { text: 'Gateway Usage', link: '/platform/gateway_usage.html', versions: ['development', '1.10'] }
     ]
   },
   {
@@ -80,14 +80,14 @@ const baseSidebar: SidebarItem[] = [
       { text: 'Overview', link: '/admin/' },
       { text: 'Installation Planning', link: '/admin/installation.html' },
       { text: 'User Management', link: '/admin/user_management.html' },
-      { text: 'Platform Settings', link: '/admin/platform_settings.html', versions: ['development'] },
+      { text: 'Platform Settings', link: '/admin/platform_settings.html', versions: ['development', '1.10'] },
       { text: 'Identity Providers', link: '/admin/identity_providers.html' },
       { text: 'Network Policies', link: '/admin/network_policies.html' },
       { text: 'Application Networking', link: '/admin/application_networking.html' },
       { text: 'Application Authentication', link: '/admin/application_authentication.html' },
       { text: 'External Models', link: '/admin/external_models.html' },
-      { text: 'LLM Usage and Cost', link: '/admin/llm_usage.html', versions: ['development'] },
-      { text: 'Sandboxes', link: '/admin/sandboxes.html', versions: ['development'] },
+      { text: 'LLM Usage and Cost', link: '/admin/llm_usage.html', versions: ['development', '1.10'] },
+      { text: 'Sandboxes', link: '/admin/sandboxes.html', versions: ['development', '1.10'] },
       { text: 'Storage', link: '/admin/storage.html' },
       { text: 'GPU Administration', link: '/admin/gpu.html' },
       { text: 'Backup and Restore', link: '/admin/backup_restore.html' },

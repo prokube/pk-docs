@@ -44,11 +44,11 @@ VITEPRESS_BASE=/ npm run build
 This site uses `vitepress-versioning-plugin` for documentation versions.
 
 - Full version snapshots live under `docs/versions/<version>/` and publish under `/docs/<version>/`.
-- The full docs trees are currently `docs/versions/development/` and `docs/versions/1.9/`.
-- The version selector lists `/docs/development/`, `/docs/1.9/`, and a link for versions 1.8 and earlier at `https://docs.prokube.ai/`.
-- When switching versions, the selector keeps the current page path if that page exists in the target version, for example `/docs/development/labs/` switches to `/docs/1.9/labs/`.
-- `/docs/latest/` is an unlisted redirect-only alias to the latest released version, currently `/docs/1.9/`.
-- `/docs/` redirects to the latest released version, currently `/docs/1.9/`.
+- The full docs trees are currently `docs/versions/development/`, `docs/versions/1.10/`, and `docs/versions/1.9/`.
+- The version selector lists `/docs/development/`, `/docs/1.10/`, `/docs/1.9/`, and a link for versions 1.8 and earlier at `https://docs.prokube.ai/`.
+- When switching versions, the selector keeps the current page path if that page exists in the target version, for example `/docs/development/labs/` switches to `/docs/1.10/labs/`.
+- `/docs/latest/` is an unlisted redirect-only alias to the latest released version, currently `/docs/1.10/`.
+- `/docs/` redirects to the latest released version, currently `/docs/1.10/`.
 - The sidebar is defined once in `docs/.vitepress/config.mts`; version-specific sidebar links are generated from that shared definition.
 - Store screenshots and image diagrams in the public `gs://prokube-docs-pictures/pk-docs/` bucket and reference them by absolute URL, so every version can share them. See `AGENTS.md` for the upload workflow.
 - Keep the logos and favicon under `docs/public/_static/`.
@@ -68,8 +68,8 @@ cp -R docs/versions/development docs/versions/2.0
 Then update:
 
 - `docs/.vitepress/config.mts`: add the new release to the visible versions and sidebars, then update latest-release nav links.
-- `docs/index.md`: change the root redirect from `./1.9/` to the new latest release, for example `./2.0/`.
-- `docs/versions/latest/index.md`: change the alias redirect from `../1.9/` to the new latest release, for example `../2.0/`.
+- `docs/index.md`: change the root redirect from `./1.10/` to the new latest release, for example `./2.0/`.
+- `docs/versions/latest/index.md`: change the alias redirect from `../1.10/` to the new latest release, for example `../2.0/`.
 - this README: update the current latest release references.
 
 Keep editing unreleased docs under `docs/versions/development/` after the release is cut.
