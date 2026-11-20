@@ -40,6 +40,10 @@ This repository contains the new public documentation site for prokube by prokub
 - Do not document validation that the form enforces, such as character limits, allowed characters, decimal places, or numeric ranges. Keep limits that affect planning, such as file sizes, item counts, and retention periods.
 - For short-lived operation states such as **Applying** or **Failed**, say what to do in each, not only what it means; reserve tables for states readers act on differently. Prefer instructions over disclaimers, but keep a negation that prevents a likely misreading, such as "unavailable does not mean zero calls".
 - Use the same wording for a caveat that appears on several pages.
+- Treat pkui `docs-impact` comments as source material, not draft text. Verify them against current pkui `main`, because later PRs rename or move things. If not essential for readability or understanding, leave out API routes, request mechanics, internal module or capability names, and edge cases readers can't act on.
+- Use the names from the sidebar and page titles. When the UI renames something, search all pages, alt texts, and screenshots for the old name.
+- Describe effects, not mechanics, and check that a general claim holds for every control it covers.
+- When an existing control doesn't apply to a feature, such as egress profiles and sandboxes, say so on the control's page too.
 
 `scripts/prose_signals.mjs` flags UI-enforced limits and unanchored history in changed pages. Its findings are advisory.
 
