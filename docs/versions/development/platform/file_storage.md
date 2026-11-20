@@ -71,13 +71,15 @@ See [JupyterLab](../labs/jupyterlab.md#file-storage-in-jupyterlab).
 :::
 
 ### CLI
-The prokube-maintained `pk-*` notebook images include `rclone` with a preconfigured `minio` remote when workspace file-storage configuration is available.
+The prokube-maintained `pk-*` notebook images include `rclone` with a preconfigured `s3` remote when workspace file-storage configuration is available.
 
 ```bash
-rclone lsd minio:
-rclone copy local-file minio:my-bucket/path/
-rclone copy minio:my-bucket/path/file ./file
+rclone lsd s3:
+rclone copy local-file s3:my-bucket/path/
+rclone copy s3:my-bucket/path/file ./file
 ```
+
+The `s3` remote works with any S3-compatible backend. `minio` remains an alias of `s3:`, so existing `minio:` commands keep working.
 
 
 ### Python

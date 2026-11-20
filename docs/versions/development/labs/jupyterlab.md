@@ -38,7 +38,7 @@ Included capabilities depend on the selected image, but the prokube-maintained i
 
 - command-line tools such as `kubectl`, `git`, `tmux`, `tree`, `ripgrep`, `fzf`, `htop`, `curl`, `make`, `gcc`, `nvim`, and `zsh`;
 - Python tooling and SDKs used across the platform, including the Kubeflow Pipelines SDK, MLflow, `s3fs`, `pyarrow`, debugging helpers, and `uv`;
-- S3-compatible file storage access through `rclone`, with a preconfigured `minio` remote where available;
+- S3-compatible file storage access through `rclone`, with a preconfigured `s3` remote where available;
 - optional S3 browsing in the JupyterLab sidebar for file-storage workflows;
 - container image build support through Docker CLI and Buildx backed by a remote BuildKit service;
 - automatic cloning of the public [`prokube/examples`](https://github.com/prokube/examples) repository into the Lab home directory on first start.
