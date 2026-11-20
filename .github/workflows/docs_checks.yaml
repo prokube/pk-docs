@@ -53,6 +53,9 @@ jobs:
       - name: Test enumeration scanner
         run: node scripts/enumeration_stats.test.mjs
 
+      - name: Test prose signal scanner
+        run: node scripts/prose_signals.test.mjs
+
       - name: Collect changed docs
         id: changed
         env:
@@ -99,3 +102,10 @@ jobs:
             jq -r 'if any(.[]; .denseCount > 0) then "### Dense sentences\n" else empty end' enumerations.json
             jq -r '.[] | .file as $f | .dense[] | "- `\($f):\(.line)` (\(.reason)): \(.sentence)"' enumerations.json
           } >> "$GITHUB_STEP_SUMMARY"
+
+      # Advisory only: a limit can matter for planning, and upgrade notes can be justified.
+      - name: Code limits and version history (advisory)
+        if: always() && steps.changed.outputs.count != '0'
+        run: |
+          mapfile -t files < changed.txt
+          node scripts/prose_signals.mjs --annotate "${files[@]}"
