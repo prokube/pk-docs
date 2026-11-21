@@ -18,7 +18,7 @@ Basic workflow:
 
 Access is scoped to the workspaces you can access.
 
-![Logs browser](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/observability/logs-browser-copy-link.png)
+![Logs browser](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/observability/logs-browser.png)
 
 ### Share a Search
 
