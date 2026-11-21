@@ -139,6 +139,26 @@ For production deployments, do not keep the placeholder storage sizes from a dem
 - pipeline concurrency;
 - backup requirements.
 
+## Optional LLMInferenceService Stack
+
+[KServe LLMInferenceService](https://kserve.github.io/website/docs/admin-guide/kubernetes-deployment-llmisvc) supports multi-node and disaggregated prefill/decode serving. It is a separate, opt-in platform component; enabling the UI's LLM Serving capability does not install it or convert existing InferenceServices.
+
+For the KServe 0.21 Agent Gateway foundation, select a compatible prokube-neo branch and enable both `agentgateway` and `llmisvc` extra apps. The catalog rejects llmisvc without Agent Gateway. The stack includes LeaderWorkerSet 0.8.0 and llm-d router 0.10.0; core KServe and its llmisvc controller must use the same version. Envoy Gateway remains the shared public edge; Envoy AI Gateway and its edge-controller extension are not part of the platform. Validate other application routes when changing the shared gateway version.
+
+prokube-neo owns the complete optional stack under `paas/llmisvc/`: manifests, CRDs, LWS, presets, RBAC, policy templates, generator and version pins. Core prokube retains KServe/Knative, shared KServe resources and generic operator hooks. Each repository generates only its own resources; dry-melt validation rejects an incompatible pairing rather than updating another checkout implicitly.
+
+For autoscaling, also enable the separate `keda` extra app and use `spec.scaling.keda`. Fixed-replica workloads do not need KEDA. Workload Variant Autoscaler (WVA) is not installed; `spec.scaling.wva`, including `spec.scaling.wva.keda`, is not supported by this stack. See [LLMInferenceService autoscaling](../mlops/model_serving_autoscaling.html#llminferenceservice-autoscaling).
+
+The foundation does not publish model endpoints or install KServe's default public route preset. Native roots should retain `spec.router.scheduler` and omit `spec.router.route`; scoped access must be supplied by a separately installed platform controller with llmisvc support. Until that release is available, workloads can run without a usable gateway endpoint. Do not add a direct public route or workload-Service fallback. Prefix-cache-aware scheduling can use a separate tokenizer Deployment and Service; include that connectivity when reviewing Istio and network policies.
+
+::: danger Production access requires validation
+This foundation is not a complete authenticated model-serving product. Validate controller-owned routes/policies, model scopes, streaming, and cross-workspace/direct-pod denial before exposing it to untrusted clients. EPP port 9002 terminates its own TLS outside Istio capture: its NetworkPolicy and actual TLS/mTLS behaviour must be verified, not inferred from mesh policies.
+:::
+
+Neo's llmisvc component selects a profile-operator overlay that merges its mesh and ingress templates into the existing operator's generic hooks; it does not create another operator. These policies select llmisvc workload, scheduler and tokenizer pods. They require a NetworkPolicy-enforcing CNI; other matching NetworkPolicies are additive and must be audited. The generic-resource operator prerequisite currently uses the development image pinned in prokube PR #480, which is Linux/amd64-only. A suitable released image is a production gate. After the operator is Ready, reconcile existing Profiles with `kubectl annotate profiles --all user-management-operator.prokube.ai/reconcile=true --overwrite`. Its ConfigMaps use content-hashed names; prune superseded fixed-name operator ConfigMaps through ArgoCD after readiness, not workspace namespaces.
+
+Before enabling the stack, validate CRD/webhook readiness, a fixed-replica model, streaming responses, scheduler/tokenizer connectivity, and any prefill/decode KV transfer. Add autoscaling only after the selected metrics are visible in Prometheus and thresholds are calibrated under representative load.
+
 ## Related Pages
 
 - [Storage](storage.md)
