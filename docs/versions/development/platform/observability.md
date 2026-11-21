@@ -20,11 +20,17 @@ Access is scoped to the workspaces you can access.
 
 ![Logs browser](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/observability/logs-browser.png)
 
+### Share a Search
+
+Click **Copy link** next to **Search Logs** and **Clear** to copy a link to the current search, including the workspace, filters, time range, and log limit. Opening the link fills in the filters and runs the search. Recipients need access to the same workspace.
+
+A preset time range stays relative to when the link is opened. To share a fixed time window, use a custom range. **Copy link** is disabled until the custom range is complete.
+
 ## Filter Logs
 
 Start with broad filters and narrow the query when needed:
 
-- **Time range**: select a preset such as the last 15 minutes, 1 hour, or 24 hours, or provide a custom range.
+- **Time range**: select a preset such as the last 15 minutes, 30 minutes, 1 hour, or 24 hours, or provide a custom range.
 - **Free text search**: filter log messages that contain specific text.
 - **Log limit**: choose how many entries to return. The UI caps requests to keep queries responsive.
 
@@ -43,6 +49,29 @@ After a search, the Logs page shows returned entries and a histogram for the sel
 Use **Download** to save the shown log entries as a text file for sharing or offline analysis. Review downloaded logs before sharing them outside your team; application logs can contain user data, object paths, request payloads, or other sensitive values.
 
 ![Logs results](https://storage.googleapis.com/prokube-docs-pictures/pk-docs/screenshots/platform/observability/logs-results.png)
+
+## Link to Logs
+
+Other apps can link directly to the logs of a pod or container. Opening a link like this fills in the filters and runs the search:
+
+```text
+https://<your-prokube-domain>/pkui/logs?namespace=team-a&pod=my-model-predictor-*&container=kserve-container&since=30m
+```
+
+| Parameter | Value | Example |
+|---|---|---|
+| `namespace` | Kubernetes namespace of the workspace | `team-a` |
+| `pod` | Exact pod name, or a pattern where `*` matches any characters | `my-model-predictor-*` |
+| `container` | Container name | `kserve-container` |
+| `search` | Free text search | `error` |
+| `label.<key>` | Label filter; `<key>` is a label name offered by **Add Label Filter**. Repeat for more labels | `label.app=my-model` |
+| `since` | Time range ending now: a number followed by `s`, `m`, `h`, or `d` | `30m`, `2h`, `7d` |
+| `start`, `end` | Fixed time range as ISO 8601 with a time zone offset, or Unix time in milliseconds. `end` defaults to now. Overrides `since` | `2026-11-20T10:00:00Z` |
+| `limit` | Maximum number of entries, up to 5000 | `500` |
+
+URL-encode parameter values, for example a space as `%20`. Invalid values are ignored. A link without a valid filter, time range, or limit opens the Logs page without running a search.
+
+If you cannot access the linked workspace, the Logs page shows that the workspace is no longer accessible, switches to a workspace you can access, and does not run the search.
 
 ## Common Uses
 
