@@ -9,6 +9,8 @@ on:
       - "package.json"
       - "package-lock.json"
       - ".github/workflows/docs_checks.yaml"
+      - ".github/workflows/deploy_docs.yaml"
+      - "cloudbuild.yaml"
 
 permissions:
   contents: read
@@ -33,6 +35,11 @@ jobs:
       # VitePress fails the build on dead internal links.
       - name: Build documentation
         run: npm run build
+
+      - name: Test and stage MCP Markdown
+        run: |
+          node --test scripts/stage_mcp_docs.test.mjs
+          node scripts/stage_mcp_docs.mjs docs/versions docs/.vitepress/dist/.mcp-docs
 
   content:
     name: Content checks
