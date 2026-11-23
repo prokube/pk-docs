@@ -49,7 +49,7 @@ kubectl get pods
 The exact tools available depend on the selected image. prokube-maintained images commonly include:
 
 - `kubectl` and Git;
-- `rclone` with a preconfigured `minio` remote, and Python clients such as `s3fs`;
+- `rclone` with a preconfigured `s3` remote, and Python clients such as `s3fs`;
 - `uv`, the Kubeflow Pipelines SDK, and the MLflow client;
 - shell tools such as `tmux`, `ripgrep`, `fzf`, and `jq`;
 - the Docker CLI with Buildx for remote image builds.
