@@ -73,3 +73,21 @@ Then update:
 - this README: update the current latest release references.
 
 Keep editing unreleased docs under `docs/versions/development/` after the release is cut.
+
+### MCP documentation mirror
+
+The deployment workflow stages the Markdown from `docs/versions/` alongside the
+generated site. After Cloud Build publishes the production website from
+`gh-pages-main`, it mirrors those sources to `gs://pk-docs-text-based-public/`
+for docs-mcp-server. Staging deployments do not update this bucket. The publishing
+service account needs `roles/storage.objectUser` on the MCP bucket.
+
+Each edition becomes a top-level bucket folder; the redirect-only `latest` alias,
+hidden files, and non-Markdown assets are excluded. The bucket is a dedicated
+mirror: publishing deletes objects absent from the production sources. Markdown
+staging fails for empty editions, missing development/release editions, or symlinks.
+The staged sources are excluded from the website upload.
+
+Check the `publish-mcp-markdown` step of the `pk-docs-main` Cloud Build trigger
+after a release. Running docs-mcp-server pods must rebootstrap to load new sources;
+publishing the bucket does not refresh their embedded indexes automatically.

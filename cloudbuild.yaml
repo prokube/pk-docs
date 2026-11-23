@@ -12,7 +12,24 @@ substitutions:
 steps:
   # The checkout's .git directory and this file are not part of the site.
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
-    args: ['gsutil', '-m', 'rsync', '-r', '-d', '-x', '^(\.git/.*|cloudbuild\.yaml)$', '.', '${_DOCS_GCS_TARGET}']
+    id: publish-site
+    args: ['gsutil', '-m', 'rsync', '-r', '-d', '-x', '^(\.git/.*|\.mcp-docs/.*|cloudbuild\.yaml)$', '.', '${_DOCS_GCS_TARGET}']
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    id: publish-mcp-markdown
+    entrypoint: bash
+    args:
+      - -euc
+      - |
+        if [[ "$BRANCH_NAME" != "gh-pages-main" ]]; then
+          echo "Skipping MCP publication outside the production branch."
+          exit 0
+        fi
+        [[ '${_DOCS_GCS_TARGET}' == 'gs://prokube-website-production/docs/' ]]
+        test -d .mcp-docs/development
+        test -n "$$(find .mcp-docs -type f -name '*.md' -print -quit)"
+        gcloud storage rsync .mcp-docs gs://pk-docs-text-based-public/ \
+          --recursive --checksums-only --delete-unmatched-destination-objects
 
 options:
   logging: CLOUD_LOGGING_ONLY
