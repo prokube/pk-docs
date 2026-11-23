@@ -80,7 +80,9 @@ The deployment workflow stages the Markdown from `docs/versions/` alongside the
 generated site. After Cloud Build publishes the production website from
 `gh-pages-main`, it mirrors those sources to `gs://pk-docs-text-based-public/`
 for docs-mcp-server. Staging deployments do not update this bucket. The publishing
-service account needs `roles/storage.objectUser` on the MCP bucket.
+service account needs `roles/storage.objectUser` and `roles/storage.bucketViewer`
+on the MCP bucket. Object access permits mirroring; bucket metadata read access
+is required by `gcloud storage rsync`. Scope both grants to that bucket.
 
 Each edition becomes a top-level bucket folder; the redirect-only `latest` alias,
 hidden files, and non-Markdown assets are excluded. The bucket is a dedicated
