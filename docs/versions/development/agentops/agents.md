@@ -23,7 +23,7 @@ An agent combines a few resources. The create form shows each of them as a card:
 
 By default the form creates a template just for the new agent and runs it on the workspace's `default` harness. Choose **Use a shared template** to let several agents share one template; a change to a shared template applies to all of them.
 
-Each conversation is a separate session that only its user sees. Sessions pause when idle and resume where they stopped.
+Each conversation is a separate session that only its user sees in prokube. Other members of the workspace who use `kubectl ate` can copy it, so don't treat a conversation as private from your workspace. Sessions pause when idle and resume where they stopped. A conversation without activity for seven days is removed from your list; deleted and removed conversations stay stored in the platform's database (see [Agent Administration](../admin/agents.md#security-model)).
 
 ## Typical Workflow
 

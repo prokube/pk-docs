@@ -1,10 +1,10 @@
 # Agent Administration
 
-[Agents](../agentops/agents.md) run on kagent 1.0. Every agent conversation is an actor on the same [Agent Substrate](sandboxes.md) installation as sandboxes, in the workspace's atespace and on the shared worker pool. Administrators decide which workspaces may run agents and how much capacity the pool has.
+[Agents](../agentops/agents.md) run on kagent 1.0. Every agent conversation is an actor on the same [Agent Substrate](sandboxes.md) installation as sandboxes, in the workspace's atespace, on a worker pool of its own. Administrators decide which workspaces may run agents and how much capacity the pool has.
 
 ## Requirements
 
-- Sandboxes are set up, see [Sandbox Administration](sandboxes.md). Agents use the same Substrate, worker pool, and snapshot storage.
+- Sandboxes are set up, see [Sandbox Administration](sandboxes.md). Agents use the same Substrate and snapshot storage.
 - The core PostgreSQL operator. kagent stores sessions and tasks in its own database cluster.
 
 ## Components
@@ -27,7 +27,11 @@ The policy sync then lets the kagent controller manage actors in that workspace'
 
 ## Capacity
 
-Agent sessions and sandboxes share the worker pool `ate-workers/default`. Each running agent session takes 1 CPU and 1 GiB from a worker; each agent sandbox takes the size of its template. Idle sessions are suspended to snapshots and use no worker. Size the pool for both, see [Sandbox Administration: Capacity](sandboxes.md#capacity).
+Agents run on the worker pool `ate-workers/agents`, separate from the sandboxes' pool `default`, so busy agents and busy sandboxes cannot starve each other. Each agent turn that is running takes 1 CPU and 1 GiB from a worker's budget; idle sessions are suspended to snapshots and use no worker. By default the pool has two workers of 4 CPU and 4 GiB, so eight turns run at once.
+
+When the pool is full, a new turn waits until a worker has room. The user sees a slow answer, not a message. Nothing limits how many turns one user or workspace runs at once.
+
+The pool is defined in `paas/kagent/workers/agent-pool.yaml`. To change it, edit the file in the deployment's GitOps branch, commit, push, and sync the Argo CD Application `pk-sandbox-workers`. Workers work as described in [Sandbox Administration: Capacity](sandboxes.md#capacity).
 
 ## Agent Images
 
@@ -36,10 +40,18 @@ The workers pull the images of agents, harnesses, and sandbox templates themselv
 ## Security Model
 
 - **Configuration** is Kubernetes RBAC: workspace editors create agents and their resources in their namespace; readers see them.
-- **Conversations** belong to the user who started them, or to the owner of the API key that started them.
+- **Conversations** belong to the user who started them, or to the owner of the API key that started them. Only that user sees them in prokube. Every workspace member is an editor of the workspace's atespace, because sandboxes need that role, so a member with `kubectl ate` can copy another member's conversation, with its memory and files. Conversations are private from other workspace members only in prokube's UI and API.
+- **Conversations are kept in kagent's database.** Deleting a conversation, or its expiry after seven days without activity, removes its actor, but kagent 1.0.1 keeps the conversation's messages in its PostgreSQL database. Deleting an agent leaves its conversations as they are.
 - **Agents have no built-in shell.** Code runs in agent sandboxes, which cannot reach the controller's APIs. Runtimes with their own shell (Codex, Claude, own images) run commands inside the agent session.
 - **The controller trusts the user header it receives.** Only pkui and Agent Gateway set it, and network and mesh policies keep other callers to the agent, runtime, and tool endpoints. A process inside an agent session that sends its own requests could name another user. Decide whether to allow runtimes with a shell in workspaces that need strict separation.
 - **Egress profiles do not apply to agents.** Agent sessions and agent sandboxes run in `ate-workers`, not in the workspace namespace, so a workspace's [egress profile](network_policies.md) does not restrict them. Their own network settings apply, see [Network and Credentials](../agentops/network_and_credentials.md).
+
+## Known Issues
+
+kagent 1.0.1 has two known issues:
+
+- **A running answer is lost when its worker is replaced**, for example during an upgrade, a pool change, or a node failure. The user gets an error that asks them to start a new conversation. Paused conversations are not affected.
+- **On a fresh installation the kagent controller restarts** until its PostgreSQL database accepts logins. It then runs normally.
 
 ## Related Pages
 
