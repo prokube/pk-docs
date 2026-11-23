@@ -19,7 +19,7 @@ An agent combines a few resources. The create form shows each of them as a card:
 | **What the agent does** | `AgentTemplate` | Model, instructions, MCP tools, and other agents it can delegate to |
 | **Runs on** | `Harness` | The runtime: kagent, Codex, Claude, or your own image |
 | **Network and credentials** | `EgressPolicy` | Hosts the agent may reach and the credentials injected for them |
-| **Capabilities** | `SandboxTemplate`, Harness | **Run code** and **Export traces** |
+| **Capabilities** | Harness | **Export traces** |
 
 By default the form creates a template just for the new agent and runs it on the workspace's `default` harness. Choose **Use a shared template** to let several agents share one template; a change to a shared template applies to all of them.
 
@@ -58,35 +58,35 @@ On the **Agents** tab, click **Create agent** and fill in the cards:
 
 - **What the agent does:** model, instructions, and tools. **Tools** lists the MCP servers available to the workspace (see [MCP Servers](mcp_servers.md)); select individual tools or all current and future tools of a server. Other agent templates can be added as sub-agents.
 - **Runs on:** keep `default` unless you need another runtime (see [Runtimes](#runtimes)).
-- **Capabilities:** turn on **Run code** if the agent should compute, transform files, or install packages. Turn on **Export traces** to send its traces to the workspace's trace export (see [Agent Tracing](agent_tracing.md)).
+- **Capabilities:** turn on **Export traces** to send its traces to the workspace's trace export (see [Agent Tracing](agent_tracing.md)).
 - **Network and credentials:** the hosts the agent may call and the credentials the gateway injects. The agent's model and MCP servers are always reachable. See [Network and Credentials](network_and_credentials.md).
 
 Saving starts a new revision of the agent. Running conversations finish on their revision; new ones use the new one.
 
 ### 4. Test the Agent
 
-Open the agent. The **Chat** tab is available once the status is **Ready**. Each answer that used a tool shows the tool's arguments and result, so you can check what the agent actually did. Earlier conversations are listed under **Conversations**.
+Open the agent. The **Chat** tab is available once the status is **Ready**. Each answer that used a tool shows the tool's arguments and result, so you can check what the agent actually did. Earlier conversations are listed next to the chat.
 
-The **Configuration** tab shows the agent's cards with **Edit** buttons; **Status** shows its conditions when something is wrong.
+The **Overview** tab shows the agent's status and cards with **Edit** buttons; **Status** shows its conditions when something is wrong.
 
-## Run Code
+## Shell and Files
 
-Agents have no shell of their own. With **Run code**, the agent starts sandboxes and runs code in them. They use a Python image and the agent's network and credential settings. You see them on the **Sandboxes** page under the filter **Agent sandboxes**.
+Every agent has kagent's built-in tools: `bash`, and tools to read, write, edit, list, and search files. They run inside the agent's session, an isolated actor with the agent's network and credential settings: commands reach only the hosts the agent may reach and never see the credentials the gateway injects (see [Network and Credentials](network_and_credentials.md)).
 
-This keeps code out of the agent: a sandbox has its own image and network rules and cannot reach the agent's control APIs. For details, see [Network and Credentials](network_and_credentials.md#run-code).
+Files stay in the session's workspace when the session pauses; running commands do not. The `default` runtime has `bash`, `git`, and the BusyBox tools, but no Python.
 
 ## Runtimes
 
 | Runtime | Use it for | Notes |
 |---|---|---|
-| kagent | Most agents | The `default` harness; supports **Run code** |
+| kagent | Most agents | The `default` harness; built-in `bash` and file tools |
 | Claude | Coding tasks with Claude Code | Needs an Anthropic model configuration with your own key; has its own shell (`bash`, `wget`, no Python) |
 | Codex | Coding tasks with OpenAI Codex | Needs an OpenAI model configuration with **API format** set to **Responses** (see below) |
 | Own image | Agents you build yourself, for example with LangGraph | See [Own Images](#own-images) |
 
 For Codex with an OpenAI model from AI Gateway, create a second model configuration next to the granted one: provider **OpenAI or OpenAI-compatible**, the same model name, base URL and API key Secret, and **API format** **Responses**. Models from Anthropic providers and self-hosted models do not offer the Responses API.
 
-Create a runtime on the **Harnesses** tab, then select it in **Runs on**. Claude and Codex run commands in their own shell, so **Run code** is not needed; the agent's network settings apply to everything the shell does. The [`harnesses` example](https://github.com/prokube/examples/tree/kagentv1/main/kagent/harnesses) creates one agent on each.
+Create a runtime on the **Harnesses** tab, then select it in **Runs on**. Claude and Codex run commands in their own shell; the agent's network settings apply to everything the shell does. The [`harnesses` example](https://github.com/prokube/examples/tree/kagentv1/main/kagent/harnesses) creates one agent on each.
 
 ### Own Images
 

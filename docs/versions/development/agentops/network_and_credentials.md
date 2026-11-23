@@ -2,13 +2,13 @@
 
 An agent reaches its model and its connected tools (MCP servers) without further setup. To let it call other HTTP(S) APIs, you allow those hosts on the agent. For an API that needs a key, the egress gateway puts the key into a request header on the way out. The agent, and the code it runs, never see the key.
 
-The same rules apply to code the agent runs in its sandboxes (see [Run code](#run-code)).
+The same rules apply to commands the agent runs in its shell (see [Agents: Shell and Files](agents.md#shell-and-files)).
 
 The examples [`allowed-hosts`](https://github.com/prokube/examples/tree/kagentv1/main/kagent/allowed-hosts) and [`injected-credentials`](https://github.com/prokube/examples/tree/kagentv1/main/kagent/injected-credentials) set this up step by step: an agent that may reach three hosts, and then logs in to an API with a password it never sees.
 
 ## Allow Hosts
 
-Set this in the **Network and credentials** card when you create the agent, or later on the agent's **Configuration** tab with **Edit**. Enter one host per line:
+Set this in the **Network and credentials** card when you create the agent, or later on the agent's **Overview** tab with **Edit**. Enter one host per line:
 
 | Entry | Allows |
 |---|---|
@@ -43,10 +43,6 @@ Only HTTP and HTTPS can be allowed. An agent cannot open a database connection (
 
 - run an MCP server for the database in the workspace, with its own credentials Secret, and connect it to the agent (see [MCP Servers](mcp_servers.md)); or
 - put an HTTP API in front of the database and add a credential for it as above.
-
-## Run Code
-
-Agents have no shell of their own. **Run code** in the agent's **Capabilities** lets the agent create sandboxes and run code in them. prokube adds a sandbox template named `<agent>-code` with a Python image. Its sandboxes get the agent's network and credential settings, so `pip install` works once `pypi.org` and `files.pythonhosted.org` are allowed.
 
 ## Shared Policies
 

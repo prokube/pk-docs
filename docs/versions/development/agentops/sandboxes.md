@@ -38,17 +38,9 @@ The [`prokube/examples`](https://github.com/prokube/examples/tree/main/sandboxes
 | [`claude-code-worker`](https://github.com/prokube/examples/tree/main/sandboxes/claude-code-worker) | You want to run a coding agent headless on a repository, with its API key injected at egress so it never enters the sandbox. |
 | [`opencode-server`](https://github.com/prokube/examples/tree/main/sandboxes/opencode-server) | You want an agent to work in a sandbox while you follow and steer it from opencode on your laptop. |
 
-## Agent Sessions and Agent Sandboxes
+## Agent Sessions
 
-The **Sandboxes** page also lists what [agents](agents.md) run in the workspace. Filter by type:
-
-| Filter | Shows |
-|---|---|
-| **My sandboxes** | Sandboxes created on this page, with the CLI, or with the SDK |
-| **Agent sessions** | One per agent conversation |
-| **Agent sandboxes** | Sandboxes agents start with **Run code** |
-
-Agent sessions and agent sandboxes link to their agent; change their network settings there.
+The **Sandboxes** page also lists the sessions of [agents](agents.md) in the workspace, one per conversation, marked **Agent session**. kagent manages them, so you can only delete them here. Each links to its conversation; change its network settings on the agent.
 
 ## Create a Sandbox
 

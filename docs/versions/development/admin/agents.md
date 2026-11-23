@@ -12,7 +12,7 @@
 | Namespace | What runs there |
 |---|---|
 | `kagent` | kagent controller and its PostgreSQL database |
-| `ate-workers` | Worker pods that host agent sessions, agent sandboxes, and sandboxes |
+| `ate-workers` | Worker pods that host agent sessions and sandboxes |
 | Workspace | Agents and their resources; optionally the workspace's trace collector |
 
 ## Enable a Workspace
@@ -42,9 +42,9 @@ The workers pull the images of agents, harnesses, and sandbox templates themselv
 - **Configuration** is Kubernetes RBAC: workspace editors create agents and their resources in their namespace; readers see them.
 - **Conversations** belong to the user who started them, or to the owner of the API key that started them. Only that user sees them in prokube. Every workspace member is an editor of the workspace's atespace, because sandboxes need that role, so a member with `kubectl ate` can copy another member's conversation, with its memory and files. Conversations are private from other workspace members only in prokube's UI and API.
 - **Conversations are kept in kagent's database.** Deleting a conversation, or its expiry after seven days without activity, removes its actor, but kagent 1.0.1 keeps the conversation's messages in its PostgreSQL database. Deleting an agent leaves its conversations as they are.
-- **Agents have no built-in shell.** Code runs in agent sandboxes, which cannot reach the controller's APIs. Runtimes with their own shell (Codex, Claude, own images) run commands inside the agent session.
+- **Every agent has a shell.** The kagent runtime gives each agent kagent's built-in `bash` and file tools; Codex, Claude, and own images bring their own shell. Commands run inside the agent's session, an isolated actor with the agent's network settings, and never see injected credentials. The built-in tools are enabled for the whole installation (`config.runtimeDefaults.builtinTools` of the kagent controller).
 - **The controller trusts the user header it receives.** Only pkui and Agent Gateway set it, and network and mesh policies keep other callers to the agent, runtime, and tool endpoints. A process inside an agent session that sends its own requests could name another user. Decide whether to allow runtimes with a shell in workspaces that need strict separation.
-- **Egress profiles do not apply to agents.** Agent sessions and agent sandboxes run in `ate-workers`, not in the workspace namespace, so a workspace's [egress profile](network_policies.md) does not restrict them. Their own network settings apply, see [Network and Credentials](../agentops/network_and_credentials.md).
+- **Egress profiles do not apply to agents.** Agent sessions run in `ate-workers`, not in the workspace namespace, so a workspace's [egress profile](network_policies.md) does not restrict them. Their own network settings apply, see [Network and Credentials](../agentops/network_and_credentials.md).
 
 ## Known Issues
 
