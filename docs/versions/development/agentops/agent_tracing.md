@@ -16,7 +16,7 @@ prokube then runs a small collector in the workspace. It forwards the traces wit
 
 ## Turn Tracing On for an Agent
 
-Turn on **Export traces** in the agent's **Capabilities**, when you create the agent or later under **Configuration**. This starts a new revision of the agent; running conversations are not affected.
+Turn on **Export traces** in the agent's **Capabilities**, when you create the agent or later with **Edit**. This starts a new revision of the agent; running conversations are not affected.
 
 Tracing is available for agents on the `default` runtime.
 
