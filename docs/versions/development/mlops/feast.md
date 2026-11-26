@@ -1,153 +1,53 @@
 # Feast Feature Store
 
-Feast manages reusable ML features for training and online inference. In prokube, each workspace provisions its own `FeatureStore`, Redis online store, and persistent volumes.
+Feast manages reusable ML features for training and online inference. On prokube, you use Feast as a Python SDK and CLI from Labs, pipelines, and other workspace workloads. prokube does not run a Feast server or operator; you choose where Feast keeps its registry and data.
 
 ::: info References
 - [Feast documentation](https://docs.feast.dev/)
-- [Feature stores](https://docs.feast.dev/reference/feature-repository)
-- [Online stores](https://docs.feast.dev/reference/online-stores)
+- [Feast quickstart](https://docs.feast.dev/getting-started/quickstart)
+- [Feature repository and `feature_store.yaml`](https://docs.feast.dev/reference/feature-repository)
+- [Registries](https://docs.feast.dev/reference/registries), [offline stores](https://docs.feast.dev/reference/offline-stores), and [online stores](https://docs.feast.dev/reference/online-stores)
 :::
 
-::: info Optional component
-An administrator must enable Feast. If `FeatureStore` is unavailable in your workspace, ask them to deploy `--extra-apps feast,redis`.
-:::
+## Choose Storage
 
-## Storage
+Feast uses three stores. Configure them in `feature_store.yaml`:
 
-| Store | prokube default |
-|---|---|
-| Registry | SQLite on an operator-created PVC |
-| Online store | Redis in your workspace |
-| Offline store | Parquet files on an operator-created PVC |
+| Store | Contents | Single Lab | Shared across workloads |
+|---|---|---|---|
+| Registry | Feature definitions written by `feast apply` | SQLite on the Lab home volume | File on [S3-compatible storage](../platform/file_storage.md) |
+| Offline store | Historical feature data for training | Parquet on the Lab home volume | Parquet on S3-compatible storage |
+| Online store | Latest materialized values for low-latency reads | SQLite on the Lab home volume | Network store such as Redis or PostgreSQL |
 
-The registry contains feature definitions and is written by `feast apply`. The offline store contains historical data for training; you supply its Parquet files. Redis stores the latest materialized feature values for low-latency reads.
+Keep everything on the Lab home volume while you work alone in one Lab. Move the registry and offline data to S3-compatible storage when pipelines, other Labs, or teammates need the same feature definitions.
 
-## Create a FeatureStore
+Do not put the registry under `/tmp`. Files outside the home directory or another mounted volume are lost when the Lab restarts.
 
-Run these commands from a [JupyterLab](../labs/jupyterlab.md) session or another workload with `kubectl` access to the workspace namespace.
+## Use Feast in a Lab
 
-### 1. Create Redis
+Install the SDK in a [JupyterLab](../labs/jupyterlab.md) session. To keep the package across Lab restarts, use an environment under `/home/jovyan` or a [custom notebook image](../labs/custom_notebooks.md).
 
 ```bash
-kubectl create secret generic redis-feast \
-  -n <your-workspace> \
-  --from-literal=password=$(openssl rand -base64 24 | tr -d '/')
+pip install 'feast[aws]'
 ```
 
-```yaml
-# redis.yaml
-apiVersion: redis.redis.opstreelabs.in/v1beta2
-kind: Redis
-metadata:
-  name: redis-feast
-  namespace: <your-workspace>
-spec:
-  kubernetesConfig:
-    image: quay.io/opstree/redis:v7.0.15
-    redisSecret:
-      name: redis-feast
-      key: password
-  storage:
-    volumeClaimTemplate:
-      spec:
-        accessModes: [ReadWriteOnce]
-        resources:
-          requests: { storage: 1Gi }
-```
-
-```bash
-kubectl apply -f redis.yaml
-kubectl get redis -n <your-workspace> -w
-```
-
-Use an existing reachable Redis service instead if your workspace already has one.
-
-### 2. Create the Redis connection secret
-
-```bash
-NAMESPACE=<your-workspace>
-PASSWORD=$(kubectl get secret redis-feast -n $NAMESPACE -o jsonpath='{.data.password}' | base64 -d)
-
-cat > /tmp/redis-config.yaml << EOF
-connection_string: "redis-feast.${NAMESPACE}.svc.cluster.local:6379,password=${PASSWORD}"
-EOF
-
-kubectl create secret generic feast-redis-config \
-  -n $NAMESPACE --from-file=redis=/tmp/redis-config.yaml
-rm /tmp/redis-config.yaml
-```
-
-The secret key must be `redis`. Its value is YAML containing `connection_string`, not a `redis://` URI.
-
-### 3. Apply the FeatureStore resource
-
-```yaml
-# featurestore.yaml
-apiVersion: feast.dev/v1
-kind: FeatureStore
-metadata:
-  name: my-store
-  namespace: <your-workspace>
-spec:
-  feastProject: my_features
-  services:
-    runFeastApplyOnInit: false
-    securityContext:
-      runAsUser: 0
-    registry:
-      local:
-        persistence:
-          file:
-            pvc:
-              mountPath: /data/registry
-              create:
-                resources: { requests: { storage: 1Gi } }
-    offlineStore:
-      persistence:
-        file:
-          type: file
-          pvc:
-            mountPath: /data/offline
-            create:
-              resources: { requests: { storage: 10Gi } }
-    onlineStore:
-      persistence:
-        store:
-          type: redis
-          secretRef: { name: feast-redis-config }
-          secretKeyName: redis
-```
-
-```bash
-kubectl apply -f featurestore.yaml
-kubectl get featurestore -n <your-workspace> -w
-```
-
-The operator creates the Feast server and PVCs. `runAsUser: 0` is required for PVC write access.
-
-## Use Feast
-
-Install the client in your notebook if it is not present: `!pip install feast`.
-
-Create `feature_store.yaml` with the same project and Redis connection details as the resource above:
+Create a feature repository directory, for example `/home/jovyan/feature_repo`, with this `feature_store.yaml`:
 
 ```yaml
 project: my_features
 provider: local
+registry:
+  registry_type: sql
+  path: sqlite:////home/jovyan/feature_repo/data/registry.db
 offline_store:
   type: file
 online_store:
-  type: redis
-  connection_string: "redis-feast.<your-workspace>.svc.cluster.local:6379,password=<password>"
-registry:
-  registry_type: file
-  path: /tmp/registry.db
-auth:
-  type: no_auth
+  type: sqlite
+  path: data/online_store.db
 entity_key_serialization_version: 3
 ```
 
-Define features according to the [Feast quickstart](https://docs.feast.dev/getting-started/quickstart), then register and materialize them:
+Define entities, data sources, and feature views as described in the [Feast quickstart](https://docs.feast.dev/getting-started/quickstart), then register and materialize them from the repository directory:
 
 ```bash
 feast apply
@@ -160,9 +60,13 @@ Use the SDK for historical training data and online retrieval:
 from feast import FeatureStore
 import pandas as pd
 
-store = FeatureStore(repo_path=".")
+store = FeatureStore(repo_path="/home/jovyan/feature_repo")
+
 training_df = store.get_historical_features(
-    entity_df=pd.DataFrame({"driver_id": [1001, 1002]}),
+    entity_df=pd.DataFrame({
+        "driver_id": [1001, 1002],
+        "event_timestamp": [pd.Timestamp.now(tz="UTC")] * 2,
+    }),
     features=["driver_hourly_stats:conv_rate"],
 ).to_df()
 
@@ -172,21 +76,65 @@ online_features = store.get_online_features(
 ).to_dict()
 ```
 
-## Access and lifecycle
+## Share Features Through S3-Compatible Storage
 
-Feast resources, Redis, and PVCs are scoped to your workspace namespace. Workspace contributors can access them according to the workspace's Kubernetes RBAC. Deleting a workspace deletes its Feast resources and data.
+To share feature definitions and training data, store the registry and Parquet sources in a bucket your workspace can access. Check the available buckets in the [Object Storage browser](../platform/file_storage.md#file-storage-browser).
+
+```yaml
+project: my_features
+provider: local
+registry: s3://<bucket>/feast/my_features/registry.db
+offline_store:
+  type: file
+online_store:
+  type: sqlite
+  path: data/online_store.db
+entity_key_serialization_version: 3
+```
+
+Labs receive the S3 endpoint and credentials as environment variables, so the registry needs no further configuration. Parquet data sources do not pick up the endpoint automatically. Pass it on each `FileSource`:
+
+```python
+import os
+from feast import FileSource
+
+driver_stats_source = FileSource(
+    name="driver_hourly_stats_source",
+    path="s3://<bucket>/feast/my_features/data/driver_stats.parquet",
+    timestamp_field="event_timestamp",
+    s3_endpoint_override=os.environ["AWS_ENDPOINT_URL"],
+)
+```
+
+Pipeline components and custom pods need the workspace `s3creds` secret injected explicitly, plus `AWS_ENDPOINT_URL` set to the same value as in your Lab (`echo $AWS_ENDPOINT_URL`). See [Access S3-Backed Files from Workloads](../platform/file_storage.md#access-s3-backed-files-from-workloads) and [Use Secrets in Components](pipelines.md#use-secrets-in-components).
+
+## Serve Online Features to Other Workloads
+
+A SQLite online store is only readable from the pod that mounts it. If a model-serving endpoint or another service must read online features, use a network online store such as [Redis](https://docs.feast.dev/reference/online-stores/redis) or [PostgreSQL](https://docs.feast.dev/reference/online-stores/postgres). prokube does not provision one for Feast; ask your administrator which [database services](../platform/databases.md) are available to your workspace.
+
+Store connection strings in a [Kubernetes Secret](../platform/kubernetes.md#kubernetes-secrets) and inject them as environment variables. `feature_store.yaml` resolves `${VAR}` references:
+
+```yaml
+online_store:
+  type: redis
+  connection_string: ${FEAST_REDIS_CONNECTION_STRING}
+```
+
+## Access and Lifecycle
+
+Files on the Lab home volume are private to that volume. Registry and data files in S3-compatible storage follow the bucket's permissions; anyone with write access to the bucket can change the feature definitions. Feast has no workspace-level access control of its own in this setup.
 
 ## Troubleshooting
 
 | Symptom | Check |
 |---|---|
-| `FeatureStore` resource not found | Ask an administrator to enable the Feast extra app. |
-| `FeatureStore` is not `Ready` | Check `feast-operator-system` logs and the `feast-redis-config` secret format. |
-| PVC write error | Set `spec.services.securityContext.runAsUser: 0`. |
+| Feature definitions disappear after a Lab restart | The registry path is outside `/home/jovyan` or another persistent volume. |
+| `ACCESS_DENIED` when reading an `s3://` data source | Set `s3_endpoint_override` on the `FileSource`. |
+| Registry in S3-compatible storage is not found or access is denied | Check that `AWS_ENDPOINT_URL` and S3 credentials are set in the workload and that the bucket exists. |
 
 ## Related Pages
 
+- [File Storage](../platform/file_storage.md)
 - [Pipelines](pipelines.md)
 - [MLflow](mlflow.md)
-- [Workspaces](../platform/workspaces.md)
-- [Kubernetes Resources](../platform/kubernetes.md#kubernetes-secrets)
+- [Labs](../labs/index.md)
