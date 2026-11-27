@@ -311,7 +311,7 @@ The server acts as the workspace. Every agent that may call it can create, use, 
 - **Network**: the default rules let code in a sandbox send data to model providers, package registries, and GitHub. For untrusted code, choose **No network access** or a narrow allowlist.
 - **Credentials**: the key never enters the sandbox, but code in the sandbox can use it against the credential's host. Only label Secrets that sandboxes of the workspace may use with `prokube.ai/sandbox-credential=true`.
 - **API keys** with the scope **All sandboxes** can do what a workspace editor can, in their workspace only. This includes network rules that inject the workspace's credentials, so keep these keys as safe as those Secrets.
-- **Capacity**: running sandboxes hold CPU and memory on shared workers. Suspend sandboxes you are not using; when the workers are full, creating or resuming a sandbox fails.
+- **Capacity**: running sandboxes hold CPU and memory on shared workers. Suspend sandboxes you are not using; when the workers are full, a new sandbox is created but stays suspended, and resuming a sandbox or running a command in it fails.
 - **Node restarts**: running sandboxes crash when their node restarts. Revert them to their last snapshot.
 
 ## Troubleshooting
@@ -323,7 +323,7 @@ The server acts as the workspace. Every agent that may call it can create, use, 
 | The API rejects the request although a credential is set | The request does not send the header. Set the header with a placeholder value. |
 | `ssh` or an IDE fails with `Run: pk sandbox resume <name>` | The sandbox is suspended. Resume it, or rerun `pk sandbox ssh-config <name> --resume`. |
 | Claude Code cannot log in | Allow `console.anthropic.com` and `platform.claude.com`, as under [Claude Desktop App and opencode Desktop App](#claude-desktop-app-and-opencode-desktop-app). |
-| Creating or resuming fails with HTTP 503 | The workers are full. Suspend or delete sandboxes you are not using, or ask an administrator for more [capacity](../admin/sandboxes.html#capacity). |
+| A new sandbox stays suspended, or resuming it or running a command fails with HTTP 503 | The workers are full. Suspend or delete sandboxes you are not using, or ask an administrator for more [capacity](../admin/sandboxes.html#capacity). |
 | A sandbox shows as crashed | Its node restarted. Run `pk sandbox revert <name>` or click **Revert**, then resume it. |
 | `SSH to a sandbox needs the platform URL` in a workspace pod | Set `PROKUBE_URL`; see [Access from Workspace Pods](#access-from-workspace-pods). |
 | `No login and no workload token`, or `No platform URL` from `pk`, in a workspace pod | The pod has no sandbox token. Launch the Lab with **Allow access to sandboxes**, or add the label `sandbox.prokube.ai/access: "true"`. If that does not help, ask an administrator to check [workspace pod access](../admin/sandboxes.html#access-from-workspace-pods). |

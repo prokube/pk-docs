@@ -61,7 +61,7 @@ On the **Agents** tab, click **Create agent** and fill in the cards:
 - **Capabilities:** turn on **Export traces** to send its traces to the workspace's trace export (see [Agent Tracing](agent_tracing.md)).
 - **Network and credentials:** the hosts the agent may call and the credentials the gateway injects. The agent's model and MCP servers are always reachable. See [Network and Credentials](network_and_credentials.md).
 
-Saving starts a new revision of the agent. Running conversations finish on their revision; new ones use the new one.
+Saving starts a new revision of the agent. Preparing it can take about a minute; until then, new conversations still use the previous revision, even though the agent shows **Ready**. Existing conversations keep the revision they started on.
 
 ### 4. Test the Agent
 

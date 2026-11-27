@@ -38,7 +38,7 @@ A key authorizes only the services in its current scopes: individual services, o
 Agent Gateway separates two kinds of callers:
 
 - **Public**: external clients calling a `/svc/ai`, `/svc/serving`, `/svc/mcp`, or `/svc/a2a` path with an API key. This is what SDKs, CI jobs, and external integrations use.
-- **Internal**: workloads running inside the same workspace (for example, an agent calling another service in-cluster) use Agent Gateway's internal `/_platform/...` routes. Istio authorization policies admit these calls based on the workload's service mesh identity instead of an API key, so you do not need to create or manage a key.
+- **Internal**: workloads running inside the same workspace (for example, a Lab calling an MCP server) use Agent Gateway's internal `/_platform/...` routes. Istio authorization policies admit these calls based on the workload's service mesh identity instead of an API key, so you do not need to create or manage a key. Agents and sandboxes have no mesh identity and use the public routes: prokube connects an agent to its models and MCP servers with a key that the egress gateway adds. Workloads that call an agent over A2A need a key, too.
 
 You only need to think about API keys for the public path.
 
